@@ -32,22 +32,23 @@ let init = function() {
         mounted() {
             this.checkIsUnfiniteState();
         },
-        watch: {
-            '$route' (to, from) {
-                this.checkIsUnfiniteState();
-                if (this.$route.path.split('/').length > 2) {
-                    this.transitionName = "fade";
-                } else {
-                    this.transitionName = "page-fade";
-                }
-            }
-        },
         methods: {
             checkIsUnfiniteState() {
                 let routerArray = this.$route.path.split('/')
                 if (routerArray.pop() === 'x') {
                     router.push(routerArray.join("/"));
                 }
+            }
+        },
+        components: {
+            "footer-bar": Vue.component("footer-bar"),
+            "router-link": Vue.component("router-link"),
+            "router-view": Vue.component("router-view")
+        },
+        watch: {
+            "$route"(to, from) {
+                this.checkIsUnfiniteState();
+                this.$emit("root:route-change", to.path);
             }
         }
     }).$mount('#braeco-client');

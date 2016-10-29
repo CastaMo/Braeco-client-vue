@@ -1,8 +1,6 @@
 <template>
 	<div id="Home-Order">
-		<footer-bar
-			:choose="'Order'"
-		></footer-bar>
+		<div>订单</div>
 	</div>
 </template>
 

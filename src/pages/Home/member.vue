@@ -1,8 +1,6 @@
 <template>
 	<div id="Home-Member">
-		<footer-bar
-			:choose="'Member'"
-		></footer-bar>
+		<div>会员</div>
 	</div>
 </template>
 

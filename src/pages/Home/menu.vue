@@ -1,8 +1,6 @@
 <template>
 	<div id="Home-Menu">
-		<footer-bar
-			:choose="'Menu'"
-		></footer-bar>
+		<div>餐牌</div>
 	</div>
 </template>
 
