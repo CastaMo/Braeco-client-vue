@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>braeco-client-vue</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <script type="text/javascript">document.addEventListener("touchstart", function(){}, true)</script>
+</head>
+
+<body>
+    <div id="braeco-client">
+        <div id="toast" class="horizontal-center">
+            <div class="toast-wrapper">
+                <div class="toast-container">
+                    <ul class="toast-elem-list"></ul>
+                </div>
+            </div>
+        </div>
+        <!-- <page-header></page-header> -->
+        <div id="main">
+            <!-- <sidebar></sidebar> -->
+            <div id="mainbar">
+                <transition :name="transitionName" mode="out-in">
+                    <router-view></router-view>
+                </transition>
+            </div>
+            <!-- <agency-list-bar></agency-list-bar> -->
+        </div>
+    </div>
+    <!-- built files will be auto injected -->
+    <script src="http://devel.brae.co/public/js/specialCommon/vue.min.js"></script>
+    <script src="http://devel.brae.co/public/js/specialCommon/vue-router.min.js"></script>
+</body>
+
+</html>
