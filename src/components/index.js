@@ -1,5 +1,6 @@
 let comArray = [];
 comArray.push(require('./footer-bar.vue'));
+comArray.push(require('./rotate-display.vue'));
 
 
 const build = function(Vue) {

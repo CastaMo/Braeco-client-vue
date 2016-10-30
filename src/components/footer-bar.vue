@@ -5,19 +5,19 @@
                 class="bottom-item"
                 id="bottom-item-Menu"
                 v-on:click="liClickEvent('menu')"
-                v-bind:class="{'choose': isMenu}"
+                v-bind:class="{'choose': (routeLastItem === 'menu')}"
             ></li>
             <li
                 class="bottom-item"
                 id="bottom-item-Order"
                 v-on:click="liClickEvent('order')"
-                v-bind:class="{'choose': isOrder}"
+                v-bind:class="{'choose': (routeLastItem === 'order')}"
             ></li>
             <li
                 class="bottom-item"
                 id="bottom-item-Member"
                 v-on:click="liClickEvent('member')"
-                v-bind:class="{'choose': isMember}"
+                v-bind:class="{'choose': (routeLastItem === 'member')}"
             ></li>
         </ul>
     </div>
@@ -101,17 +101,6 @@ module.exports = {
             let routeLastItem = path.split("/").pop();
             vm.setRouteLastItem(routeLastItem);
         });
-    },
-    computed: {
-        isMenu() {
-            return this.routeLastItem === 'menu';
-        },
-        isOrder() {
-            return this.routeLastItem === 'order';
-        },
-        isMember() {
-            return this.routeLastItem === 'member';
-        }
     },
     methods: {
         liClickEvent(item) {

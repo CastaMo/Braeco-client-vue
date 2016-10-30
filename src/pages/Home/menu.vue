@@ -1,6 +1,9 @@
 <template>
 	<div id="Home-Menu">
-		<div>餐牌</div>
+		<div class='rotate-display-container'>
+			<rotate-display>
+			</rotate-display>
+		</div>
 	</div>
 </template>
 
@@ -12,7 +15,7 @@ module.exports = {
 		
 	},
 	components: {
-		"footer-bar": Vue.component("footer-bar")
+		"rotate-display": Vue.component("rotate-display")
 	}
 }
 

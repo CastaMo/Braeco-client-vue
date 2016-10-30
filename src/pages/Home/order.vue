@@ -12,7 +12,6 @@ module.exports = {
 		
 	},
 	components: {
-		"footer-bar": Vue.component("footer-bar")
 	}
 }
 
