@@ -8,6 +8,10 @@ const HomeMember = function(resolve) {
     return require(['./pages/Home/member.vue'], resolve);
 }
 
+const ActivityMain = function(resolve) {
+    return require(['./pages/Activity/main.vue'], resolve);
+}
+
 
 const test = function(resolve) {
 	return require(['./specialRoute/test.vue'], resolve);
@@ -18,6 +22,7 @@ const routes = [
     { path: '/home/menu', component: HomeMenu},
     { path: '/home/order', component: HomeOrder},
     { path: '/home/member', component: HomeMember},
+    { path: '/activity/main', component: ActivityMain},
     { path: '/test', component: test}
 ];
 
