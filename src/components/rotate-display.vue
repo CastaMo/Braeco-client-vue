@@ -15,12 +15,13 @@
         >
             <li
                 class='display-item'
+                v-bind:id="`display-item--1`"
                 v-bind:style="{
-                    'background-image': 'url(' + items[items.length-1].pic + ')',
+                    'background-size': `${itemWidth}px ${itemHeight}px`,
                     'width': `${itemWidth}px`,
-                    'height': `${itemHeight}px`,
-                    'background-size': `${itemWidth}px ${itemHeight}px`
+                    'height': `${itemHeight}px`
                 }"
+                v-lazy:background-image="items[items.length-1].pic"
             >
                 <div class='title-field'>
                     <div class='title-container'>
@@ -30,13 +31,14 @@
             </li>
             <li
                 class='display-item'
-                v-for="item in items"
+                v-for="(item, index) in items"
+                v-bind:id="`display-item-${index}`"
                 v-bind:style="{
-                    'background-image': 'url(' + item.pic + ')',
                     'width': `${itemWidth}px`,
                     'height': `${itemHeight}px`,
                     'background-size': `${itemWidth}px ${itemHeight}px`
                 }"
+                v-lazy:background-image="item.pic"
             >
                 <div class='title-field'>
                     <div class='title-container'>
@@ -46,12 +48,13 @@
             </li>
             <li
                 class='display-item'
+                v-bind:id="`display-item-${items.length}`"
                 v-bind:style="{
-                    'background-image': 'url(' + items[0].pic + ')',
                     'width': `${itemWidth}px`,
                     'height': `${itemHeight}px`,
                     'background-size': `${itemWidth}px ${itemHeight}px`
                 }"
+                v-lazy:background-image="items[0].pic"
             >
                 <div class='title-field'>
                     <div class='title-container'>
@@ -125,6 +128,9 @@ module.exports = {
             currentIndex: 0,
             intervalId: null
         }
+    },
+    directives: {
+        lazy: Vue.directive('lazy')
     },
     methods: {
         touchstartEvent(event) {
