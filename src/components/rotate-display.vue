@@ -70,7 +70,7 @@
                     v-bind:id="`choose-dot-${index}`"
                     class='choose-dot'
                     v-bind:class="{'choose': ((currentIndex + items.length) % items.length) === index}"
-                    v-on:click="dotClickEvent(index)"
+                    v-on:click="dotClickEvent(index, $event)"
                 >
                     <div class='dot'></div>
                 </li>
@@ -184,7 +184,8 @@ module.exports = {
             }
             setTimeout(this.onAnimateCallback, 300);
         },
-        dotClickEvent(index) {
+        dotClickEvent(index, event) {
+            event.stopPropagation();
             this.currentIndex = index;
             this.transitionStr = 'all 0.3s ease-in-out';
         },
