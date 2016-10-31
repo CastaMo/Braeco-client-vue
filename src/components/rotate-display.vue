@@ -2,10 +2,12 @@
     <div class='rotate-display'>
         <ul class='display-list'
             v-bind:style="{
-                'width': `${itemWidth * (pics.length+2)}px`,
+                'width': `${itemWidth * (items.length+2)}px`,
                 'height': `${itemHeight}px`,
                 'transform': `translate3d(-${defaultWidth + currentIndex * itemWidth + offsetWidth}px, 0, 0)`,
-                'transition': `${transitionStr}`
+                'transition': `${transitionStr}`,
+                'backface-visibility': 'hidden',
+                'perspective': 1000
             }"
             v-on:touchstart="touchstartEvent($event)"
             v-on:touchmove="touchmoveEvent($event)"
@@ -14,32 +16,64 @@
             <li
                 class='display-item'
                 v-bind:style="{
-                    'background-image': 'url(' + pics[pics.length-1] + ')',
+                    'background-image': 'url(' + items[items.length-1].pic + ')',
                     'width': `${itemWidth}px`,
                     'height': `${itemHeight}px`,
                     'background-size': `${itemWidth}px ${itemHeight}px`
                 }"
-            ></li>
+            >
+                <div class='title-field'>
+                    <div class='title-container'>
+                        <p>{{items[items.length-1].title}}</p>
+                    </div>
+                </div>
+            </li>
             <li
                 class='display-item'
-                v-for="pic in pics"
+                v-for="item in items"
                 v-bind:style="{
-                    'background-image': 'url(' + pic + ')',
+                    'background-image': 'url(' + item.pic + ')',
                     'width': `${itemWidth}px`,
                     'height': `${itemHeight}px`,
                     'background-size': `${itemWidth}px ${itemHeight}px`
                 }"
-            ></li>
+            >
+                <div class='title-field'>
+                    <div class='title-container'>
+                        <p>{{item.title}}</p>
+                    </div>
+                </div>
+            </li>
             <li
                 class='display-item'
                 v-bind:style="{
-                    'background-image': 'url(' + pics[0] + ')',
+                    'background-image': 'url(' + items[0].pic + ')',
                     'width': `${itemWidth}px`,
                     'height': `${itemHeight}px`,
                     'background-size': `${itemWidth}px ${itemHeight}px`
                 }"
-            ></li>
+            >
+                <div class='title-field'>
+                    <div class='title-container'>
+                        <p>{{items[0].title}}</p>
+                    </div>
+                </div>
+            </li>
         </ul>
+        <div class='choose-field'>
+            <ul class='choose-dot-list'>
+                <li
+                    v-for="(item, index) in items"
+                    v-bind:id="`choose-dot-${index}`"
+                    class='choose-dot'
+                    v-bind:class="{'choose': ((currentIndex + items.length) % items.length) === index}"
+                    v-on:click="dotClickEvent(index)"
+                >
+                    <div class='dot'></div>
+                </li>
+                <div class='clear'></div>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -53,24 +87,28 @@ module.exports = {
         this.itemWidth = document.body.clientWidth;
         this.itemHeight = this.itemWidth * 200 / 375;
         this.defaultWidth = this.itemWidth;
+
+        //自动轮播
         this.intervalId = setInterval(function() {
             if (!vm.temp.flag) {
                 vm.currentIndex++;
                 vm.transitionStr = 'all 0.3s ease-in-out';
                 setTimeout(vm.onAnimateCallback, 300);
+            } else {
+                vm.temp.flag = false;
             }
         }, 3000);
     },
     beforeDestroy() {
+
         //如果不释放就会发生内存泄漏。
         clearInterval(this.intervalId);
     },
+    props: {
+        items: Array
+    },
     data() {
         return {
-            pics: [
-                "http://static.brae.co/images/dinner/is56fwzhfi708a0e9ycn6pbby4q3snxb?imageView2/1/w/640/h/340",
-                "http://static.brae.co/images/dinner/6clk2wez8b4t7ym9rlqsrgq6cvt4p16v?imageView2/1/w/640/h/340"
-            ],
             temp: {
                 startX: 0,
                 startY: 0,
@@ -126,28 +164,31 @@ module.exports = {
             let lastTimestamp = temp.timestamp;
             let currentTimestamp = new Date().getTime();
 
-            temp.flag = false;
 
             if (currentX < startX) {
                 if ((startX - currentX)*2 >= this.itemWidth ||
-                    (currentTimestamp - lastTimestamp < 20)) {
+                    (currentTimestamp - lastTimestamp < 60)) {
                     this.currentIndex++;
                 }
             } else if (currentX > startX) {
                 if ((currentX - startX)*2 >= this.itemWidth ||
-                    (currentTimestamp - lastTimestamp < 20)) {
+                    (currentTimestamp - lastTimestamp < 60)) {
                     this.currentIndex--;
                 }
             }
             setTimeout(this.onAnimateCallback, 300);
         },
+        dotClickEvent(index) {
+            this.currentIndex = index;
+            this.transitionStr = 'all 0.3s ease-in-out';
+        },
         onAnimateCallback() {
-            if (this.currentIndex >= this.pics.length) {
+            if (this.currentIndex >= this.items.length) {
                 this.transitionStr = '';
                 this.currentIndex = 0;
             } else if (this.currentIndex < 0) {
                 this.transitionStr = '';
-                this.currentIndex = this.pics.length-1;
+                this.currentIndex = this.items.length-1;
             }
         }
     }
@@ -156,6 +197,14 @@ module.exports = {
 </script>
 
 <style lang="less" scoped>
+.rounded-corners (@radius: 5px) {
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    -ms-border-radius: @radius;
+    -o-border-radius: @radius;
+    border-radius: @radius;
+}
+
 .background-norm(@elem: "none") {
     background-repeat: no-repeat;
     background-position: center;
@@ -163,9 +212,47 @@ module.exports = {
 .rotate-display {
     overflow-x: hidden;
     width: 100%;
+    position: relative;
     ul.display-list {
         li.display-item {
             float: left;
+            position: relative;
+            .title-field {
+                position: absolute;
+                width: 100%;
+                bottom: 0;
+                left: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                p {
+                    line-height: 30px;
+                    color: #fff;
+                    padding-left: 16px;
+                }
+            }
+        }
+    }
+    .choose-field {
+        position: absolute;
+        bottom: 5px;
+        right: 16px;
+        ul.choose-dot-list {
+            li.choose-dot {
+                float: left;
+                height: 20px;
+                width: 20px;
+                &.choose {
+                    .dot {
+                        background-color: #fff;
+                    }
+                }
+                .dot {
+                    background-color: rgba(0, 0, 0, 0.5);
+                    width: 8px;
+                    height: 8px;
+                    margin: 6px auto;
+                    .rounded-corners(50%);
+                }
+            }
         }
     }
 }
