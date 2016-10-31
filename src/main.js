@@ -1,6 +1,6 @@
+
 const components = require('./components/index.js');
 const routes = require('./routes.js');
-
 const config = require("./utils/config.js");
 
 const style = require('./style/index.less');
@@ -15,10 +15,8 @@ const router = new VueRouter({
         return { x: 0, y: 0 };
     }
 });
-
 let count = 3,
     requireData = {};
-
 let init = function() {
     new Vue({
         router: router,
@@ -29,7 +27,7 @@ let init = function() {
                 runningData: {}
             }
         },
-        mounted() {
+        created() {
             this.checkIsUnfiniteState();
         },
         methods: {
@@ -55,11 +53,11 @@ let init = function() {
 }
 
 //试试箭头函数
-let getData = url =>
-    Vue.http.get(url)
-        .then(function(resp) {
-            let result = (resp.data),
-                data = resp.data.data;
+let getData = requireName =>
+    requireManage.get(requireName).require({
+        method: "GET",
+        success: function(result) {
+            let data = result.data;
             if (result.message === "success") {
                 for (let key in data) {
                     requireData[key] = data[key];
@@ -67,14 +65,19 @@ let getData = url =>
                 count--;
             }
             if (count === 0) {
+                console.log(requireData);
+                requireData = requireData;
                 NProgress.done();
                 init();
             }
-        })
-        .finally(function() {});
-
+        },
+        always: function() {
+            requireData = requireData;
+            NProgress.done();
+        }
+    });
 
 NProgress.start();
-getData("/Table/Dinner");
-getData("/Table/Limit");
-getData("/Table/Member");
+getData("getTableDinner");
+getData("getTableLimit");
+getData("getTableMember");
