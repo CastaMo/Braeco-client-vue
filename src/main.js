@@ -1,7 +1,8 @@
 
-const components = require('./components/index.js');
 const routes = require('./routes.js');
 const config = require("./utils/config.js");
+const components = require('./components/index.js');
+
 
 const style = require('./style/index.less');
 
@@ -46,7 +47,7 @@ let init = function() {
         watch: {
             "$route"(to, from) {
                 this.checkIsUnfiniteState();
-                this.$emit("root:route-change", to.path);
+                this.$emit("root:route-change", to.path, from.path);
             }
         }
     }).$mount('#braeco-client');
@@ -66,13 +67,11 @@ let getData = requireName =>
             }
             if (count === 0) {
                 console.log(requireData);
-                requireData = requireData;
                 NProgress.done();
                 init();
             }
         },
         always: function() {
-            requireData = requireData;
             NProgress.done();
         }
     });
