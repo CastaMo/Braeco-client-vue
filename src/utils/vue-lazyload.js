@@ -101,9 +101,7 @@ var vueLazyload = (function (Vue) {
 
         if (imageCache.indexOf(listener.src) > -1) return setElRender(listener.el, listener.bindType, listener.src, 'loaded');
         var rect = listener.el.getBoundingClientRect();
-        if (listener.el.id === 'display-item--1') {
-            console.log(rect.left, rect.right);
-        }
+        
         if (rect.top < window.innerHeight * Init.preLoad && rect.bottom > 0 && rect.left < window.innerWidth * Init.preLoad && rect.right > 0) {
             render(listener);
         }
