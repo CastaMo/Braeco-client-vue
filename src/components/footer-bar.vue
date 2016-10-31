@@ -1,27 +1,78 @@
 <template>
-    <div class='footer-bar' v-show="routeLastItem">
-        <ul class='bottom-field'>
-            <li
-                class="bottom-item"
-                id="bottom-item-Menu"
-                v-on:click="liClickEvent('menu')"
-                v-bind:class="{'choose': (routeLastItem === 'menu')}"
-            ></li>
-            <li
-                class="bottom-item"
-                id="bottom-item-Order"
-                v-on:click="liClickEvent('order')"
-                v-bind:class="{'choose': (routeLastItem === 'order')}"
-            ></li>
-            <li
-                class="bottom-item"
-                id="bottom-item-Member"
-                v-on:click="liClickEvent('member')"
-                v-bind:class="{'choose': (routeLastItem === 'member')}"
-            ></li>
-        </ul>
-    </div>
+    <transition :name="transitionName" mode="out-in">
+        <div class='footer-bar' v-show="routeLastItem">
+            <ul class='bottom-field'>
+                <li
+                    class="bottom-item"
+                    id="bottom-item-Menu"
+                    v-on:click="liClickEvent('menu')"
+                    v-bind:class="{'choose': (routeLastItem === 'menu')}"
+                ></li>
+                <li
+                    class="bottom-item"
+                    id="bottom-item-Order"
+                    v-on:click="liClickEvent('order')"
+                    v-bind:class="{'choose': (routeLastItem === 'order')}"
+                ></li>
+                <li
+                    class="bottom-item"
+                    id="bottom-item-Member"
+                    v-on:click="liClickEvent('member')"
+                    v-bind:class="{'choose': (routeLastItem === 'member')}"
+                ></li>
+            </ul>
+        </div>
+    </transition>
 </template>
+
+<script>
+
+module.exports = {
+    name: 'footer-bar',
+    data() {
+        return {
+            liData: [
+                "Menu",
+                "Order",
+                "Member"
+            ],
+            routeLastItem: '',
+            transitionName: ''
+        }
+    },
+    mounted() {
+        let vm = this;
+        let routeLastItem = this.$root.$route.path.split("/").pop(); 
+        vm.transitionName = 'slide-bottom';
+        vm.setRouteLastItem(routeLastItem);
+        vm.$root.$on("root:route-change", function(toPath, fromPath) {
+            let routeLastItem = toPath.split("/").pop();
+            vm.setRouteLastItem(routeLastItem);
+
+            let toRouteFirstItem = toPath.split("/")[1];
+            let fromRouteFirstItem = fromPath.split("/")[1];
+            if (toRouteFirstItem !== fromRouteFirstItem) {
+                vm.transitionName = 'slide-bottom';
+            } else {
+                vm.transitionName = '';
+            }
+        });
+    },
+    methods: {
+        liClickEvent(item) {
+            this.$root.$router.push(`/home/${item}`);
+        },
+        setRouteLastItem(routeLastItem) {
+            this.routeLastItem =
+                routeLastItem === 'menu'   ? 'menu'     :
+                routeLastItem === 'order'  ? 'order'    :
+                routeLastItem === 'member' ? 'member'   :
+                '';
+        }
+    }
+}
+
+</script>
 
 <style lang="less" scoped>
 .background-linear-gradient(@from: rgba(0, 0, 0, 0), @to: rgba(0, 0, 0, 1)) {
@@ -77,43 +128,13 @@
         }
     }
 }
-</style>
 
-<script>
-
-module.exports = {
-    name: 'footer-bar',
-    data() {
-        return {
-            liData: [
-                "Menu",
-                "Order",
-                "Member"
-            ],
-            routeLastItem: ''
-        }
-    },
-    mounted() {
-        let vm = this;
-        let routeLastItem = this.$root.$route.path.split("/").pop(); 
-        vm.setRouteLastItem(routeLastItem);
-        vm.$root.$on("root:route-change", function(path) {
-            let routeLastItem = path.split("/").pop();
-            vm.setRouteLastItem(routeLastItem);
-        });
-    },
-    methods: {
-        liClickEvent(item) {
-            this.$root.$router.push(`/home/${item}`);
-        },
-        setRouteLastItem(routeLastItem) {
-            this.routeLastItem =
-                routeLastItem === 'menu'   ? 'menu'     :
-                routeLastItem === 'order'  ? 'order'    :
-                routeLastItem === 'member' ? 'member'   :
-                '';
-        }
-    }
+.slide-bottom-enter-active, .slide-bottom-leave-active {
+  transition: all .2s ease;
 }
 
-</script>
+.slide-bottom-enter, .slide-bottom-leave-active {
+  bottom: -55px;
+  opacity: 0;
+}
+</style>
