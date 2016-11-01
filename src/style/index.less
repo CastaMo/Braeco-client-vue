@@ -39,12 +39,64 @@ html, body {
     perspective: 1000;
 }
 
+.translate (@ver: 0, @hor: 0) {
+    .transform(translate3d(@ver, @hor, 0));
+}
+
+.transform (@str: scale(0, 0)) {
+    transform: @str;
+    -webkit-transform: @str;
+    -moz-transform: @str;
+    -ms-transform: @str;
+    -o-transform: @str;
+}
+
+.horizontal-center {
+    position: absolute;
+    left: 50%;
+    .translate(-50%, 0);
+}
+
+.vertical-center {
+    position: absolute;
+    top: 50%;
+    .translate(0, -50%);
+}
+
+.total-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    .translate(-50%, -50%);
+}
+
 .page-fade-enter-active, .page-fade-leave-active {
   transition: opacity .2s ease;
 }
 
 .page-fade-enter, .page-fade-leave-active {
   opacity: 0;
+}
+
+.active-container {
+    position: relative;
+    .arrow {
+        width: 8px;
+        height: 14px;
+        .background-norm();
+        background-size: 8px 14px;
+        right: 17px;
+        z-index: 1;
+        background-image: url('../assets/Icon/Arrow/Next/Brown.png');
+    }
+    &:active {
+        background-color: #FFECB3;
+    }
+}
+
+.margin-left-wrapper {
+    margin-left: 16px;
+    border-bottom: solid 1px #C8C7CC;
 }
 
 @import "./nprogress.less";
