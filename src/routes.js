@@ -11,7 +11,9 @@ const HomeMember = function(resolve) {
 const ActivityMain = function(resolve) {
     return require(['./pages/Activity/main.vue'], resolve);
 }
-
+const ActivityInfo = function(resolve) {
+    return require(['./pages/Activity/info.vue'], resolve);
+}
 
 const test = function(resolve) {
 	return require(['./specialRoute/test.vue'], resolve);
@@ -23,6 +25,7 @@ const routes = [
     { path: '/home/order', component: HomeOrder},
     { path: '/home/member', component: HomeMember},
     { path: '/activity/main', component: ActivityMain},
+    { path: '/activity/info/:id', component: ActivityInfo},
     { path: '/test', component: test}
 ];
 
