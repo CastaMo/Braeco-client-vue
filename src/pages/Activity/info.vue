@@ -175,6 +175,7 @@ body {
             .content {
                 line-height: 20px;
                 margin-top: 2px;
+                font-size: 14px;
             }
         }
     }
