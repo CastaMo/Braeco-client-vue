@@ -33,7 +33,7 @@
             <div class='activity-content-wrapper'>
                 <div class='activity-content-container'>
                     <div class='head'>活动详情</div>
-                    <div class='content'>{{activityItem.content}}</div>
+                    <div class='content' v-html="activityItem.content"></div>
                 </div>
             </div>
         </div>
