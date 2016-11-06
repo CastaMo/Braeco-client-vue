@@ -129,12 +129,4 @@ module.exports = {
     }
 }
 
-.slide-bottom-enter-active, .slide-bottom-leave-active {
-  transition: all .2s ease;
-}
-
-.slide-bottom-enter, .slide-bottom-leave-active {
-  bottom: -55px;
-  opacity: 0;
-}
 </style>

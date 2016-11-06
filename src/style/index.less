@@ -101,6 +101,16 @@ body {
     .translate(100%, 0);
 }
 
+.slide-bottom-enter-active, .slide-bottom-leave-active {
+  transition: all .3s ease;
+}
+
+.slide-bottom-enter, .slide-bottom-leave-active {
+  .translate(0, 100%);
+  opacity: 0;
+}
+
+
 .active-container {
     position: relative;
     .arrow {
