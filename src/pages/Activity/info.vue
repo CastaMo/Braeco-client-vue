@@ -50,6 +50,9 @@ module.exports = {
     },
     created() {
         this.activityItem = this.getActivityItem();
+        if (!this.activityItem) {
+            this.$root.$router.back();
+        }
     },
     directives: {
         'lazy': Vue.directive('lazy')
