@@ -43,12 +43,6 @@ let init = function() {
             "footer-bar": Vue.component("footer-bar"),
             "router-link": Vue.component("router-link"),
             "router-view": Vue.component("router-view")
-        },
-        watch: {
-            "$route"(to, from) {
-                this.checkIsUnfiniteState();
-                this.$emit("root:route-change", to.path, from.path);
-            }
         }
     }).$mount('#braeco-client');
 }
@@ -66,7 +60,7 @@ let getData = requireName =>
                 count--;
             }
             if (count === 0) {
-                console.log(requireData);
+                console.log(JSON.parse(JSON.stringify(requireData)));
                 NProgress.done();
                 init();
             }

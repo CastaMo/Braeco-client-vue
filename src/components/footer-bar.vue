@@ -45,7 +45,10 @@ module.exports = {
         let routeLastItem = this.$root.$route.path.split("/").pop(); 
         vm.transitionName = 'slide-bottom';
         vm.setRouteLastItem(routeLastItem);
-        vm.$root.$on("root:route-change", function(toPath, fromPath) {
+
+        vm.$root.$watch("$route", function(to, from) {
+            let toPath = to.path;
+            let fromPath = from.path;
             let routeLastItem = toPath.split("/").pop();
             vm.setRouteLastItem(routeLastItem);
 
