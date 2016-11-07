@@ -24,7 +24,7 @@
                                                     <p class='name'>{{food.name}}</p>
                                                     <p class='name2'>{{food.name2}}</p>
                                                 </div>
-                                                <div class='tag-field'>
+                                                <div class='label-field'>
                                                     <div class='dc'>第二杯半价</div>
                                                     <div class='tag'>{{food.tag}}</div>
                                                     <div class='clear'></div>
@@ -237,6 +237,15 @@ module.exports = {
     background-position: center;
 }
 
+.box-shadow (@str) {
+    //Firefox4.0-
+    -moz-box-shadow: @str;
+    //Safariand Google chrome10.0-
+    -webkit-box-shadow: @str;
+    //Firefox4.0+、 Google chrome 10.0+ 、 Oprea10.5+ and IE9
+    box-shadow: @str;
+}
+
 .main-field {
     .menu {
         .menu-container {
@@ -274,7 +283,7 @@ module.exports = {
                                     margin-top: 4px;
                                 }
                             }
-                            .tag-field {
+                            .label-field {
                                 margin-top: 5px;
                                 > *:not(.clear) {
                                     float: left;
@@ -354,6 +363,7 @@ module.exports = {
     width: 100%;
     height: 48px;
     background-color: #8B572A;
+    .box-shadow(0px 2px 8px rgba(0, 0, 0, 0.2));
     .category-name {
         float: left;
         color: #fff;
