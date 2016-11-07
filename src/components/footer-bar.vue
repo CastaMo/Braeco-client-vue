@@ -54,13 +54,14 @@ module.exports = {
             this.$root.$router.push(`/home/${item}`);
         },
         setRouteLastItem(routeLastItem) {
-            for (let i = 0, len = this.liData.length; i < len; i++) {
-                let liItem = this.liData[i];
+            let vm = this;
+            vm.routeLastItem = '';
+            this.liData.forEach(function(liItem) {
                 if (liItem === routeLastItem) {
-                    return this.routeLastItem = routeLastItem;
+                    vm.routeLastItem = routeLastItem;
+                    return false;
                 }
-            }
-            this.routeLastItem = '';
+            });
         }
     }
 }
