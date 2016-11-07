@@ -2,23 +2,11 @@
     <transition :name="transitionName" mode="out-in">
         <div class='footer-bar' v-show="routeLastItem">
             <ul class='bottom-field'>
-                <li
+                <li v-for="liItem in liData"
                     class="bottom-item"
-                    id="bottom-item-Menu"
-                    v-on:click="liClickEvent('menu')"
-                    v-bind:class="{'choose': (routeLastItem === 'menu')}"
-                ></li>
-                <li
-                    class="bottom-item"
-                    id="bottom-item-Order"
-                    v-on:click="liClickEvent('order')"
-                    v-bind:class="{'choose': (routeLastItem === 'order')}"
-                ></li>
-                <li
-                    class="bottom-item"
-                    id="bottom-item-Member"
-                    v-on:click="liClickEvent('member')"
-                    v-bind:class="{'choose': (routeLastItem === 'member')}"
+                    v-bind:id="`bottom-item-${liItem}`"
+                    v-on:click="liClickEvent(liItem)"
+                    v-bind:class="{'choose': (routeLastItem === liItem)}"
                 ></li>
             </ul>
         </div>
@@ -32,9 +20,9 @@ module.exports = {
     data() {
         return {
             liData: [
-                "Menu",
-                "Order",
-                "Member"
+                "menu",
+                "order",
+                "member"
             ],
             routeLastItem: '',
             transitionName: ''
@@ -66,11 +54,13 @@ module.exports = {
             this.$root.$router.push(`/home/${item}`);
         },
         setRouteLastItem(routeLastItem) {
-            this.routeLastItem =
-                routeLastItem === 'menu'   ? 'menu'     :
-                routeLastItem === 'order'  ? 'order'    :
-                routeLastItem === 'member' ? 'member'   :
-                '';
+            for (let i = 0, len = this.liData.length; i < len; i++) {
+                let liItem = this.liData[i];
+                if (liItem === routeLastItem) {
+                    return this.routeLastItem = routeLastItem;
+                }
+            }
+            this.routeLastItem = '';
         }
     }
 }
@@ -107,21 +97,21 @@ module.exports = {
             width: 33.3%;
             height: 100%;
             .background-norm();
-            &#bottom-item-Menu {
+            &#bottom-item-menu {
                 background-size: 25px 44px;
                 background-image: url("../assets/menu-unchecked.png");
                 &.choose {
                     background-image: url("../assets/menu-checked.png");
                 }
             }
-            &#bottom-item-Order {
+            &#bottom-item-order {
                 background-size: 29px 45px;
                 background-image: url("../assets/order-unchecked.png");
                 &.choose {
                     background-image: url("../assets/order-checked.png");
                 }
             }
-            &#bottom-item-Member {
+            &#bottom-item-member {
                 background-size: 22px 45px;
                 background-image: url("../assets/member-unchecked.png");
                 &.choose {
