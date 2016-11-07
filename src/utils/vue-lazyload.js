@@ -199,6 +199,7 @@ var vueLazyload = (function (Vue) {
         }
 
         setElRender(el, binding.arg, imageLoading, 'loading');
+        if (!imageSrc) return;
 
         Vue.nextTick(function () {
             Listeners.push({
