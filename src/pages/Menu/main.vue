@@ -35,8 +35,8 @@
                                                     <div class='clear'></div>
                                                 </div>
                                                 <div class='money-field'>
-                                                    <div class='current-price'>{{food.currentPrice}}</div>
-                                                    <div class='init-price' v-if="food.chooseAllFirstPrice > food.currentPrice">{{food.chooseAllFirstPrice}}</div>
+                                                    <div class='current-price'>{{Number(food.currentPrice.toFixed(2))}}</div>
+                                                    <div class='init-price' v-if="food.chooseAllFirstPrice > food.currentPrice">{{Number(food.chooseAllFirstPrice.toFixed(2))}}</div>
                                                     <div class='controll'>
                                                         <div
                                                             class='add-btn'
