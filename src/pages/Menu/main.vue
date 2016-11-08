@@ -35,8 +35,8 @@
                                                     <div class='clear'></div>
                                                 </div>
                                                 <div class='money-field'>
-                                                    <div class='current-price'>{{food.default_price}}</div>
-                                                    <div class='init-price'>{{food.default_price}}</div>
+                                                    <div class='current-price'>{{food.currentPrice}}</div>
+                                                    <div class='init-price' v-if="food.chooseAllFirstPrice > food.currentPrice">{{food.chooseAllFirstPrice}}</div>
                                                     <div class='controll'>
                                                         <div
                                                             class='add-btn'
@@ -121,10 +121,17 @@ module.exports = {
             categoryItems: null,
             foodItems: null,
             rightBarFlag: false,
-            dishLimit: null
+            dishLimit: null,
+            groups: {}
         };
     },
     created() {
+
+        let vm = this;
+        this.$root.requireData.menu.groups.forEach(function(group) {
+            vm.groups[group.id] = group;
+        });
+
         this.dishLimit = this.$root.requireData.dish_limit;
         this.categoryId = Number(this.$root.$route.params.id);
         this.categoryItems = this.getItemsForCategory();
@@ -173,10 +180,11 @@ module.exports = {
                         temp.id = dish.id;
                         temp.name = dish.name;
                         temp.name2 = dish.name2;
-                        temp.lazy = '';
                         if (dish.pic) {
                             temp.pic = `${dish.pic}?imageView2/1/w/${100 * 2}/h/${100 * 2}`
                         }
+                        temp.chooseAllFirstPrice = this.getChooseAllFirstPrice(dish);
+                        temp.currentPrice = this.getPriceByDcTypeAndDc(temp.chooseAllFirstPrice, dish.dc_type, dish.dc);
                         temp.tag = dish.tag;
                         temp.type = dish.type;
                         result.push(temp);
@@ -204,6 +212,7 @@ module.exports = {
             if (!food.dc_type || food.dc_type === "none") {
                 return "";
             }
+
             let numToChinese = ["零","一","二","三","四","五","六","七","八","九","十"]
             if (food.dc_type === "discount") {
                 let num = food.dc
@@ -214,13 +223,36 @@ module.exports = {
                 }
                 return `${num}折`;
             }
+
             if (food.dc_type === "sale") return `减${food.dc}元`;
             if (food.dc_type === "half") return `第二份半价`;
             if (food.dc_type === "limit") {
                 let dc = this.dishLimit[food.id];
                 return `剩${dc}件`;
             }
-        }
+        },
+        getPriceByDcTypeAndDc(price, dc_type, dc) {
+            if (dc_type === "sale") {
+                return price - dc;
+            }
+            if (dc_type === "discount") {
+                return price * dc / 100;
+            }
+            return price;
+        },
+        getChooseAllFirstPrice(food) {
+            let price = food.default_price,
+                vm = this;
+            if (food.type === "normal") {
+                if (food.groups && food.groups.length > 0) {
+                    food.groups.forEach(function(groupId) {
+                        let content = vm.groups[groupId].content[0];
+                        price += content.price;
+                    });
+                }
+            }
+            return price;
+        },
     },
     watch: {
         categoryId(id) {
