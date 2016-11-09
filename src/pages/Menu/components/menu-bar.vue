@@ -40,7 +40,6 @@
                                                     <div class='controll'>
                                                         <div
                                                             class='add-btn'
-                                                            v-on:click="testEvent(food)"
                                                         >
                                                             <div class='add-btn-img' v-if="food.type === 'normal'"></div>
                                                             <div class='add-btn-word' v-else>选择</div>

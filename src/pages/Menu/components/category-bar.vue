@@ -79,7 +79,6 @@ module.exports = {
         },
         categoryItemClickEvent(id) {
         	this.$parent.$emit("menu-main:categoryIdChange", id);
-            this.$root.$router.replace(`/menu/main/${id}`);
             this.rightBarFlag = false;
         }
 	},

@@ -5,7 +5,7 @@
         >
         </menu-bar>
         <category-bar
-            :categoryId.sync="categoryId"
+            :categoryId="categoryId"
             :categoryItems="categoryItems"
             :categoryName="categoryName"
         ></category-bar>
@@ -105,9 +105,6 @@ module.exports = {
             }
             return result;
         },
-        testEvent(food) {
-            this.dishLimit[food.id]--;
-        },
         getDcForFood(food) {
             if (!food.dc_type || food.dc_type === "none") {
                 return "";
@@ -168,6 +165,7 @@ module.exports = {
                     Vue.nextTick(function() {
                         vm.foodItems = vm.getItemsForFood();
                     });
+                    this.$root.$router.replace(`/menu/main/${id}`);
                     return true;
                 }
             }
