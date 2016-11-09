@@ -1,5 +1,6 @@
 
 const routes = require('./routes.js');
+const routeWeight = require("./routeWeight.js");
 const config = require("./utils/config.js");
 const components = require('./components/index.js');
 
@@ -37,11 +38,43 @@ let init = function() {
                 if (routerArray.pop() === 'x') {
                     router.push(routerArray.join("/"));
                 }
+            },
+            checkForTransition(toPath, fromPath) {
+                let to = toPath.split("/");
+                to.shift();
+                let from = fromPath.split("/");
+                from.shift();
+
+                let toValue = -10,
+                    fromValue = -20;
+                if (to.length === 0) {
+                    toValue = -10;
+                } else if (to.length >= 2) {
+                    toValue = routeWeight[to[0]].value;
+                    toValue += routeWeight[to[0]].next[to[1]].value;
+                }
+                if (from.length === 0) {
+                    fromValue = -10;
+                } else if (from.length >= 2) {
+                    fromValue = routeWeight[from[0]].value;
+                    fromValue += routeWeight[from[0]].next[from[1]].value;
+                }
+
+                this.transitionName = "page-fade";
+                if (toValue - fromValue <= 4 && toValue >= fromValue) {
+                    this.transitionName = "page-slide-left";
+                } else if (fromValue - toValue <= 4 && fromValue >= toValue) {
+                    this.transitionName = "page-slide-right";
+                }
+                console.log(toValue, fromValue);
+
             }
         },
         watch: {
-            $route: function() {
+            $route: function(to, from) {
                 this.checkIsUnfiniteState();
+                this.checkForTransition(to.fullPath, from.fullPath);
+                console.log(arguments);
             }
         },
         components: {
