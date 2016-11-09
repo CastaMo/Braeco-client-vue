@@ -39,6 +39,11 @@ let init = function() {
                 }
             }
         },
+        watch: {
+            $route: function() {
+                this.checkIsUnfiniteState();
+            }
+        },
         components: {
             "footer-bar": Vue.component("footer-bar"),
             "router-link": Vue.component("router-link"),
