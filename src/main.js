@@ -61,12 +61,11 @@ let init = function() {
                 }
 
                 this.transitionName = "page-fade";
-                if (toValue - fromValue <= 4 && toValue >= fromValue) {
+                if (toValue - fromValue <= 4 && toValue > fromValue) {
                     this.transitionName = "page-slide-left";
-                } else if (fromValue - toValue <= 4 && fromValue >= toValue) {
+                } else if (fromValue - toValue <= 4 && fromValue > toValue) {
                     this.transitionName = "page-slide-right";
                 }
-                console.log(toValue, fromValue);
 
             }
         },
@@ -74,7 +73,6 @@ let init = function() {
             $route: function(to, from) {
                 this.checkIsUnfiniteState();
                 this.checkForTransition(to.fullPath, from.fullPath);
-                console.log(arguments);
             }
         },
         components: {
