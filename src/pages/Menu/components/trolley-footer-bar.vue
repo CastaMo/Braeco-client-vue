@@ -11,7 +11,12 @@
 			<div class='clear'></div>
 		</div>
 		<div class='trolley-icon-field'>
-			<div class='trolley-icon'>
+			<div
+				class='trolley-icon'
+				v-bind:class="{
+					'playAnimationForAdd': animationFlag
+				}"
+			>
 				<div class='order-number'>77</div>
 			</div>
 		</div>
@@ -23,16 +28,161 @@
 
 module.exports = {
 	name: 'trolley-footer-bar',
+	created() {
+		let vm = this;
+		this.$parent.$on("menu:playAnimationForAdd", function() {
+			vm.animationFlag = false;
+			setTimeout(function() {
+				vm.animationFlag = true;
+			}, 20);
+		});
+	},
 	data() {
 		return {
-
-		}
+			animationFlag: false
+		};
 	}
 }
 
 </script>
 
 <style lang="less" scoped>
+
+.transform (@str: scale(0, 0)) {
+    transform: @str;
+    -webkit-transform: @str;
+    -moz-transform: @str;
+    -ms-transform: @str;
+    -o-transform: @str;
+}
+
+.animation (@str) {
+    animation: @str;
+    -moz-animation: @str;
+    /* Firefox */
+    -webkit-animation: @str;
+    /* Safari and Chrome */
+    -o-animation: @str;
+    /* Opera */
+}
+
+.playAnimationForAdd {
+    .animation(animation-bounce-up 0.4s);
+}
+
+/*-----------Bounce Up Animation Start----------*/
+
+.animation-bounce-up-frame(@stage: 1) when (@stage =1) {
+    .transform(translate3d(0, 0, 0));
+}
+
+.animation-bounce-up-frame(@stage: 1) when (@stage =2) {
+    .transform(translate3d(0, -17px, 0));
+}
+
+.animation-bounce-up-frame(@stage: 1) when (@stage =3) {
+    .transform(translate3d(0, -9px, 0));
+}
+
+.animation-bounce-up-frame(@stage: 1) when (@stage =4) {
+    .transform(translate3d(0, -5px, 0));
+}
+
+@keyframes animation-bounce-up {
+    0% {
+        .animation-bounce-up-frame(1);
+    }
+    16.7% {
+        .animation-bounce-up-frame(2);
+    }
+    33.3% {
+        .animation-bounce-up-frame(1);
+    }
+    50% {
+        .animation-bounce-up-frame(3);
+    }
+    66.7% {
+        .animation-bounce-up-frame(1);
+    }
+    83.3% {
+        .animation-bounce-up-frame(4);
+    }
+    100% {
+        .animation-bounce-up-frame(1);
+    }
+}
+
+@-moz-keyframes animation-bounce-up {
+    0% {
+        .animation-bounce-up-frame(1);
+    }
+    16.7% {
+        .animation-bounce-up-frame(2);
+    }
+    33.3% {
+        .animation-bounce-up-frame(1);
+    }
+    50% {
+        .animation-bounce-up-frame(3);
+    }
+    66.7% {
+        .animation-bounce-up-frame(1);
+    }
+    83.3% {
+        .animation-bounce-up-frame(4);
+    }
+    100% {
+        .animation-bounce-up-frame(1);
+    }
+}
+
+@-webkit-keyframes animation-bounce-up {
+    0% {
+        .animation-bounce-up-frame(1);
+    }
+    16.7% {
+        .animation-bounce-up-frame(2);
+    }
+    33.3% {
+        .animation-bounce-up-frame(1);
+    }
+    50% {
+        .animation-bounce-up-frame(3);
+    }
+    66.7% {
+        .animation-bounce-up-frame(1);
+    }
+    83.3% {
+        .animation-bounce-up-frame(4);
+    }
+    100% {
+        .animation-bounce-up-frame(1);
+    }
+}
+
+@-o-keyframes animation-bounce-up {
+    0% {
+        .animation-bounce-up-frame(1);
+    }
+    16.7% {
+        .animation-bounce-up-frame(2);
+    }
+    33.3% {
+        .animation-bounce-up-frame(1);
+    }
+    50% {
+        .animation-bounce-up-frame(3);
+    }
+    66.7% {
+        .animation-bounce-up-frame(1);
+    }
+    83.3% {
+        .animation-bounce-up-frame(4);
+    }
+    100% {
+        .animation-bounce-up-frame(1);
+    }
+}
 
 .background-norm(@elem: "none") {
     background-repeat: no-repeat;
