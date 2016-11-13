@@ -9,6 +9,9 @@
             :categoryItems="categoryItems"
             :categoryName="categoryName"
         ></category-bar>
+        <trolley-footer-bar
+        >
+        </trolley-footer-bar>
     </div>
 </template>
 
@@ -46,7 +49,8 @@ module.exports = {
     },
     components: {
         "category-bar": require("./components/category-bar"),
-        "menu-bar": require("./components/menu-bar")
+        "menu-bar": require("./components/menu-bar"),
+        "trolley-footer-bar": require("./components/trolley-footer-bar")
     },
     events: {
         categoryIdChange(id) {
