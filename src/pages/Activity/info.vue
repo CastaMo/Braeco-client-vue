@@ -82,7 +82,6 @@ module.exports = {
                     } else {
                         temp.dateStr = `${new Date(activity.date_begin * 1000).Format('yyyy.MM.dd')} - ${new Date(activity.date_end * 1000).Format('yyyy.MM.dd')}`
                     }
-                    console.log(temp);
                     return temp;
                 }
             }
