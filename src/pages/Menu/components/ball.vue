@@ -85,6 +85,7 @@ module.exports = {
 			let now = +new Date;
 			let vm = this;
 			if (now > ball.end) {
+				this.$parent.$emit("menu:playAnimationForAdd");
 				if (typeof ball.callback === 'function') {
 					ball.callback();
 				}
