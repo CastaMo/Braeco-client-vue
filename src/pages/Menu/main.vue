@@ -4,14 +4,15 @@
             :foodItems="foodItems"
         >
         </menu-bar>
+        <trolley-footer-bar
+        >
+        </trolley-footer-bar>
+        <ball></ball>
         <category-bar
             :categoryId="categoryId"
             :categoryItems="categoryItems"
             :categoryName="categoryName"
         ></category-bar>
-        <trolley-footer-bar
-        >
-        </trolley-footer-bar>
     </div>
 </template>
 
@@ -50,7 +51,8 @@ module.exports = {
     components: {
         "category-bar": require("./components/category-bar"),
         "menu-bar": require("./components/menu-bar"),
-        "trolley-footer-bar": require("./components/trolley-footer-bar")
+        "trolley-footer-bar": require("./components/trolley-footer-bar"),
+        "ball": require("./components/ball")
     },
     events: {
         categoryIdChange(id) {
