@@ -73,6 +73,7 @@ module.exports = {
 
         vm.$root.$on("root:trolley-footer-bar-show", function(isShow) {
             vm.showFlag = isShow;
+            vm.animationFlagForAdd = false;
         });
     },
     data() {
