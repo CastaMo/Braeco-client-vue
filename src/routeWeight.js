@@ -8,16 +8,17 @@ const routeWeight = {
 		}
 	},
 	activity: {
-		value: 10,
+		value: 100,
 		next: {
 			main: {value: 0},
 			info: {value: 1}
 		}
 	},
 	menu: {
-		value: 20,
+		value: 200,
 		next: {
-			main: {value: 0}
+			info: {value: 0},
+			main: {value: 1}
 		}
 	}
 };

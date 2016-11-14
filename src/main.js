@@ -46,7 +46,7 @@ let init = function() {
                 from.shift();
 
                 let toValue = -10,
-                    fromValue = -20;
+                    fromValue = -100;
                 if (to.length === 0) {
                     toValue = -10;
                 } else if (to.length >= 2) {
@@ -61,9 +61,9 @@ let init = function() {
                 }
 
                 this.transitionName = "page-fade";
-                if (toValue - fromValue <= 4 && toValue > fromValue) {
+                if (toValue - fromValue <= 20 && toValue > fromValue) {
                     this.transitionName = "page-slide-left";
-                } else if (fromValue - toValue <= 4 && fromValue > toValue) {
+                } else if (fromValue - toValue <= 20 && fromValue > toValue) {
                     this.transitionName = "page-slide-right";
                 }
 
