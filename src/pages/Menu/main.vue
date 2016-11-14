@@ -147,7 +147,7 @@ module.exports = {
                 }
             }
             return price;
-        },
+        }
     },
     watch: {
         categoryId(id) {
