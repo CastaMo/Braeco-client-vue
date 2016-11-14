@@ -4,10 +4,8 @@
             :foodItems="foodItems"
         >
         </menu-bar>
-        <trolley-footer-bar
-        >
+        <trolley-footer-bar>
         </trolley-footer-bar>
-        <ball></ball>
         <category-bar
             :categoryId="categoryId"
             :categoryItems="categoryItems"
@@ -41,9 +39,6 @@ module.exports = {
         this.categoryItems = this.getItemsForCategory();
         this.foodItems = this.getItemsForFood();
 
-        this.$on("menu-main:categoryIdChange", function(id) {
-            vm.categoryId = id;
-        });
     },
     directives: {
         lazy: Vue.directive('lazy')
@@ -51,15 +46,15 @@ module.exports = {
     components: {
         "category-bar": require("./components/category-bar"),
         "menu-bar": require("./components/menu-bar"),
-        "trolley-footer-bar": require("./components/trolley-footer-bar"),
-        "ball": require("./components/ball")
-    },
-    events: {
-        categoryIdChange(id) {
-            this.categoryId = id;
-        }
+        "trolley-footer-bar": require("./components/trolley-footer-bar")
     },
     methods: {
+        changeCategoryId(id) {
+            this.categoryId = id;
+        },
+        viewFoodInfoById(foodId) {
+            this.$root.$router.push(`/menu/info/${this.categoryId}/${foodId}`);
+        },
         getItemsForCategory() {
             let result = [];
             for (let i = 0, len = this.$root.requireData.menu.categories.length; i < len; i++) {
