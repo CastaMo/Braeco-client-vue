@@ -49,7 +49,8 @@ module.exports = {
         }
     },
     created() {
-        this.activityItem = this.getActivityItem();
+        let id = Number(this.$root.$route.params.id);
+        this.activityItem = this.getActivityItem(id);
         if (!this.activityItem) {
             this.$root.$router.back();
         }
@@ -58,8 +59,7 @@ module.exports = {
         'lazy': Vue.directive('lazy')
     },
     methods: {
-        getActivityItem() {
-            let id = Number(this.$root.$route.params.id);
+        getActivityItem(id) {
             let activity;
             let temp = {};
             let clientWidth = document.body.clientWidth;
