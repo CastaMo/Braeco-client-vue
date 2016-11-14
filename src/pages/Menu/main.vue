@@ -4,8 +4,6 @@
             :foodItems="foodItems"
         >
         </menu-bar>
-        <trolley-footer-bar>
-        </trolley-footer-bar>
         <category-bar
             :categoryId="categoryId"
             :categoryItems="categoryItems"
@@ -45,8 +43,7 @@ module.exports = {
     },
     components: {
         "category-bar": require("./components/category-bar"),
-        "menu-bar": require("./components/menu-bar"),
-        "trolley-footer-bar": require("./components/trolley-footer-bar")
+        "menu-bar": require("./components/menu-bar")
     },
     methods: {
         changeCategoryId(id) {
