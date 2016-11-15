@@ -9,7 +9,7 @@
                                 <li
                                     class='food active-container'
                                     v-for="(food, index) in foodItems"
-                                    
+                                    v-on:click="foodClickEvent(food)"
                                 >
                                     <div class='food-wrapper margin-left-wrapper'>
                                         <div class='food-container'>
@@ -40,6 +40,7 @@
                                                     <div class='controll'>
                                                         <div
                                                             class='add-btn'
+                                                            v-on:click.stop="addBtnClickEvent(food, $event)"
                                                         >
                                                             <div class='add-btn-img' v-if="food.type === 'normal'"></div>
                                                             <div class='add-btn-word' v-else>选择</div>
@@ -71,6 +72,20 @@ module.exports = {
     },
     directives: {
         'lazy': Vue.directive('lazy')
+    },
+    methods: {
+        foodClickEvent(food) {
+            this.$parent.viewFoodInfoById(food.id);
+        },
+        addBtnClickEvent(food, event) {
+            let dom = event.target || event.srcElement;
+            let rect = dom.getBoundingClientRect();
+            this.$root.$emit("root:play-ball", {
+                initTop: rect.top,
+                initLeft: rect.left
+            });
+            return false;
+        }
     }
 }
 </script>
@@ -114,7 +129,7 @@ module.exports = {
 .main-field {
     .menu {
         .menu-container {
-            padding: 48px 0 80px;
+            padding: 48px 0 120px 0;
             ul {
                 li {
                     .food-container {
