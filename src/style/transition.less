@@ -1,0 +1,66 @@
+//=============== page start ===============
+.page-fade-enter-active,
+.page-fade-leave-active {
+    transition: opacity .2s ease;
+}
+
+.page-fade-enter,
+.page-fade-leave-active {
+    opacity: 0;
+}
+
+.page-slide-left-enter-active,
+.page-slide-left-leave-active,
+.page-slide-right-enter-active,
+.page-slide-right-leave-active {
+    transition: all .2s;
+}
+
+.page-slide-left-enter,
+.page-slide-right-leave-active {
+    opacity: 0;
+    .translate(50%, 0);
+}
+
+.page-slide-left-leave-active,
+.page-slide-right-enter {
+    opacity: 0;
+    .translate(-50%, 0);
+}
+
+//=============== page end =================
+
+
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity .3s ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+    opacity: 0;
+}
+
+
+
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition: all .3s ease;
+}
+
+.slide-left-enter,
+.slide-left-leave-active {
+    opacity: 0;
+    .translate(100%, 0);
+}
+
+.slide-bottom-enter-active, .slide-bottom-leave-active {
+  transition: all .3s ease;
+}
+
+.slide-bottom-enter, .slide-bottom-leave-active {
+  .translate(0, 100%);
+  opacity: 0;
+}
+
