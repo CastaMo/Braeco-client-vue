@@ -44,7 +44,7 @@ compiler.plugin('compilation', function (compilation) {
 //   }
 //   app.use(proxyMiddleware(context, options))
 // })
-app.use(['/Table/*'], proxyMiddleware({
+app.use(['/api/*'], proxyMiddleware({
   // target: "http://devpay.brae.co",
   target: "http://localhost:3000",
   changeOrigin: true

@@ -159,9 +159,9 @@ requireManage = (function() {
         'getTableMember'
     ];
     _allRequireURL = {
-        'getTableDinner': '/Table/Dinner',
-        'getTableLimit': '/Table/Limit',
-        'getTableMember': '/Table/Member'
+        'getTableDinner': '/api/Table/Dinner',
+        'getTableLimit': '/api/Table/Limit',
+        'getTableMember': '/api/Table/Member'
     };
     _setHeader = {};
 
