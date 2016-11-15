@@ -1,0 +1,59 @@
+@border-color: #E7E7EB;
+@white-font-color: #FFFFFF;
+
+@white-btn: #FFFFFF;                  // 白色按钮背景色
+@white-btn-hover: #F4F5F9;            // 白色按钮hover颜色
+@white-btn-disabled-color: #DDDEE2;    // 无效白色按钮字体颜色
+
+@yellow-btn: #FFC107;                      // 绿色按钮背景色
+@yellow-btn-hover: #FFB300;                // 绿色按钮hover颜色
+@yellow-btn-disabled: rgba(8,204,106,0.40); // 无效黄色按钮颜色
+
+
+.braeco-btn {
+    cursor: pointer;
+    font-size: 14px;
+    font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","\9ED1\4F53",Arial,sans-serif;
+    line-height: 30px;
+    width: 80px;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    background: none;
+    border: 1px solid @border-color;
+
+    background-color: @white-btn;
+    border: 1px solid @border-color;
+    &:hover {
+        background-color: @white-btn-hover;
+    }
+    &.disabled {
+        color: @white-btn-disabled-color;
+        background-color: @white-btn;
+    }
+
+    &.yellow {
+        border: none;
+        color: @white-font-color;
+        background-color: @yellow-btn;
+        &:hover, &:active {
+            background-color: @yellow-btn-hover;
+        }
+        &.disabled {
+            background-color: @yellow-btn-disabled;
+        }
+    }
+
+    &.narrow {
+        width: 80px;
+    }
+    &.wide {
+        width: 120px;
+    }
+    &.wider {
+        width: 160px;
+    }
+}
+.braeco-btn:focus {
+    outline: none;
+}
