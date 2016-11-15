@@ -154,6 +154,13 @@ module.exports = {
                 ball.stepCallback();
             }
         }
+    },
+    watch: {
+        ballItems(newItems, oldItems) {
+            if (newItems.length === 0) {
+                this.animationFlagForAdd = false;
+            }
+        }
     }
 }
 
