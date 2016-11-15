@@ -83,7 +83,7 @@ module.exports = {
             this.$root.$emit("root:trolley-footer-bar-show", true);
         },
         categoryItemClickEvent(id) {
-        	this.$parent.changeCategoryId(id);
+            this.$emit("category-id-change", id);
             this.rightBarFlag = false;
             this.$root.$emit("root:trolley-footer-bar-show", true);
         }

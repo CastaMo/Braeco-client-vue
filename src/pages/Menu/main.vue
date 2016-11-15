@@ -8,6 +8,7 @@
             :categoryId="categoryId"
             :categoryItems="categoryItems"
             :categoryName="categoryName"
+            v-on:category-id-change="updateCategoryId"
         ></category-bar>
     </div>
 </template>
@@ -46,7 +47,7 @@ module.exports = {
         "menu-bar": require("./components/menu-bar")
     },
     methods: {
-        changeCategoryId(id) {
+        updateCategoryId(id) {
             this.categoryId = id;
         },
         viewFoodInfoById(foodId) {
