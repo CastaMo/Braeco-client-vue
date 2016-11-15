@@ -31,6 +31,9 @@
                                     class='category active-container'
                                     v-for="category in categoryItems"
                                     v-on:click="categoryItemClickEvent(category.id)"
+                                    v-bind:class="{
+                                        'choose': categoryId === category.id
+                                    }"
                                 >
                                     <div class='category-wrapper margin-left-wrapper'>
                                         <div class='img-field'>
@@ -73,13 +76,16 @@ module.exports = {
 	methods: {
 		switchBtnClickEvent() {
             this.rightBarFlag = true;
+            this.$root.$emit("root:trolley-footer-bar-show", false);
         },
         coverClickEvent() {
             this.rightBarFlag = false;
+            this.$root.$emit("root:trolley-footer-bar-show", true);
         },
         categoryItemClickEvent(id) {
-        	this.$parent.$emit("menu-main:categoryIdChange", id);
+        	this.$parent.changeCategoryId(id);
             this.rightBarFlag = false;
+            this.$root.$emit("root:trolley-footer-bar-show", true);
         }
 	},
 	directives: {
@@ -222,6 +228,9 @@ module.exports = {
                     .ellipsisWithLineNum(2);
                     left: 72px;
                 }
+            }
+            &.choose {
+                background-color: #FFECB3;
             }
         }
     }
