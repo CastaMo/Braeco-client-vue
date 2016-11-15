@@ -76,16 +76,13 @@ module.exports = {
 	methods: {
 		switchBtnClickEvent() {
             this.rightBarFlag = true;
-            this.$root.$emit("root:trolley-footer-bar-show", false);
         },
         coverClickEvent() {
             this.rightBarFlag = false;
-            this.$root.$emit("root:trolley-footer-bar-show", true);
         },
         categoryItemClickEvent(id) {
             this.$emit("category-id-change", id);
             this.rightBarFlag = false;
-            this.$root.$emit("root:trolley-footer-bar-show", true);
         }
 	},
 	directives: {
@@ -138,6 +135,7 @@ module.exports = {
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
 }
 
 .top-bar {
@@ -146,6 +144,7 @@ module.exports = {
     left: 0;
     width: 100%;
     height: 48px;
+    z-index: 2;
     background-color: #8B572A;
     .box-shadow(0px 2px 8px rgba(0, 0, 0, 0.2));
     .category-name {
@@ -195,6 +194,7 @@ module.exports = {
     position: fixed;
     right: 0;
     top: 0;
+    z-index: 3;
     height: 100%;
     width: 49%;
     background-color: #FFFBF0;

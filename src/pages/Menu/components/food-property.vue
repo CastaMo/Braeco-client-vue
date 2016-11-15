@@ -39,14 +39,8 @@ module.exports = {
     created() {
         let vm = this;
         this.$root.$on("root:food-property", function(food) {
-            console.log(food);
             vm.showFlag = true;
         });
-    },
-    watch: {
-        showFlag(newFlag, oldFlag) {
-            this.$root.$emit("root:trolley-footer-bar-show", !newFlag);
-        }
     }
 }
 
