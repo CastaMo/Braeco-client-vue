@@ -3,6 +3,7 @@
 
 ;(function(root, factory) {
 
+  root.NProgress = factory();
   if (typeof define === 'function' && define.amd) {
     define(factory);
   } else if (typeof exports === 'object') {
@@ -11,7 +12,7 @@
     root.NProgress = factory();
   }
 
-})(this, function() {
+})(window, function() {
   var NProgress = {};
 
   NProgress.version = '0.2.0';
