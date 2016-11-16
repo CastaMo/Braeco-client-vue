@@ -10,10 +10,15 @@
             :categoryName="categoryName"
             v-on:category-id-change="updateCategoryId"
         ></category-bar>
+        <food-property
+
+        >
+        </food-property>
     </div>
 </template>
 
 <script>
+
 module.exports = {
     name: 'menu-main',
     data() {
@@ -44,7 +49,8 @@ module.exports = {
     },
     components: {
         "category-bar": require("./components/category-bar"),
-        "menu-bar": require("./components/menu-bar")
+        "menu-bar": require("./components/menu-bar"),
+        "food-property": require("./components/food-property")
     },
     methods: {
         updateCategoryId(id) {
@@ -60,18 +66,14 @@ module.exports = {
                 if (!category.display_flag) {
                     continue;
                 }
-                let temp = {};
-                temp.id = category.id;
-                temp.name = category.name;
-                if (category.pic) {
-                    temp.pic = `${category.pic}?imageView2/1/w/${40 * 2}/h/${40 * 2}`;
-                }
+                let temp = Braeco.utils.category.getFixedDataForCategory(category);
                 result.push(temp);
             }
             return result;
         },
         getItemsForFood() {
             let result = [];
+            let vm = this;
             for (let i = 0, len = this.$root.requireData.menu.categories.length; i < len; i++) {
                 let category = this.$root.requireData.menu.categories[i];
                 if (Number(category.id) === this.categoryId) {
@@ -80,74 +82,13 @@ module.exports = {
                         if (dish.dc_type === "combo_only") {
                             continue;
                         }
-                        let temp = {};
-                        temp.able = dish.able;
-                        temp.dc = dish.dc;
-                        temp.dc_type = dish.dc_type;
-                        temp.dcStr = this.getDcForFood(dish);
-                        temp.default_price = dish.default_price;
-                        temp.groups = dish.groups;
-                        temp.id = dish.id;
-                        temp.name = dish.name;
-                        temp.name2 = dish.name2;
-                        if (dish.pic) {
-                            temp.pic = `${dish.pic}?imageView2/1/w/${100 * 2}/h/${100 * 2}`
-                        }
-                        temp.chooseAllFirstPrice = this.getChooseAllFirstPrice(dish);
-                        temp.currentPrice = this.getPriceByDcTypeAndDc(temp.chooseAllFirstPrice, dish.dc_type, dish.dc);
-                        temp.tag = dish.tag;
-                        temp.type = dish.type;
+                        let temp = Braeco.utils.food.getFixedFoodData(dish, vm.groups, vm.dishLimit);
                         result.push(temp);
                     }
                     break;
                 }
             }
             return result;
-        },
-        getDcForFood(food) {
-            if (!food.dc_type || food.dc_type === "none") {
-                return "";
-            }
-
-            let numToChinese = ["零","一","二","三","四","五","六","七","八","九","十"]
-            if (food.dc_type === "discount") {
-                let num = food.dc
-                if (food.dc % 10 === 0) {
-                    num = numToChinese[Math.round(food.dc) / 10];
-                } else {
-                    num = food.dc / 10;
-                }
-                return `${num}折`;
-            }
-
-            if (food.dc_type === "sale") return `减${food.dc}元`;
-            if (food.dc_type === "half") return `第二份半价`;
-            if (food.dc_type === "limit") {
-                let dc = this.dishLimit[food.id];
-                return `剩${dc}件`;
-            }
-        },
-        getPriceByDcTypeAndDc(price, dc_type, dc) {
-            if (dc_type === "sale") {
-                return price - dc;
-            }
-            if (dc_type === "discount") {
-                return price * dc / 100;
-            }
-            return price;
-        },
-        getChooseAllFirstPrice(food) {
-            let price = food.default_price,
-                vm = this;
-            if (food.type === "normal") {
-                if (food.groups && food.groups.length > 0) {
-                    food.groups.forEach(function(groupId) {
-                        let content = vm.groups[groupId].content[0];
-                        price += content.price;
-                    });
-                }
-            }
-            return price;
         }
     },
     watch: {

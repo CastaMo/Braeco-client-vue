@@ -23,7 +23,7 @@ var food = {
         return price;
     },
 
-    getDcForFood(food) {
+    getDcForFood(food, dishLimit) {
         if (!food.dc_type || food.dc_type === "none") {
             return "";
         }
@@ -42,11 +42,11 @@ var food = {
         if (food.dc_type === "sale") return `减${food.dc}元`;
         if (food.dc_type === "half") return `第二份半价`;
         if (food.dc_type === "limit") {
-            let dc = this.dishLimit[food.id];
+            let dc = dishLimit[food.id];
             return `剩${dc}件`;
         }
     },
-    getFixedFoodData(dish, groupsMap) {
+    getFixedFoodData(dish, groupsMap, dishLimit) {
     	let temp = {};
 
     	let largeWidth = document.body.clientWidth;
@@ -55,7 +55,7 @@ var food = {
         temp.able = dish.able;
         temp.dc = dish.dc;
         temp.dc_type = dish.dc_type;
-        temp.dcStr = this.getDcForFood(dish);
+        temp.dcStr = this.getDcForFood(dish, dishLimit);
         temp.default_price = dish.default_price;
         temp.groups = dish.groups;
         temp.id = dish.id;

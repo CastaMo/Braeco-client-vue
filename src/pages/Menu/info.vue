@@ -103,7 +103,7 @@ module.exports = {
                             if (dish.dc_type === "combo_only") {
                                 return false;
                             }
-                            temp = Braeco.utils.food.getFixedFoodData(dish, vm.groups);
+                            temp = Braeco.utils.food.getFixedFoodData(dish, vm.groups, vm.dishLimit);
                             return false;
                         }
                     });
