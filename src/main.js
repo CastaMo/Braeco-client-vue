@@ -1,9 +1,10 @@
 
 const routes = require('./routes.js');
 const routeWeight = require("./routeWeight.js");
-const config = require("./utils/config.js");
+const config = require("./common/config.js");
 const components = require('./components/index.js');
 
+require("./utils/index.js");
 
 const style = require('./style/index.less');
 

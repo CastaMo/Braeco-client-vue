@@ -4,11 +4,11 @@
         <div class='img-container' v-if="foodItem">
             <div
                 class='img'
-                v-lazy:background-image="foodItem.pic"
+                v-lazy:background-image="foodItem.largePic"
                 v-bind:style="{
-                    'width': `${foodItem.picWidth}px`,
-                    'height': `${foodItem.picHeight}px`,
-                    'background-size': `${foodItem.picWidth}px ${foodItem.picHeight}px`
+                    'width': `${foodItem.largeWidth}px`,
+                    'height': `${foodItem.largeHeight}px`,
+                    'background-size': `${foodItem.largeWidth}px ${foodItem.largeHeight}px`
                 }"
             >
             </div>
@@ -103,26 +103,7 @@ module.exports = {
                             if (dish.dc_type === "combo_only") {
                                 return false;
                             }
-                            temp = {};
-                            temp.able = dish.able;
-                            temp.dc = dish.dc;
-                            temp.dc_type = dish.dc_type;
-                            temp.dcStr = vm.getDcForFood(dish);
-                            temp.default_price = dish.default_price;
-                            temp.groups = dish.groups;
-                            temp.id = dish.id;
-                            temp.name = dish.name;
-                            temp.name2 = dish.name2;
-                            temp.picWidth = clientWidth;
-                            temp.picHeight = picHeight;
-                            if (dish.pic) {
-                                temp.pic = `${dish.pic}?imageView2/1/w/${temp.picWidth * 2}/h/${temp.picHeight * 2}`;
-                            }
-                            temp.chooseAllFirstPrice = vm.getChooseAllFirstPrice(dish);
-                            temp.currentPrice = vm.getPriceByDcTypeAndDc(temp.chooseAllFirstPrice, dish.dc_type, dish.dc);
-                            temp.tag = dish.tag;
-                            temp.type = dish.type;
-                            temp.detail = dish.detail;
+                            temp = Braeco.utils.food.getFixedFoodData(dish, vm.groups);
                             return false;
                         }
                     });
@@ -131,51 +112,7 @@ module.exports = {
             });
             return temp;
         },
-        getDcForFood(food) {
-            if (!food.dc_type || food.dc_type === "none") {
-                return "";
-            }
 
-            let numToChinese = ["零","一","二","三","四","五","六","七","八","九","十"]
-            if (food.dc_type === "discount") {
-                let num = food.dc
-                if (food.dc % 10 === 0) {
-                    num = numToChinese[Math.round(food.dc) / 10];
-                } else {
-                    num = food.dc / 10;
-                }
-                return `${num}折`;
-            }
-
-            if (food.dc_type === "sale") return `减${food.dc}元`;
-            if (food.dc_type === "half") return `第二份半价`;
-            if (food.dc_type === "limit") {
-                let dc = this.dishLimit[food.id];
-                return `剩${dc}件`;
-            }
-        },
-        getPriceByDcTypeAndDc(price, dc_type, dc) {
-            if (dc_type === "sale") {
-                return price - dc;
-            }
-            if (dc_type === "discount") {
-                return price * dc / 100;
-            }
-            return price;
-        },
-        getChooseAllFirstPrice(food) {
-            let price = food.default_price,
-                vm = this;
-            if (food.type === "normal") {
-                if (food.groups && food.groups.length > 0) {
-                    food.groups.forEach(function(groupId) {
-                        let content = vm.groups[groupId].content[0];
-                        price += content.price;
-                    });
-                }
-            }
-            return price;
-        },
         addBtnClickEvent(food, event) {
             let dom = event.target || event.srcElement;
             let rect = dom.getBoundingClientRect();
