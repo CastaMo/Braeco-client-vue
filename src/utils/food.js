@@ -1,5 +1,3 @@
-
-
 var food = {
 	getChooseAllFirstPrice(food, groupsMap) {
         let price = food.default_price;
@@ -72,8 +70,8 @@ var food = {
             temp.smallPic = `${dish.pic}?imageView2/1/w/${temp.smallWidth * 2}/h/${temp.smallWidth * 2}`;
             temp.largePic = `${dish.pic}?imageView2/1/w/${temp.largeWidth * 2}/h/${temp.largeHeight * 2}`;
         }
-        temp.chooseAllFirstPrice = Braeco.utils.food.getChooseAllFirstPrice(dish, groupsMap);
-        temp.currentPrice = Braeco.utils.food.getPriceByDcTypeAndDc(temp.chooseAllFirstPrice, dish.dc_type, dish.dc);
+        temp.chooseAllFirstPrice = this.getChooseAllFirstPrice(dish, groupsMap);
+        temp.currentPrice = this.getPriceByDcTypeAndDc(temp.chooseAllFirstPrice, dish.dc_type, dish.dc);
         temp.tag = dish.tag;
         temp.type = dish.type;
         temp.detail = dish.detail;
