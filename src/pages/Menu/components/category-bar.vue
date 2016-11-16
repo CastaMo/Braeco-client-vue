@@ -39,7 +39,7 @@
                                         <div class='img-field'>
                                             <div
                                                 class='img'
-                                                v-lazy:background-image="category.pic"
+                                                v-lazy:background-image="category.smallPic"
                                             ></div>
                                         </div>
                                         <div class='name-field vertical-center'>{{category.name}}</div>

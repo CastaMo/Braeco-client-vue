@@ -23,8 +23,8 @@
                         class="category-item"
                         v-for="(category, index) in categoryItems"
                         v-bind:style="{
-                            'width': `${itemWidth}px`,
-                            'height': `${itemWidth}px`
+                            'width': `${category.largeWidth}px`,
+                            'height': `${category.largeHeight}px`
                         }"
                         v-bind:class="{
                             'left': index % 2 === 0,
@@ -35,9 +35,9 @@
                         <div
                             class='category-pic'
                             v-bind:style="{
-                                'background-size': `${itemWidth}px ${itemWidth}px`
+                                'background-size': `${category.largeWidth}px ${category.largeHeight}px`
                             }"
-                            v-lazy:background-image='category.pic'
+                            v-lazy:background-image='category.largePic'
                         >
                         </div>
                         <div class='category-name'>
@@ -57,8 +57,7 @@ module.exports = {
     data() {
         return {
             activityItems: null,
-            categoryItems: null,
-            itemWidth: document.body.clientWidth * 160 / 375
+            categoryItems: null
         }
     },
     created() {
@@ -92,12 +91,7 @@ module.exports = {
                 if (!category.display_flag) {
                     continue;
                 }
-                let temp = {};
-                temp.id = category.id;
-                temp.name = category.name;
-                if (category.pic) {
-                    temp.pic = `${category.pic}?imageView2/1/w/${Math.floor(clientWidth * 160 / 375) * 2}/h/${Math.floor(clientWidth * 160 / 375) * 2}`;
-                }
+                let temp = Braeco.utils.category.getFixedDataForCategory(category);
                 result.push(temp);
             }
             return result;
