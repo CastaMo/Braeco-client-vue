@@ -1,10 +1,10 @@
 var Braeco = {
-    utils: {}
+    utils: {
+        food        : require("./food.js"),
+        category    : require("./category.js"),
+        property    : require("./property.js")
+    }
 };
-
-
-Braeco.utils.food       = require("./food.js");
-Braeco.utils.category   = require("./category.js");
 
 window.Braeco = Braeco;
 
