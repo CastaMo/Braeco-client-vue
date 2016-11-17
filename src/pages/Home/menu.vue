@@ -85,7 +85,6 @@ module.exports = {
         },
         getItemsForCategory() {
             let result = [];
-            let clientWidth = document.body.clientWidth;
             for (let i = 0, len = this.$root.requireData.menu.categories.length; i < len; i++) {
                 let category = this.$root.requireData.menu.categories[i];
                 if (!category.display_flag) {
