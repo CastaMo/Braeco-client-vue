@@ -2,6 +2,7 @@
     <div id="Menu-Main">
         <menu-bar
             :foodItems="foodItems"
+            v-on:prepare-for-select-property="getItemsForFoodProperty"
         >
         </menu-bar>
         <category-bar
@@ -11,7 +12,7 @@
             v-on:category-id-change="updateCategoryId"
         ></category-bar>
         <food-property
-
+            :foodPropertyItem="foodPropertyItem"
         >
         </food-property>
     </div>
@@ -27,8 +28,9 @@ module.exports = {
             categoryName: null,
             categoryItems: null,
             foodItems: null,
+            foodPropertyItem: {properties: []},
             dishLimit: null,
-            groups: {}
+            groups: {},
         };
     },
     created() {
@@ -59,6 +61,20 @@ module.exports = {
         viewFoodInfoById(foodId) {
             this.$root.$router.push(`/menu/info/${this.categoryId}/${foodId}`);
         },
+        getItemsForFoodProperty(foodId) {
+            let vm = this;
+            this.$root.requireData.menu.categories.forEach(function(category) {
+                if (Number(category.id) === vm.categoryId) {
+                    category.dishes.forEach(function(dish) {
+                        if (Number(dish.id) === Number(foodId)) {
+                            vm.foodPropertyItem = Braeco.utils.property.getFixedDataForProperty(dish, vm.groups);
+                            return false;
+                        }
+                    });
+                    return false;
+                }
+            });
+        },
         getItemsForCategory() {
             let result = [];
             for (let i = 0, len = this.$root.requireData.menu.categories.length; i < len; i++) {
@@ -82,7 +98,7 @@ module.exports = {
                         if (dish.dc_type === "combo_only") {
                             continue;
                         }
-                        let temp = Braeco.utils.food.getFixedFoodData(dish, vm.groups, vm.dishLimit);
+                        let temp = Braeco.utils.food.getFixedDataForFood(dish, vm.groups, vm.dishLimit);
                         result.push(temp);
                     }
                     break;
