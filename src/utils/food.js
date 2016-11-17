@@ -44,7 +44,7 @@ var food = {
             return `剩${dc}件`;
         }
     },
-    getFixedFoodData(dish, groupsMap, dishLimit) {
+    getFixedDataForFood(dish, groupsMap, dishLimit) {
     	let temp = {};
 
     	let largeWidth = document.body.clientWidth;
