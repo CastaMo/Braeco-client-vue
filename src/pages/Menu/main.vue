@@ -2,7 +2,9 @@
     <div id="Menu-Main">
         <menu-bar
             :foodItems="foodItems"
-            v-on:prepare-for-select-property="getItemsForFoodProperty"
+            v-on:food-with-property-click="prepareForFoodProperty"
+            v-on:food-with-normal-click="addFood"
+            v-on:record-ball-set-out-dom="recordBallSetOutDom"
         >
         </menu-bar>
         <category-bar
@@ -13,6 +15,7 @@
         ></category-bar>
         <food-property
             :foodPropertyItem="foodPropertyItem"
+            v-on:confirm-add="addFood"
         >
         </food-property>
     </div>
@@ -31,6 +34,7 @@ module.exports = {
             foodPropertyItem: {properties: []},
             dishLimit: null,
             groups: {},
+            ballSetOutDom: null
         };
     },
     created() {
@@ -55,25 +59,46 @@ module.exports = {
         "food-property": require("./components/food-property")
     },
     methods: {
+        prepareForFoodProperty(id) {
+            this.foodPropertyItem = this.getItemForFoodProperty(id);
+        },
+        recordBallSetOutDom(dom) {
+            this.ballSetOutDom = dom;
+        },
+        addFood(opts) {
+            let vm = this;
+            if (this.ballSetOutDom) {
+                this.ballSetOutDom.scrollIntoViewIfNeeded();
+                setTimeout(function() {
+                    let rect = vm.ballSetOutDom.getBoundingClientRect();
+                    vm.$root.$emit("root:play-ball", {
+                        initTop: rect.top,
+                        initLeft: rect.left
+                    });
+                }, 10);
+            }
+        },
         updateCategoryId(id) {
             this.categoryId = id;
         },
         viewFoodInfoById(foodId) {
             this.$root.$router.push(`/menu/info/${this.categoryId}/${foodId}`);
         },
-        getItemsForFoodProperty(foodId) {
+        getItemForFoodProperty(foodId) {
             let vm = this;
+            let temp = {};
             this.$root.requireData.menu.categories.forEach(function(category) {
                 if (Number(category.id) === vm.categoryId) {
                     category.dishes.forEach(function(dish) {
                         if (Number(dish.id) === Number(foodId)) {
-                            vm.foodPropertyItem = Braeco.utils.property.getFixedDataForProperty(dish, vm.groups);
+                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groups);
                             return false;
                         }
                     });
                     return false;
                 }
             });
+            return temp;
         },
         getItemsForCategory() {
             let result = [];

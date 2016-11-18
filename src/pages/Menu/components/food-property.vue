@@ -17,8 +17,6 @@
                                             <li
                                                 class='property'
                                                 v-for="(property, index) in foodPropertyItem.properties"
-                                                v-bind:property="property"
-                                                v-bind:index="index"
                                             >
                                                 <div class='property-wrapper margin-left-wrapper'>
                                                     <div class='property-container'>
@@ -27,8 +25,6 @@
                                                             <li
                                                                 class='property-content'
                                                                 v-for="(item, itemIndex) in property.content"
-                                                                v-bind:item="item"
-                                                                v-bind:itemIndex="itemIndex"
                                                                 v-bind:class="{
                                                                     'choose': chooseArray[index] === itemIndex
                                                                 }"
@@ -47,7 +43,17 @@
                             </div>
                         </div>
                         <div class='modal-footer'>
-                            <button class='braeco-btn yellow confirm-btn'>加入购物车</button>
+                            <div class='property-choose-display-field'>
+                                <div class='choose-info-field'>
+                                    已选：{{chooseInfo}}
+                                </div>
+                                <div class='price-field'>
+                                    <div class='current-price'>{{Number(currentPrice.toFixed(2))}}</div>
+                                    <div class='init-price' v-if="initPrice > currentPrice">{{Number(initPrice.toFixed(2))}}</div>
+                                    <div class='clear'></div>
+                                </div>
+                            </div>
+                            <button class='braeco-btn yellow confirm-btn' v-on:click="confirmBtnClickEvent">加入购物车</button>
                         </div>
                     </div>
                 </div>
@@ -70,6 +76,27 @@ module.exports = {
             chooseArray: []
         }
     },
+    computed: {
+        chooseInfo: function() {
+            let temp = [];
+            let vm = this;
+            this.chooseArray.forEach(function(chooseIndex, index) {
+                temp.push(vm.foodPropertyItem.properties[index].content[chooseIndex].name);
+            });
+            return temp.join("、");
+        },
+        initPrice: function() {
+            let defaultPrice = this.foodPropertyItem.default_price;
+            defaultPrice += Braeco.utils.property.getDiffPriceByChoose(this.chooseArray, this.foodPropertyItem.properties);
+            return defaultPrice;
+        },
+        currentPrice: function() {
+            let initPrice = this.initPrice;
+            let dc_type = this.foodPropertyItem.dc_type;
+            let dc = this.foodPropertyItem.dc;
+            return Braeco.utils.food.getPriceByDcTypeAndDc(initPrice, dc_type, dc);
+        }
+    },
     created() {
         let vm = this;
         this.$root.$on("root:food-property-show", function(food) {
@@ -87,6 +114,14 @@ module.exports = {
         chooseItem(chooseIndex, itemIndex) {
             // 必须这样才能触发更新，或者其他的变异办法
             Vue.set(this.chooseArray, chooseIndex, itemIndex);
+        },
+        confirmBtnClickEvent() {
+            let vm = this;
+            this.showFlag = false;
+            this.$emit("confirm-add", {
+                id: vm.foodPropertyItem.id,
+                chooseArray: vm.chooseArray
+            });
         }
     }
 }
@@ -94,6 +129,14 @@ module.exports = {
 </script>
 
 <style scoped lang="less">
+
+.ellipsisWithLineNum (@num: 1) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: @num;
+    -webkit-box-orient: vertical;
+}
 
 .overflowScrolling (@num: 0) {
     -webkit-overflow-scrolling: touch;
@@ -141,6 +184,38 @@ module.exports = {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+.property-choose-display-field {
+    .choose-info-field {
+        margin-bottom: 8px;
+        line-height: 20px;
+        font-size: 14px;
+        .ellipsisWithLineNum(1);
+    }
+    .price-field {
+        margin-bottom: 12px;
+        > *:not(.clear) {
+            float: left;
+        }
+        line-height: 16px;
+        .current-price {
+            color: #910012;
+            font-size: 14px;
+            &:before {
+                content: '￥';
+                font-size: 10px;
+            }
+        }
+        .init-price {
+            font-size: 12px;
+            margin-left: 5px;
+            text-decoration: line-through;
+            &:before {
+                content: '￥';
             }
         }
     }
