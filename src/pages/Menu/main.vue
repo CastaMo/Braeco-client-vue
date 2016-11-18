@@ -1,12 +1,28 @@
 <template>
     <div id="Menu-Main">
-        <menu-bar
-            :foodItems="foodItems"
-            v-on:food-with-property-click="prepareForFoodProperty"
-            v-on:food-with-normal-click="addFood"
-            v-on:record-ball-set-out-dom="recordBallSetOutDom"
-        >
-        </menu-bar>
+        <div id='menu-bar'>
+            <div class='main-field'>
+                <div class='menu'>
+                    <div class='menu-wrapper'>
+                        <div class='menu-container'>
+                            <transition name="fade" mode="out-in">
+                                <ul v-if="foodItems">
+                                    <food
+                                        v-for="foodItem in foodItems"
+                                        :foodItem="foodItem"
+                                        v-on:food-with-property-click="prepareForFoodProperty"
+                                        v-on:food-with-normal-click="addFood"
+                                        v-on:record-ball-set-out-dom="recordBallSetOutDom"
+                                        v-on:view-food-info-by-id="viewFoodInfoById"
+                                    >
+                                    </food>
+                                </ul>
+                            </transition>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <category-bar
             :categoryId="categoryId"
             :categoryItems="categoryItems"
@@ -55,11 +71,12 @@ module.exports = {
     },
     components: {
         "category-bar": require("./components/category-bar"),
-        "menu-bar": require("./components/menu-bar"),
+        "food": require("./components/food"),
         "food-property": require("./components/food-property")
     },
     methods: {
-        prepareForFoodProperty(id) {
+        prepareForFoodProperty(opts) {
+            let id = opts.id;
             this.foodPropertyItem = this.getItemForFoodProperty(id);
         },
         recordBallSetOutDom(dom) {
@@ -162,6 +179,12 @@ module.exports = {
 
 
 <style lang="less" scoped>
-
+#menu-bar {
+    .menu {
+        .menu-container {
+            padding: 48px 0 120px 0;
+        }
+    }
+}
 
 </style>
