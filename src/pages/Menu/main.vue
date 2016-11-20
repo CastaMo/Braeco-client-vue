@@ -7,7 +7,7 @@
                         <div class='menu-container'>
                             <transition name="fade" mode="out-in">
                                 <ul v-if="foodItems">
-                                    <food
+                                    <food-item
                                         v-for="foodItem in foodItems"
                                         :foodItem="foodItem"
                                         v-on:food-with-property-click="prepareForFoodProperty"
@@ -15,7 +15,7 @@
                                         v-on:record-ball-set-out-dom="recordBallSetOutDom"
                                         v-on:view-food-info-by-id="viewFoodInfoById"
                                     >
-                                    </food>
+                                    </food-item>
                                 </ul>
                             </transition>
                         </div>
@@ -77,7 +77,7 @@ module.exports = {
         lazy: Vue.directive('lazy')
     },
     components: {
-        'food': Vue.component('food'),
+        'food-item': Vue.component('food-item'),
         "category-bar": require("./components/category-bar"),
         "food-property": require("./components/food-property")
     },

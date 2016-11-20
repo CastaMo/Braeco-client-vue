@@ -14,12 +14,12 @@
             </div>
         </div>
         <div class='food-info-container'>
-            <food
+            <food-item
                 :foodItem="foodItem"
                 v-on:food-with-property-click="prepareForFoodProperty"
                 v-on:food-with-normal-click="addFood"
                 v-on:record-ball-set-out-dom="recordBallSetOutDom"
-            ></food>
+            ></food-item>
         </div>
         <div class='detail' v-if="foodItem.detail">
             <div class='detail-header'>
@@ -131,10 +131,10 @@ module.exports = {
                         initTop: rect.top,
                         initLeft: rect.left,
                         callback: function() {
-                            vm.$root.$router.back();
                         }
                     });
                 }, 10);
+                vm.$root.$router.back();
             }
         },
         getItemForFoodProperty(foodId) {
@@ -158,7 +158,7 @@ module.exports = {
         'lazy': Vue.directive('lazy')
     },
     components: {
-        'food': Vue.component('food'),
+        'food-item': Vue.component('food-item'),
         'food-property': require("./components/food-property")
     }
 }

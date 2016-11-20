@@ -63,7 +63,7 @@
 
 <script>
 module.exports = {
-    name: 'food',
+    name: 'food-item',
     props: {
         foodItem: Object
     },

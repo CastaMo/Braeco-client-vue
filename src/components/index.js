@@ -2,7 +2,7 @@ let comArray = [];
 comArray.push(require('./footer-bar.vue'));
 comArray.push(require('./rotate-display.vue'));
 comArray.push(require('./trolley-footer-bar.vue'));
-comArray.push(require('./food.vue'));
+comArray.push(require('./food-item.vue'));
 
 
 const build = function(Vue) {
