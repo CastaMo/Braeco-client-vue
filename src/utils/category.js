@@ -1,9 +1,9 @@
 var category = {
 
-	getFixedDataForCategory(category) {
-		let temp = {};
+    getFixedDataForCategory(category) {
+        let temp = {};
 
-		let clientWidth = document.body.clientWidth;
+        let clientWidth = document.body.clientWidth;
 
         temp.id = category.id;
         temp.name = category.name;
@@ -19,7 +19,7 @@ var category = {
             temp.largePic = `${category.pic}?imageView2/1/w/${temp.largeWidth * 2}/h/${temp.largeHeight * 2}`;
         }
         return temp;
-	}
+    }
 
 };
 

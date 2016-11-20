@@ -70,8 +70,8 @@ module.exports = {
         lazy: Vue.directive('lazy')
     },
     components: {
-        "category-bar": require("./components/category-bar"),
         "food": require("./components/food"),
+        "category-bar": require("./components/category-bar"),
         "food-property": require("./components/food-property")
     },
     methods: {
