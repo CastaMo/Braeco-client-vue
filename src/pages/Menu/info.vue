@@ -79,6 +79,16 @@ module.exports = {
         if (!this.foodItem) {
             this.$root.$router.back();
         }
+
+        this.$root.$once("root:route-to-order", function() {
+            vm.$root.$router.back();
+            setTimeout(function() {
+                vm.$root.$router.push('/menu/order');
+            }, 10);
+        });
+    },
+    beforeDestroy() {
+        this.$root.$off("root:route-to-order");
     },
     methods: {
         getItemForFood(categoryId, foodId) {
@@ -119,7 +129,10 @@ module.exports = {
                     let rect = vm.ballSetOutDom.getBoundingClientRect();
                     vm.$root.$emit("root:play-ball", {
                         initTop: rect.top,
-                        initLeft: rect.left
+                        initLeft: rect.left,
+                        callback: function() {
+                            vm.$root.$router.back();
+                        }
                     });
                 }, 10);
             }

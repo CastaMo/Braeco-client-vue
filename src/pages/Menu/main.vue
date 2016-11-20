@@ -65,6 +65,13 @@ module.exports = {
         this.categoryItems = this.getItemsForCategory();
         this.foodItems = this.getItemsForFood();
 
+        this.$root.$once("root:route-to-order", function() {
+            vm.$root.$router.push('/menu/order');
+        });
+
+    },
+    beforeDestroy() {
+        this.$root.$off("root:route-to-order");
     },
     directives: {
         lazy: Vue.directive('lazy')
