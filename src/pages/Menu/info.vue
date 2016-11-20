@@ -13,37 +13,13 @@
             >
             </div>
         </div>
-        <div class='food' v-if="foodItem">
-            <div class='food-wrapper'>
-                <div class='food-container'>
-                    <div class='info-field'>
-                        <div class='name-field'>
-                            <p class='name'>{{foodItem.name}}</p>
-                            <p class='name2'>{{foodItem.name2}}</p>
-                        </div>
-                        <div class='label-field'>
-                            <div class='dc' v-if="foodItem.dc_type && foodItem.dc_type !== 'none'">{{foodItem.dcStr}}</div>
-                            <div class='tag' v-if="foodItem.tag">{{foodItem.tag}}</div>
-                            <div class='clear'></div>
-                        </div>
-                        <div class='money-field'>
-                            <div class='current-price'>{{Number(foodItem.currentPrice.toFixed(2))}}</div>
-                            <div class='init-price' v-if="foodItem.chooseAllFirstPrice > foodItem.currentPrice">{{Number(foodItem.chooseAllFirstPrice.toFixed(2))}}</div>
-                            <div class='controll'>
-                                <div
-                                    class='add-btn'
-                                    v-on:click.stop="addBtnClickEvent(foodItem, $event)"
-                                >
-                                    <div class='add-btn-img' v-if="foodItem.type === 'normal'"></div>
-                                    <div class='add-btn-word' v-else>选择</div>
-                                </div>
-                            </div>
-                            <div class='clear'></div>
-                        </div>
-                    </div>
-                    <div class='clear'></div>
-                </div>
-            </div>
+        <div class='food-info-container'>
+            <food
+                :foodItem="foodItem"
+                v-on:food-with-property-click="prepareForFoodProperty"
+                v-on:food-with-normal-click="addFood"
+                v-on:record-ball-set-out-dom="recordBallSetOutDom"
+            ></food>
         </div>
         <div class='detail' v-if="foodItem.detail">
             <div class='detail-header'>
@@ -61,6 +37,11 @@
                 </div>
             </div>
         </div>
+        <food-property
+            :foodPropertyItem="foodPropertyItem"
+            v-on:confirm-add="addFood"
+        >
+        </food-property>
     </div>
 </template>
 
@@ -70,18 +51,27 @@ module.exports = {
     name: 'menu-info',
     data() {
         return {
+            foodId: null,
+            categoryId: null,
             foodItem: null,
             groups: {},
-            dishLimit: null
+            dishLimit: null,
+            foodPropertyItem: {properties: []},
+            ballSetOutDom: null
         }
     },
     created() {
         let categoryId = Number(this.$root.$route.params.categoryId);
         let foodId = Number(this.$root.$route.params.foodId);
+        this.foodId = foodId;
+        this.categoryId = categoryId;
+
+
         let vm = this;
         this.$root.requireData.menu.groups.forEach(function(group) {
             vm.groups[group.id] = group;
         });
+
 
         this.dishLimit = this.$root.requireData.dish_limit;
 
@@ -104,6 +94,7 @@ module.exports = {
                                 return false;
                             }
                             temp = Braeco.utils.food.getFixedDataForFood(dish, vm.groups, vm.dishLimit);
+                            temp.isViewInfo = true;
                             return false;
                         }
                     });
@@ -113,17 +104,49 @@ module.exports = {
             return temp;
         },
 
-        addBtnClickEvent(food, event) {
-            let dom = event.target || event.srcElement;
-            let rect = dom.getBoundingClientRect();
-            this.$root.$emit("root:play-ball", {
-                initTop: rect.top,
-                initLeft: rect.left
+        prepareForFoodProperty(opts) {
+            let id = opts.id;
+            this.foodPropertyItem = this.getItemForFoodProperty(id);
+        },
+        recordBallSetOutDom(dom) {
+            this.ballSetOutDom = dom;
+        },
+        addFood(opts) {
+            let vm = this;
+            if (this.ballSetOutDom) {
+                this.ballSetOutDom.scrollIntoViewIfNeeded();
+                setTimeout(function() {
+                    let rect = vm.ballSetOutDom.getBoundingClientRect();
+                    vm.$root.$emit("root:play-ball", {
+                        initTop: rect.top,
+                        initLeft: rect.left
+                    });
+                }, 10);
+            }
+        },
+        getItemForFoodProperty(foodId) {
+            let vm = this;
+            let temp = {};
+            this.$root.requireData.menu.categories.forEach(function(category) {
+                if (Number(category.id) === vm.categoryId) {
+                    category.dishes.forEach(function(dish) {
+                        if (Number(dish.id) === Number(foodId)) {
+                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groups);
+                            return false;
+                        }
+                    });
+                    return false;
+                }
             });
-        }
+            return temp;
+        },
     },
     directives: {
         'lazy': Vue.directive('lazy')
+    },
+    components: {
+        'food': require("./components/food"),
+        'food-property': require("./components/food-property")
     }
 }
 
@@ -164,100 +187,11 @@ module.exports = {
     }
 }
 
-.food {
+.food-info-container {
     margin-top: 16px;
-    border-top: solid 1px #C8C7CC;
-    border-bottom: solid 1px #C8C7CC;
-    background-color: #fff;
-    .food-wrapper {
-        margin: 0 16px 0 16px;
-        .food-container {
-            padding: 12px 0;
-            .info-field {
-                .name-field {
-                    height: 40px;
-                    .name {
-                        line-height: 22px;
-                        font-weight: bold;
-                        .ellipsisWithLineNum(1);
-                    }
-                    .name2 {
-                        .ellipsisWithLineNum(1);
-                        line-height: 16px;
-                        font-size: 14px;
-                        margin-top: 4px;
-                    }
-                }
-                .label-field {
-                    margin-top: 5px;
-                    height: 20px;
-                    > *:not(.clear) {
-                        float: left;
-                        line-height: 20px;
-                        .rounded-corners(2px);
-                        color: #fff;
-                        padding: 0 4px;
-                        font-size: 12px;
-                    }
-                    .dc {
-                        margin-right: 9px;
-                        background-color: #EB4F10;
-                    }
-                    .tag {
-                        background-color: #FF8F00;
-                    }
-                }
-                .money-field {
-                    height: 25px;
-                    margin-top: 9px;
-                    .current-price {
-                        float: left;
-                        color: #910012;
-                        line-height: 20px;
-                        margin-top: 3px;
-                        font-size: 16px;
-                        &:before {
-                            content: '￥';
-                            font-size: 10px;
-                        }
-                    }
-                    .init-price {
-                        float: left;
-                        margin-left: 5px;
-                        margin-top: 8px;
-                        line-height: 14px;
-                        font-size: 12px;
-                        text-decoration: line-through;
-                        &:before {
-                            content: '￥';
-                            font-size: 8px;
-                        }
-                    }
-                    .controll {
-                        float: right;
-                        .add-btn {
-                            .add-btn-img {
-                                .background-norm();
-                                width: 25px;
-                                height: 25px;
-                                background-size: 25px 25px;
-                                background-image: url("../../assets/Icon/Round/Plus.png");
-                            }
-                            .add-btn-word {
-                                line-height: 25px;
-                                padding: 0 8px;
-                                color: #fff;
-                                background-color: #FFC107;
-                                .rounded-corners(25px);
-                                font-size: 14px;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
+
+
 
 .detail {
     margin-top: 16px;

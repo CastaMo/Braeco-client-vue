@@ -3,10 +3,16 @@
         v-if="foodItem"
         class='food active-container'
         v-on:click="foodClickEvent(foodItem.id)"
+        v-bind:class="{
+            'view-info': foodItem.isViewInfo
+        }"
     >
         <div class='food-wrapper margin-left-wrapper'>
             <div class='food-container'>
-                <div class='img-field'>
+                <div
+                    v-if="!foodItem.isViewInfo"
+                    class='img-field left-part'
+                >
                     <div
                         class='img'
                         v-lazy:background-image="foodItem.smallPic"
@@ -17,7 +23,12 @@
                         v-bind:class="`label-${foodItem.dc_type}`"
                     ></div>
                 </div>
-                <div class='info-field'>
+                <div
+                    class='info-field'
+                    v-bind:class="{
+                        'right-part': !foodItem.isViewInfo
+                    }"
+                >
                     <div class='name-field'>
                         <p class='name'>{{foodItem.name}}</p>
                         <p class='name2'>{{foodItem.name2}}</p>
@@ -126,7 +137,6 @@ module.exports = {
     .food-container {
         padding: 12px 16px 12px 0;
         .img-field {
-            float: left;
             position: relative;
             .img {
                 width: 100px;
@@ -159,7 +169,6 @@ module.exports = {
             }
         }
         .info-field {
-            float: right;
             min-width: 160px;
             width: calc(~"100% - 110px");
             width: -moz-calc(~"100% - 110px");
@@ -242,6 +251,20 @@ module.exports = {
                             font-size: 14px;
                         }
                     }
+                }
+            }
+        }
+    }
+    &.view-info {
+        width: 100%;
+        border-top: solid 1px #C8C7CC;
+        background-color: #fff;
+        .margin-left-wrapper {
+            margin: 0;
+            .food-container {
+                padding: 12px 16px;
+                .info-field {
+                    width: 100%;
                 }
             }
         }
