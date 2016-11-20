@@ -30,7 +30,8 @@ module.exports = {
     },
     mounted() {
         let vm = this;
-        let routeLastItem = this.$root.$route.path.split("/").pop(); 
+        let routeLastItem = this.$root.$route.path.split("/").pop();
+        let routeFirstItem = this.$root.$route.path.split("/")[1];
         vm.transitionName = 'slide-bottom';
         vm.setRouteLastItem(routeLastItem);
 
@@ -38,7 +39,8 @@ module.exports = {
             let toPath = to.path;
             let fromPath = from.path;
             let routeLastItem = toPath.split("/").pop();
-            vm.setRouteLastItem(routeLastItem);
+            let routeFirstItem = vm.$root.$route.path.split("/")[1];
+            vm.setRouteLastItem(routeFirstItem, routeLastItem);
 
             let toRouteFirstItem = toPath.split("/")[1];
             let fromRouteFirstItem = fromPath.split("/")[1];
@@ -53,9 +55,12 @@ module.exports = {
         liClickEvent(item) {
             this.$root.$router.push(`/home/${item}`);
         },
-        setRouteLastItem(routeLastItem) {
+        setRouteLastItem(routeFirstItem, routeLastItem) {
             let vm = this;
             vm.routeLastItem = '';
+            if (routeFirstItem !== 'home') {
+                return;
+            }
             this.liData.forEach(function(liItem) {
                 if (liItem === routeLastItem) {
                     vm.routeLastItem = routeLastItem;
