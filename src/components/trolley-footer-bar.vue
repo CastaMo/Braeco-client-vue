@@ -7,7 +7,10 @@
                     <span class='order-price'>43</span>
                 </div>
                 <div class='right-part btn-field'>
-                    <button class='confirm-btn'>选好了</button>
+                    <button
+                        class='confirm-btn'
+                        v-on:click="routeToOrder"
+                    >选好了</button>
                 </div>
                 <div class='clear'></div>
             </div>
@@ -53,7 +56,8 @@ module.exports = {
                 endLeft     : options.endLeft       || 40,
                 endTop      : options.endTop        || (clientHeight - 48),
                 initLeft    : options.initLeft      || (clientWidth - 50),
-                initTop     : options.initTop       || 100
+                initTop     : options.initTop       || 100,
+                callback    : options.callback
             };
             vm.addBall(ball);
             vm.playAnimationForBall(ball);
@@ -64,7 +68,11 @@ module.exports = {
             let toRouteFirstItem = toPath.split("/");
             vm.showFlag = false;
             if (toRouteFirstItem[1] === 'menu') {
-                if (toRouteFirstItem[2] === 'main' || toRouteFirstItem[2] === 'info') {
+                if (
+                    toRouteFirstItem[2] === 'main'
+                ||  toRouteFirstItem[2] === 'info'
+                ||  toRouteFirstItem[2] === 'order'
+                ) {
                     return vm.showFlag = true;
                 }
             }
@@ -80,6 +88,10 @@ module.exports = {
         };
     },
     methods: {
+
+        routeToOrder() {
+            this.$root.$emit("root:route-to-order");
+        },
 
         playAnimationForTrolleyIcon() {
             let vm = this;
