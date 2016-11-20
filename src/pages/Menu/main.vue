@@ -77,7 +77,7 @@ module.exports = {
         lazy: Vue.directive('lazy')
     },
     components: {
-        "food": require("./components/food"),
+        'food': Vue.component('food'),
         "category-bar": require("./components/category-bar"),
         "food-property": require("./components/food-property")
     },

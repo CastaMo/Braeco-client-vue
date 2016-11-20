@@ -158,7 +158,7 @@ module.exports = {
         'lazy': Vue.directive('lazy')
     },
     components: {
-        'food': require("./components/food"),
+        'food': Vue.component('food'),
         'food-property': require("./components/food-property")
     }
 }
