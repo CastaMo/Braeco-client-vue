@@ -18,7 +18,8 @@ const routeWeight = {
 		value: 200,
 		next: {
 			info: {value: 0},
-			main: {value: 1}
+			main: {value: 1},
+			order: {value: 2}
 		}
 	}
 };

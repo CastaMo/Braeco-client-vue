@@ -21,6 +21,9 @@ const MenuMain = function(resolve) {
 const MenuInfo = function(resolve) {
     return require(['./pages/Menu/info.vue'], resolve);
 }
+const MenuOrder = function(resolve) {
+    return require(['./pages/Menu/order.vue'], resolve);
+}
 
 const test = function(resolve) {
 	return require(['./specialRoute/test.vue'], resolve);
@@ -38,6 +41,7 @@ const routes = [
 
     { path: '/menu/main/:id', component: MenuMain},
     { path: '/menu/info/:categoryId/:foodId', component: MenuInfo},
+    { path: '/menu/order', component: MenuOrder},
 
     { path: '/test', component: test}
 ];
