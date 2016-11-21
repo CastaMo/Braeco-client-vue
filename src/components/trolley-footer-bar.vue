@@ -1,6 +1,6 @@
 <template>
     <transition :name="transitionName">
-        <div class="trolley-footer-bar" v-show="showFlag">
+        <div class="trolley-footer-bar" v-if="showFlag">
             <div class='trolley-full-bar'>
                 <div class='left-part order-price-field'>
                     <span>总价:</span>
@@ -22,7 +22,7 @@
                     }"
                     v-on:click="routeToOrder"
                 >
-                    <div class='order-number'>77</div>
+                    <div class='order-number'>{{orderLen}}</div>
                 </div>
             </div>
             <div id='ball-container'>
@@ -79,13 +79,19 @@ module.exports = {
             }
             vm.animationFlagForAdd = false;
         });
+
+        this.setOrderLenByData(this.$root.tempData.orderForTrolley);
+        this.$root.$watch('tempData.orderForTrolley', function(newData) {
+            vm.setOrderLenByData(newData);
+        });
     },
     data() {
         return {
             animationFlagForAdd: false,
             ballItems: [],
             showFlag: false,
-            transitionName: 'slide-bottom'
+            transitionName: 'slide-bottom',
+            orderLen: 0
         };
     },
     methods: {
@@ -161,6 +167,9 @@ module.exports = {
             if (typeof ball.stepCallback === 'function') {
                 ball.stepCallback();
             }
+        },
+        setOrderLenByData(orderForTrolley) {
+            this.orderLen = orderForTrolley.length;
         }
     },
     watch: {
