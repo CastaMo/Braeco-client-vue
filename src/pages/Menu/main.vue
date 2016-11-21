@@ -97,7 +97,10 @@ module.exports = {
                     let rect = vm.ballSetOutDom.getBoundingClientRect();
                     vm.$root.$emit("root:play-ball", {
                         initTop: rect.top,
-                        initLeft: rect.left
+                        initLeft: rect.left,
+                        callback: function() {
+                            vm.$root.addOrderForTrolley(opts);
+                        }
                     });
                 }, 10);
             }
