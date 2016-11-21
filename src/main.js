@@ -4,7 +4,7 @@ const routeWeight = require("./routeWeight.js");
 const config = require("./common/config.js");
 const components = require('./components/index.js');
 
-require("./utils/index.js");
+const utils = require("./utils/index.js");
 
 const style = require('./style/index.less');
 
@@ -27,11 +27,14 @@ let init = function() {
             return {
                 transitionName: "page-fade",
                 requireData: requireData,
-                runningData: {}
+                tempData: {
+                    orderForTrolley: []
+                }
             }
         },
         created() {
             this.checkIsUnfiniteState();
+            this.readFromLocStor();
         },
         methods: {
             checkIsUnfiniteState() {
@@ -67,13 +70,30 @@ let init = function() {
                 } else if (fromValue - toValue <= 20 && fromValue > toValue) {
                     this.transitionName = "page-slide-right";
                 }
-
+            },
+            readFromLocStor() {
+                this.tempData.orderForTrolley = JSON.parse(utils.locStor.get('orderForTrolley')) || [];
+            },
+            addOrderForTrolley(order) {
+                console.log(order);
+                this.tempData.orderForTrolley.push(order);
+            },
+            getOrderForTrolley() {
+                return this.tempData.orderForTrolley;
+            },
+            saveToLocStor(key, val) {
+                utils.locStor.set(key, val);
             }
         },
         watch: {
             $route: function(to, from) {
                 this.checkIsUnfiniteState();
                 this.checkForTransition(to.fullPath, from.fullPath);
+            },
+            'tempData.orderForTrolley': {
+                handler: function(newData, oldData) {
+                    this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
+                }
             }
         },
         components: {
