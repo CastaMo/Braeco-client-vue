@@ -8,4 +8,7 @@ var Braeco = {
 
 window.Braeco = Braeco;
 
-module.exports = Braeco;
+module.exports = {
+    Braeco: Braeco,
+    locStor: require("./localStorage.js")
+};
