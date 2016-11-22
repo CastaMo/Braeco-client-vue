@@ -120,7 +120,7 @@ module.exports = {
             this.showFlag = false;
             this.$emit("confirm-add", {
                 id: vm.foodPropertyItem.id,
-                chooseArray: vm.chooseArray
+                groups: vm.chooseArray
             });
         }
     }
