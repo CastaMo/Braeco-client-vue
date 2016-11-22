@@ -19,12 +19,12 @@ const property = {
         });
         return diff;
     },
-    getInfoByChoose(chooseArray, properties) {
-        let info = "";
+    getInfoArrayByChoose(chooseArray, properties) {
+        let infoArray = [];
         chooseArray.forEach(function(choose, index) {
-            info += properties[index].content[choose].name;
+            infoArray.push(properties[index].content[choose].name);
         });
-        return info;
+        return infoArray;
     }
 };
 

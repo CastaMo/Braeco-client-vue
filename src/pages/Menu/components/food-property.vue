@@ -78,12 +78,8 @@ module.exports = {
     },
     computed: {
         chooseInfo: function() {
-            let temp = [];
-            let vm = this;
-            this.chooseArray.forEach(function(chooseIndex, index) {
-                temp.push(vm.foodPropertyItem.properties[index].content[chooseIndex].name);
-            });
-            return temp.join("、");
+            let infoArray = Braeco.utils.property.getInfoArrayByChoose(this.chooseArray, this.foodPropertyItem.properties);
+            return infoArray.join("、");
         },
         initPrice: function() {
             let defaultPrice = this.foodPropertyItem.default_price;
