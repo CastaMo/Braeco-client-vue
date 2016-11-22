@@ -92,26 +92,10 @@ module.exports = {
     },
     methods: {
         getItemForFood(categoryId, foodId) {
-            let temp = null;
-            let vm = this;
-            let clientWidth = document.body.clientWidth;
-            let picHeight = Math.floor(clientWidth * 200 / 375);
-            this.$root.requireData.menu.categories.forEach(function(category) {
-                if (Number(category.id) === categoryId) {
-                    category.dishes.forEach(function(dish) {
-                        if (Number(dish.id) === foodId) {
-                            if (dish.dc_type === "combo_only") {
-                                return false;
-                            }
-                            temp = Braeco.utils.food.getFixedDataForFood(dish, vm.groupsMap, vm.dishLimit);
-                            temp.isViewInfo = true;
-                            return false;
-                        }
-                    });
-                    return false;
-                }
-            });
-            return temp;
+            let dish = this.$root.getDishById(foodId);
+            let food = Braeco.utils.food.getFixedDataForFood(dish, this.groupsMap, this.dishLimit);
+            food.isViewInfo = true;
+            return food;
         },
 
         prepareForFoodProperty(opts) {
@@ -131,6 +115,7 @@ module.exports = {
                         initTop: rect.top,
                         initLeft: rect.left,
                         callback: function() {
+                            vm.$root.addOrderForTrolley(opts);
                         }
                     });
                 }, 10);
