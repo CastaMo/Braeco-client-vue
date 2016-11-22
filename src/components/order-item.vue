@@ -16,7 +16,7 @@
 					<div class='right-part controll'>
 						<div class='minus'></div>
 						<div class='num'>{{orderItem.num}}</div>
-						<div class='add'></div>
+						<div class='add' v-on:click="addClickEvent"></div>
 					</div>
 					<div class='clear'></div>
 				</div>
@@ -31,6 +31,16 @@ module.exports = {
 	name: 'order-item',
 	props: {
 		orderItem: Object
+	},
+	methods: {
+		addClickEvent() {
+			let temp = {};
+			temp.id = this.orderItem.id;
+			if (this.orderItem.groups.length > 0) {
+				temp.groups = this.orderItem.groups;
+			}
+			this.$emit("add-click", temp);
+		}
 	}
 }
 

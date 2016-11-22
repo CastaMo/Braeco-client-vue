@@ -7,6 +7,7 @@
 						<order-item
 							v-for="orderItem in orderItems"
 							:orderItem="orderItem"
+							v-on:add-click="addFood"
 						>
 						</order-item>
 					</ul>
@@ -35,6 +36,9 @@ module.exports = {
         this.dishLimit = this.$root.requireData.dish_limit;
 
         this.orderItems = this.getItemsForOrder();
+        this.$root.$watch('tempData.orderForTrolley', function(newData) {
+            vm.orderItems = vm.getItemsForOrder();
+        }, {deep: true});
 	},
 	components: {
 		'order-item': Vue.component('order-item')
@@ -50,10 +54,15 @@ module.exports = {
 					let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
 					let order = Braeco.utils.order.getFixedDataForOrder(food, foodProperty.properties, subItem.groups, subItem.num);
 					temp.push(order);
-					console.log(order);
 				});
 			});
 			return temp;
+		},
+		addFood(opts) {
+			this.$root.addOrderForTrolley(opts);
+		},
+		minusOrder(opts) {
+
 		}
 	}
 }
@@ -64,7 +73,7 @@ module.exports = {
 <style lang="less" scoped>
 
 .menu-order-container {
-	padding: 16px 0 80px 0;
+	padding: 16px 0 100px 0;
 }
 
 .menu-order-item-container {
