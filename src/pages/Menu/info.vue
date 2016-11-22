@@ -54,7 +54,7 @@ module.exports = {
             foodId: null,
             categoryId: null,
             foodItem: null,
-            groups: {},
+            groupsMap: {},
             dishLimit: null,
             foodPropertyItem: {properties: []},
             ballSetOutDom: null
@@ -68,8 +68,8 @@ module.exports = {
 
 
         let vm = this;
-        this.$root.requireData.menu.groups.forEach(function(group) {
-            vm.groups[group.id] = group;
+        this.$root.requireData.menu.groupsMap.forEach(function(group) {
+            vm.groupsMap[group.id] = group;
         });
 
 
@@ -103,7 +103,7 @@ module.exports = {
                             if (dish.dc_type === "combo_only") {
                                 return false;
                             }
-                            temp = Braeco.utils.food.getFixedDataForFood(dish, vm.groups, vm.dishLimit);
+                            temp = Braeco.utils.food.getFixedDataForFood(dish, vm.groupsMap, vm.dishLimit);
                             temp.isViewInfo = true;
                             return false;
                         }
@@ -144,7 +144,7 @@ module.exports = {
                 if (Number(category.id) === vm.categoryId) {
                     category.dishes.forEach(function(dish) {
                         if (Number(dish.id) === Number(foodId)) {
-                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groups);
+                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
                             return false;
                         }
                     });

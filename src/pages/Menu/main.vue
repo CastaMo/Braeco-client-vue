@@ -49,15 +49,15 @@ module.exports = {
             foodItems: null,
             foodPropertyItem: {properties: []},
             dishLimit: null,
-            groups: {},
+            groupsMap: {},
             ballSetOutDom: null
         };
     },
     created() {
 
         let vm = this;
-        this.$root.requireData.menu.groups.forEach(function(group) {
-            vm.groups[group.id] = group;
+        this.$root.requireData.menu.groupsMap.forEach(function(group) {
+            vm.groupsMap[group.id] = group;
         });
 
         this.dishLimit = this.$root.requireData.dish_limit;
@@ -118,7 +118,7 @@ module.exports = {
                 if (Number(category.id) === vm.categoryId) {
                     category.dishes.forEach(function(dish) {
                         if (Number(dish.id) === Number(foodId)) {
-                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groups);
+                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
                             return false;
                         }
                     });
@@ -150,7 +150,7 @@ module.exports = {
                         if (dish.dc_type === "combo_only") {
                             continue;
                         }
-                        let temp = Braeco.utils.food.getFixedDataForFood(dish, vm.groups, vm.dishLimit);
+                        let temp = Braeco.utils.food.getFixedDataForFood(dish, vm.groupsMap, vm.dishLimit);
                         result.push(temp);
                     }
                     break;
