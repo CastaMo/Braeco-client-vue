@@ -68,7 +68,7 @@ module.exports = {
 
 
         let vm = this;
-        this.$root.requireData.menu.groupsMap.forEach(function(group) {
+        this.$root.requireData.menu.groups.forEach(function(group) {
             vm.groupsMap[group.id] = group;
         });
 
