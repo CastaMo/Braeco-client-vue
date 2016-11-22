@@ -83,7 +83,7 @@ module.exports = {
         this.setOrderLenByData(this.$root.tempData.orderForTrolley);
         this.$root.$watch('tempData.orderForTrolley', function(newData) {
             vm.setOrderLenByData(newData);
-        });
+        }, {deep: true});
     },
     data() {
         return {
@@ -169,7 +169,13 @@ module.exports = {
             }
         },
         setOrderLenByData(orderForTrolley) {
-            this.orderLen = orderForTrolley.length;
+            let vm = this;
+            vm.orderLen = 0;
+            orderForTrolley.forEach(function(orderItem) {
+                orderItem.subItems.forEach(function(subItem) {
+                    vm.orderLen += subItem.num;
+                });
+            });
         }
     },
     watch: {
