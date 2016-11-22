@@ -1,5 +1,5 @@
 const order = {
-	getFixedDataForOrder(food, properties, groups) {
+	getFixedDataForOrder(food, properties, groups, num) {
 		let temp = {};
 		temp.id = food.id;
 		temp.name = food.name;
@@ -12,6 +12,7 @@ const order = {
 			temp.price += Braeco.utils.property.getDiffPriceByChoose(groups, properties);
 			temp.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(groups, properties).join("、");
 		}
+		temp.num = num;
 		return temp;
 	}
 }
