@@ -1,4 +1,4 @@
-var food = {
+const food = {
 	getChooseAllFirstPrice(food, groupsMap) {
         let price = food.default_price;
         if (food.type === "normal") {

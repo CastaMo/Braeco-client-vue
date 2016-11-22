@@ -1,4 +1,4 @@
-var category = {
+const category = {
 
     getFixedDataForCategory(category) {
         let temp = {};
