@@ -71,6 +71,23 @@ let init = function() {
                     this.transitionName = "page-slide-right";
                 }
             },
+            getDishById(foodId) {
+                let temp = null;
+                let getFlag = false;
+                this.requireData.menu.categories.forEach(function(category) {
+                    category.dishes.forEach(function(dish) {
+                        if (Number(dish.id) === Number(foodId)) {
+                            temp = dish;
+                            getFlag = true;
+                            return false;
+                        }
+                    });
+                    if (getFlag) {
+                        return false;
+                    }
+                });
+                return temp;
+            },
             readFromLocStor() {
                 this.tempData.orderForTrolley = JSON.parse(utils.locStor.get('orderForTrolley')) || [];
             },
