@@ -75,8 +75,51 @@ let init = function() {
                 this.tempData.orderForTrolley = JSON.parse(utils.locStor.get('orderForTrolley')) || [];
             },
             addOrderForTrolley(order) {
-                console.log(order);
-                this.tempData.orderForTrolley.push(order);
+
+                function tryGetOrderItemByFoodId(orderForTrolley, foodId) {
+                    let temp = null;
+                    orderForTrolley.forEach(function(orderItem) {
+                        if (Number(foodId) === Number(orderItem.id)) {
+                            temp = orderItem;
+                            return false;
+                        }
+                    });
+
+                    // 若找不到则新建一个
+                    if (!temp) {
+                        orderForTrolley.push(temp = {
+                            id: foodId,
+                            subItems: []
+                        });
+                    }
+                    return temp;
+                }
+
+                function tryGetSubItemByGroups(orderItem, groups) {
+                    let temp = null;
+                    orderItem.subItems.forEach(function(subItem) {
+                        // 若为普通单品或者groups项相同，则匹配成功
+                        if (
+                            !groups
+                        ||  JSON.stringify(subItem.groups) === JSON.stringify(groups)
+                        ) {
+                            temp = subItem;
+                            return null;
+                        }
+                    });
+                    // 若找不到则新建一个
+                    if (!temp) {
+                        orderItem.subItems.push(temp = {
+                            num: 0,
+                            groups: groups
+                        });
+                    }
+                    return temp;
+                }
+
+                let orderItem = tryGetOrderItemByFoodId(this.tempData.orderForTrolley, order.id);
+                let subItem = tryGetSubItemByGroups(orderItem, order.groups);
+                subItem.num++;
             },
             getOrderForTrolley() {
                 return this.tempData.orderForTrolley;
@@ -93,7 +136,8 @@ let init = function() {
             'tempData.orderForTrolley': {
                 handler: function(newData, oldData) {
                     this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
-                }
+                },
+                deep: true
             }
         },
         components: {
