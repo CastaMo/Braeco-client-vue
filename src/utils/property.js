@@ -1,4 +1,4 @@
-var property = {
+const property = {
     getFixedDataForProperty(dish, groupsMap) {
         let temp = {};
         temp.id = dish.id;
@@ -18,6 +18,13 @@ var property = {
             diff += properties[index].content[choose].price;
         });
         return diff;
+    },
+    getInfoByChoose(chooseArray, properties) {
+        let info = "";
+        chooseArray.forEach(function(choose, index) {
+            info += properties[index].content[choose].name;
+        });
+        return info;
     }
 };
 
