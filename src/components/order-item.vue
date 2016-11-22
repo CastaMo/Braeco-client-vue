@@ -36,7 +36,7 @@ module.exports = {
 		addClickEvent() {
 			let temp = {};
 			temp.id = this.orderItem.id;
-			if (this.orderItem.groups.length > 0) {
+			if (this.orderItem.groups && this.orderItem.groups.length > 0) {
 				temp.groups = this.orderItem.groups;
 			}
 			this.$emit("add-click", temp);
