@@ -61,7 +61,7 @@ module.exports = {
         });
 
         this.dishLimit = this.$root.requireData.dish_limit;
-        this.categoryId = Number(this.$root.$route.params.id);
+        this.categoryId = Number(this.$root.$route.params.categoryId);
         this.categoryItems = this.getItemsForCategory();
         this.foodItems = this.getItemsForFood();
 
@@ -109,7 +109,7 @@ module.exports = {
             this.categoryId = id;
         },
         viewFoodInfoById(foodId) {
-            this.$root.$router.push(`/menu/info/${this.categoryId}/${foodId}`);
+            this.$root.$router.push(`/menu/info/${foodId}`);
         },
         getItemForFoodProperty(foodId) {
             let vm = this;
@@ -177,7 +177,6 @@ module.exports = {
                     return true;
                 }
             }
-
             //找不到正确的id
             this.$root.$router.back();
         }

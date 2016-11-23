@@ -52,7 +52,6 @@ module.exports = {
     data() {
         return {
             foodId: null,
-            categoryId: null,
             foodItem: null,
             groupsMap: {},
             dishLimit: null,
@@ -61,10 +60,8 @@ module.exports = {
         }
     },
     created() {
-        let categoryId = Number(this.$root.$route.params.categoryId);
         let foodId = Number(this.$root.$route.params.foodId);
         this.foodId = foodId;
-        this.categoryId = categoryId;
 
 
         let vm = this;
@@ -75,7 +72,7 @@ module.exports = {
 
         this.dishLimit = this.$root.requireData.dish_limit;
 
-        this.foodItem = this.getItemForFood(categoryId, foodId);
+        this.foodItem = this.getItemForFood(foodId);
         if (!this.foodItem) {
             this.$root.$router.back();
         }
@@ -91,7 +88,7 @@ module.exports = {
         this.$root.$off("root:route-to-order");
     },
     methods: {
-        getItemForFood(categoryId, foodId) {
+        getItemForFood(foodId) {
             let dish = this.$root.getDishById(foodId);
             let food = Braeco.utils.food.getFixedDataForFood(dish, this.groupsMap, this.dishLimit);
             food.isViewInfo = true;
@@ -100,7 +97,8 @@ module.exports = {
 
         prepareForFoodProperty(opts) {
             let id = opts.id;
-            this.foodPropertyItem = this.getItemForFoodProperty(id);
+            let dish = this.$root.getDishById(id);
+            this.foodPropertyItem = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
         },
         recordBallSetOutDom(dom) {
             this.ballSetOutDom = dom;
@@ -121,23 +119,7 @@ module.exports = {
                 }, 10);
                 vm.$root.$router.back();
             }
-        },
-        getItemForFoodProperty(foodId) {
-            let vm = this;
-            let temp = {};
-            this.$root.requireData.menu.categories.forEach(function(category) {
-                if (Number(category.id) === vm.categoryId) {
-                    category.dishes.forEach(function(dish) {
-                        if (Number(dish.id) === Number(foodId)) {
-                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
-                            return false;
-                        }
-                    });
-                    return false;
-                }
-            });
-            return temp;
-        },
+        }
     },
     directives: {
         'lazy': Vue.directive('lazy')
