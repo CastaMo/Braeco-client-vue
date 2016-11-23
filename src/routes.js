@@ -40,11 +40,11 @@ const routes = [
     { path: '/home/member', component: HomeMember},
 
     { path: '/activity/main', component: ActivityMain},
-    { path: '/activity/info/:id', component: ActivityInfo},
+    { path: '/activity/info/:activityId', component: ActivityInfo},
 
     { path: '/menu/info/:foodId', component: MenuInfo},
     { path: '/menu/main/:categoryId', component: MenuMain},
-    { path: '/menu/combo/:id', component: MenuMain},
+    { path: '/menu/combo/:foodId', component: MenuMain},
     { path: '/menu/order', component: MenuOrder},
 
     { path: '/test', component: test}

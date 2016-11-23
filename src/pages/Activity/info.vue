@@ -49,7 +49,7 @@ module.exports = {
         }
     },
     created() {
-        let id = Number(this.$root.$route.params.id);
+        let id = Number(this.$root.$route.params.activityId);
         this.activityItem = this.getActivityItem(id);
         if (!this.activityItem) {
             this.$root.$router.back();
