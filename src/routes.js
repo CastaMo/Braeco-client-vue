@@ -44,7 +44,7 @@ const routes = [
 
     { path: '/menu/info/:foodId', component: MenuInfo},
     { path: '/menu/main/:categoryId', component: MenuMain},
-    { path: '/menu/combo/:foodId', component: MenuMain},
+    { path: '/menu/combo/:foodId', component: MenuCombo},
     { path: '/menu/order', component: MenuOrder},
 
     { path: '/test', component: test}
