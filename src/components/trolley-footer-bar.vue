@@ -154,7 +154,12 @@ module.exports = {
             if (now > ball.end) {
                 this.playAnimationForTrolleyIcon();
                 if (typeof ball.callback === 'function') {
-                    ball.callback();
+                    // 防止因callback无法正常执行而导致小球动画永远无法被释放。
+                    try {
+                        ball.callback();
+                    } catch(e) {
+                        console.log(e);
+                    }
                 }
                 if (!!ball.timerId) {
                     clearInterval(ball.timerId);
