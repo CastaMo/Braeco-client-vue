@@ -77,8 +77,6 @@ const food = {
         temp.detail = dish.detail;
         return temp;
     }
-
-
 };
 
 
