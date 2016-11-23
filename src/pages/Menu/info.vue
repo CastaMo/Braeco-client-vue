@@ -19,6 +19,7 @@
                 v-on:food-with-property-click="prepareForFoodProperty"
                 v-on:food-with-normal-click="addFood"
                 v-on:record-ball-set-out-dom="recordBallSetOutDom"
+                v-on:food-with-combo-click="routeToCombo"
             ></food-item>
         </div>
         <div class='detail' v-if="foodItem.detail">
@@ -119,6 +120,13 @@ module.exports = {
                 }, 10);
                 vm.$root.$router.back();
             }
+        },
+        routeToCombo(opts) {
+            let vm = this;
+            vm.$root.$router.back();
+            setTimeout(function() {
+                vm.$root.$router.push(`/menu/combo/${opts.id}`);
+            }, 10);
         }
     },
     directives: {

@@ -14,6 +14,7 @@
                                         v-on:food-with-normal-click="addFood"
                                         v-on:record-ball-set-out-dom="recordBallSetOutDom"
                                         v-on:view-food-info-by-id="viewFoodInfoById"
+                                        v-on:food-with-combo-click="routeToCombo"
                                     >
                                     </food-item>
                                 </ul>
@@ -157,6 +158,9 @@ module.exports = {
                 }
             }
             return result;
+        },
+        routeToCombo(opts) {
+            this.$root.$router.push(`/menu/combo/${opts.id}`);
         }
     },
     watch: {
