@@ -1,14 +1,15 @@
 <template>
     <li
         v-if="foodItem"
-        class='food active-container'
+        class='food-item active-container'
         v-on:click="foodClickEvent(foodItem.id)"
         v-bind:class="{
-            'view-info': foodItem.isViewInfo
+            'view-info': foodItem.isViewInfo,
+            'last-with-no-border-bottom': foodItem.lastNoBottom
         }"
     >
-        <div class='food-wrapper margin-left-wrapper'>
-            <div class='food-container'>
+        <div class='food-item-wrapper margin-left-wrapper'>
+            <div class='food-item-container'>
                 <div
                     v-if="!foodItem.isViewInfo"
                     class='img-field left-part'
@@ -133,8 +134,8 @@ module.exports = {
     //Firefox4.0+、 Google chrome 10.0+ 、 Oprea10.5+ and IE9
     box-shadow: @str;
 }
-.food {
-    .food-container {
+.food-item {
+    .food-item-container {
         padding: 12px 16px 12px 0;
         .img-field {
             position: relative;
@@ -261,12 +262,17 @@ module.exports = {
         background-color: #fff;
         .margin-left-wrapper {
             margin: 0;
-            .food-container {
+            .food-item-container {
                 padding: 12px 16px;
                 .info-field {
                     width: 100%;
                 }
             }
+        }
+    }
+    &.last-with-no-border-bottom:last-of-type {
+        .margin-left-wrapper {
+            border-bottom: none;
         }
     }
 }
