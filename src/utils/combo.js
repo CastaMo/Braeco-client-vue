@@ -11,6 +11,7 @@ const combo = {
             let comboSubItem = {};
             let groupOption = groupsMap[groupId];
             comboSubItem.type = groupOption.type;
+            comboSubItem.name = groupOption.name;
             if (comboSubItem.type === 'discount_combo') {
                 comboSubItem.discount = groupOption.discount;
             } else {
