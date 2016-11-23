@@ -91,52 +91,25 @@ let init = function() {
             readFromLocStor() {
                 this.tempData.orderForTrolley = JSON.parse(utils.locStor.get('orderForTrolley')) || [];
             },
+            
             addOrderForTrolley(order) {
-
-                function tryGetOrderItemByFoodId(orderForTrolley, foodId) {
-                    let temp = null;
-                    orderForTrolley.forEach(function(orderItem) {
-                        if (Number(foodId) === Number(orderItem.id)) {
-                            temp = orderItem;
-                            return false;
-                        }
-                    });
-
-                    // 若找不到则新建一个
-                    if (!temp) {
-                        orderForTrolley.push(temp = {
-                            id: foodId,
-                            subItems: []
-                        });
-                    }
-                    return temp;
-                }
-
-                function tryGetSubItemByGroups(orderItem, groups) {
-                    let temp = null;
-                    orderItem.subItems.forEach(function(subItem) {
-                        // 若为普通单品或者groups项相同，则匹配成功
-                        if (
-                            !groups
-                        ||  JSON.stringify(subItem.groups) === JSON.stringify(groups)
-                        ) {
-                            temp = subItem;
-                            return null;
-                        }
-                    });
-                    // 若找不到则新建一个
-                    if (!temp) {
-                        orderItem.subItems.push(temp = {
-                            num: 0,
-                            groups: groups
-                        });
-                    }
-                    return temp;
-                }
-
-                let orderItem = tryGetOrderItemByFoodId(this.tempData.orderForTrolley, order.id);
-                let subItem = tryGetSubItemByGroups(orderItem, order.groups);
+                let orderItem = Braeco.utils.order.tryGetOrderItemByFoodId(this.tempData.orderForTrolley, order.id, true);
+                let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true);
                 subItem.num++;
+            },
+
+            minusOrderForTrolley(order) {
+                let orderItem = Braeco.utils.order.tryGetOrderItemByFoodId(this.tempData.orderForTrolley, order.id, true);
+                let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true);
+                subItem.num--;
+                if (subItem.num <= 0) {
+                    let index = orderItem.subItems.indexOf(subItem);
+                    orderItem.subItems.splice(index, 1);
+                    if (orderItem.subItems.length === 0) {
+                        let index = this.tempData.orderForTrolley.indexOf(orderItem);
+                        this.tempData.orderForTrolley.splice(index, 1);
+                    }
+                }
             },
             getOrderForTrolley() {
                 return this.tempData.orderForTrolley;
