@@ -47,7 +47,7 @@ const order = {
         });
         // 若找不到则新建一个
         if (!temp && isExtend) {
-            orderItem.subItems.push(temp = {
+            subItems.push(temp = {
                 num: 0,
                 groups: groups
             });
