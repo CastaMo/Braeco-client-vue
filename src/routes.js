@@ -15,11 +15,14 @@ const ActivityInfo = function(resolve) {
     return require(['./pages/Activity/info.vue'], resolve);
 }
 
+const MenuInfo = function(resolve) {
+    return require(['./pages/Menu/info.vue'], resolve);
+}
 const MenuMain = function(resolve) {
 	return require(['./pages/Menu/main.vue'], resolve);
 }
-const MenuInfo = function(resolve) {
-    return require(['./pages/Menu/info.vue'], resolve);
+const MenuCombo = function(resolve) {
+    return require(['./pages/Menu/combo.vue'], resolve);
 }
 const MenuOrder = function(resolve) {
     return require(['./pages/Menu/order.vue'], resolve);
@@ -39,8 +42,9 @@ const routes = [
     { path: '/activity/main', component: ActivityMain},
     { path: '/activity/info/:id', component: ActivityInfo},
 
-    { path: '/menu/main/:id', component: MenuMain},
     { path: '/menu/info/:categoryId/:foodId', component: MenuInfo},
+    { path: '/menu/main/:categoryId', component: MenuMain},
+    { path: '/menu/combo/:id', component: MenuMain},
     { path: '/menu/order', component: MenuOrder},
 
     { path: '/test', component: test}
