@@ -123,12 +123,11 @@ module.exports = {
 }
 
 .combo-item-container {
-    border-top: solid 1px #C8C7CC;
     border-bottom: solid 1px #C8C7CC;
     .combo-item {
         .combo-item-title {
             background-color: #fff;
-            border-bottom: solid 1px #C8C7CC;
+            border-top: solid 1px #C8C7CC;
             .combo-item-title-container {
                 > *:not(.clear) {
                     float: left;
