@@ -8,6 +8,7 @@
 							v-for="orderItem in orderItems"
 							:orderItem="orderItem"
 							v-on:add-click="addFood"
+                            v-on:minus-click="minusFood"
 						>
 						</order-item>
 					</ul>
@@ -61,8 +62,8 @@ module.exports = {
 		addFood(opts) {
 			this.$root.addOrderForTrolley(opts);
 		},
-		minusOrder(opts) {
-
+		minusFood(opts) {
+            this.$root.minusOrderForTrolley(opts);
 		}
 	}
 }
