@@ -28,13 +28,20 @@ let init = function() {
                 transitionName: "page-fade",
                 requireData: requireData,
                 tempData: {
-                    orderForTrolley: []
+                    orderForTrolley: [],
+                    groupsMap: {}
                 }
             }
         },
         created() {
+            let vm = this;
+            this.requireData.menu.groups.forEach(function(group) {
+                vm.tempData.groupsMap[group.id] = group;
+            });
             this.checkIsUnfiniteState();
-            this.readFromLocStor();
+
+            let lsOrderForTrolley = this.readFromLocStor();
+            this.validateAndAssignForOraderForTrolley(lsOrderForTrolley);
         },
         methods: {
             checkIsUnfiniteState() {
@@ -89,13 +96,38 @@ let init = function() {
                 return temp;
             },
             readFromLocStor() {
-                this.tempData.orderForTrolley = JSON.parse(utils.locStor.get('orderForTrolley')) || [];
+                return JSON.parse(utils.locStor.get('orderForTrolley')) || [];
             },
-            
+            validateAndAssignForOraderForTrolley(lsOrderForTrolley) {
+                let vm = this;
+                lsOrderForTrolley.forEach(function(orderItem) {
+                    orderItem.subItems.forEach(function(subItem) {
+                        try {
+                            // 通过添加来校验
+                            let dish = vm.getDishById(orderItem.id);
+                            let food = Braeco.utils.food.getFixedDataForFood(dish, vm.tempData.groupsMap, vm.requireData.dish_limit);
+                            let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.tempData.groupsMap);
+                            let order = Braeco.utils.order.getFixedDataForOrder(food, foodProperty.properties, subItem.groups, subItem.num);
+
+                            let temp = {
+                                id: orderItem.id,
+                                num: subItem.num
+                            };
+                            if (subItem.groups) {
+                                temp.groups = subItem.groups;
+                            }
+                            vm.addOrderForTrolley(temp);
+                        } catch(e) {
+                            console.log(e);
+                        }
+                    });
+                });
+            },
             addOrderForTrolley(order) {
                 let orderItem = Braeco.utils.order.tryGetOrderItemByFoodId(this.tempData.orderForTrolley, order.id, true);
                 let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true);
-                subItem.num++;
+                let num = order.num || 1;
+                subItem.num += num;
             },
 
             minusOrderForTrolley(order) {
