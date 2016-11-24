@@ -61,11 +61,12 @@ module.exports = {
             if (routeFirstItem !== 'home') {
                 return;
             }
-            this.liData.forEach(function(liItem) {
+            this.liData.every(function(liItem) {
                 if (liItem === routeLastItem) {
                     vm.routeLastItem = routeLastItem;
                     return false;
                 }
+                return true;
             });
         }
     }
