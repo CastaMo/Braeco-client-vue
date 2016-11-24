@@ -103,7 +103,7 @@ let init = function() {
                 lsOrderForTrolley.forEach(function(orderItem) {
                     orderItem.subItems.forEach(function(subItem) {
                         try {
-                            // 通过添加来校验
+                            // 添加来校验，此处校验无法通过，则直接抛出异常而无法加入到orderForTrolley中。
                             let dish = vm.getDishById(orderItem.id);
                             let food = Braeco.utils.food.getFixedDataForFood(dish, vm.tempData.groupsMap, vm.requireData.dish_limit);
                             let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.tempData.groupsMap);
