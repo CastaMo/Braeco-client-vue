@@ -1,8 +1,17 @@
 <template>
     <div id='Menu-Combo'>
         <div v-if="comboItem" class='combo-item-container'>
-            <div v-for="(comboSubItem, index) in comboItem.combos" class='combo-item'>
-                <div class='combo-item-title'>
+            <div
+                v-for="(comboSubItem, index) in comboItem.combos"
+                class='combo-item'
+                v-bind:class="{
+                    'active': activeArray[index]
+                }"
+            >
+                <div
+                    class='combo-item-title'
+                    v-on:click="titleClickEvent(index)"
+                >
                     <div class='combo-item-title-container'>
                         <div class='combo-item-name'>
                             {{comboSubItem.name}} <span v-if="comboItem.require[index]">×{{comboItem.require[index]}}</span>
@@ -22,14 +31,23 @@
                         </div>
                         <div class='clear'></div>
                     </div>
+                    <div class='arrow-field vertical-center'>
+                        <div class='arrow'></div>
+                    </div>
                 </div>
-                <ul>
-                    <food-item
-                        v-for="foodItem in comboSubItem.foodItems"
-                        :foodItem="foodItem"
-                    >
-                    </food-item>
-                </ul>
+                <div
+                    class='food-item-list-wrapper'
+                    v-bind:style="{
+                        'height': `${getFoodListHeightByActive(index)}px`
+                    }">
+                    <ul class='food-item-list'>
+                        <food-item
+                            v-for="foodItem in comboSubItem.foodItems"
+                            :foodItem="foodItem"
+                        >
+                        </food-item>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -44,12 +62,12 @@ module.exports = {
             dishLimit: null,
             groupsMap: {},
             comboItem: null,
-            chooseOptions: []
+            chooseOptions: [],
+            activeArray: []
         }
     },
     created() {
         let foodId = this.$root.$route.params.foodId;
-        console.log(foodId);
         let vm = this;
         this.$root.requireData.menu.groups.forEach(function(group) {
             vm.groupsMap[group.id] = group;
@@ -57,8 +75,12 @@ module.exports = {
 
         this.dishLimit = this.$root.requireData.dish_limit;
         this.comboItem = this.getItemForCombo(foodId);
+
         let requireLen = this.comboItem.require.length;
         this.chooseOptions =  Array(requireLen).fill([]);
+        this.chooseOptions = this.getChooseOptions(this.comboItem);
+        this.activeArray = Array(requireLen).fill(false);
+        this.showFirstRequireUnFinish();
     },
     methods: {
         getItemForCombo(id) {
@@ -78,6 +100,20 @@ module.exports = {
             console.log(JSON.parse(JSON.stringify(combo)));
             return combo;
         },
+        getChooseOptions(comboItem) {
+            let chooseOptions = [];
+            comboItem.combos.forEach(function(comboSubItem) {
+                let optionSubItem = [];
+                comboSubItem.content.forEach(function(foodId) {
+                    optionSubItem.push({
+                        id: foodId,
+                        subItems: []
+                    });
+                });
+                chooseOptions.push(optionSubItem);
+            });
+            return chooseOptions;
+        },
         getLabelByRequireAndChooseNum(require, chooseNum) {
             if (require === 0) {
                 return "可任意选择";
@@ -87,13 +123,46 @@ module.exports = {
             }
             return `还需选${require - chooseNum}项`;
         },
+        getFoodListHeightByActive(index) {
+            if (this.activeArray[index]) {
+                return this.comboItem.combos[index].content.length * 125;
+            }
+            return 0;
+        },
         getChooseNumByIndex(index) {
             let chooseOption = this.chooseOptions[index];
             let num = 0;
             chooseOption.forEach(function(option) {
-                num += option.num;
+                option.subItems.forEach(function(subItem) {
+                    num += subItem;
+                });
             });
             return num;
+        },
+        showFirstRequireUnFinish() {
+            let vm = this;
+            this.activeArray.every(function(activeItem, activeIndex) {
+                if (
+                    vm.comboItem.require[activeIndex] <= 0
+                ||  vm.comboItem.require[activeIndex] <= vm.getChooseNumByIndex(activeIndex)
+                ) {
+                    return true;
+                }
+                vm.setActiveStateByIndex(activeIndex, true);
+                return false;
+            });
+        },
+        setActiveStateByIndex(index, active) {
+            let vm = this;
+            this.activeArray.forEach(function(activeItem, activeIndex) {
+                if (index != activeIndex) {
+                    vm.$set(vm.activeArray, activeIndex, false);
+                }
+            });
+            vm.$set(vm.activeArray, index, active);
+        },
+        titleClickEvent(index) {
+            this.setActiveStateByIndex(index, !this.activeArray[index]);
         }
     },
     components: {
@@ -113,6 +182,28 @@ module.exports = {
     border-radius: @radius;
 }
 
+.transition (@time: .3s) {
+    -webkit-transition: all @time ease-in-out;
+    -moz-transition: all @time ease-in-out;
+    -ms-transition: all @time ease-in-out;
+    -o-transition: all @time ease-in-out;
+    transition: all @time ease-in-out;
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -moz-backface-visibility: hidden;
+    -moz-perspective: 1000;
+    backface-visibility: hidden;
+    perspective: 1000;
+}
+
+.transform (@str: scale(0, 0)) {
+    transform: @str;
+    -webkit-transform: @str;
+    -moz-transform: @str;
+    -ms-transform: @str;
+    -o-transform: @str;
+}
+
 .background-norm(@elem: "none") {
     background-repeat: no-repeat;
     background-position: center;
@@ -126,6 +217,7 @@ module.exports = {
     border-bottom: solid 1px #C8C7CC;
     .combo-item {
         .combo-item-title {
+            position: relative;
             background-color: #fff;
             border-top: solid 1px #C8C7CC;
             .combo-item-title-container {
@@ -153,6 +245,29 @@ module.exports = {
                         background-color: #EB4F10;
                     }
                 }
+            }
+            .arrow-field {
+                right: 16px;
+                .arrow {
+                    width: 15px;
+                    height: 15px;
+                    .background-norm();
+                    background-size: 15px 15px;
+                    background-image: url("../../assets/Icon/Arrow/Next/Yellow.png");
+                    .transition(.3s);
+                }
+            }
+        }
+        .food-item-list-wrapper {
+            overflow: hidden;
+            .transition(.3s);
+            ul.food-item-list {
+                border-top: solid 1px #C8C7CC;
+            }
+        }
+        &.active {
+            .arrow {
+                .transform(rotate(-180deg));
             }
         }
     }
