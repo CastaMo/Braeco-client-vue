@@ -1,28 +1,28 @@
 const routeWeight = {
-	home: {
-		value: 0,
-		next: {
-			menu: {value: 0},
-			order: {value: 1},
-			member: {value: 2}
-		}
-	},
-	activity: {
-		value: 100,
-		next: {
-			main: {value: 0},
-			info: {value: 1}
-		}
-	},
-	menu: {
-		value: 200,
-		next: {
-			info: {value: 0},
+    home: {
+        value: 0,
+        next: {
+            menu: {value: 0},
+            order: {value: 1},
+            member: {value: 2}
+        }
+    },
+    activity: {
+        value: 100,
+        next: {
+            main: {value: 0},
+            info: {value: 1}
+        }
+    },
+    menu: {
+        value: 200,
+        next: {
+            info: {value: 0},
             combo: {value: 1},
-			main: {value: 2},
-			order: {value: 3}
-		}
-	}
+            main: {value: 2},
+            order: {value: 3}
+        }
+    }
 };
 
 module.exports = routeWeight;
