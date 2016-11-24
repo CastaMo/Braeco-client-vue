@@ -81,17 +81,19 @@ let init = function() {
             getDishById(foodId) {
                 let temp = null;
                 let getFlag = false;
-                this.requireData.menu.categories.forEach(function(category) {
-                    category.dishes.forEach(function(dish) {
+                this.requireData.menu.categories.every(function(category) {
+                    category.dishes.every(function(dish) {
                         if (Number(dish.id) === Number(foodId)) {
                             temp = dish;
                             getFlag = true;
                             return false;
                         }
+                        return true;
                     });
                     if (getFlag) {
                         return false;
                     }
+                    return true;
                 });
                 return temp;
             },

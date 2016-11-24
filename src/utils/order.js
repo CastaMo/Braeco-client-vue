@@ -17,11 +17,12 @@ const order = {
 	},
     tryGetOrderItemByFoodId(orderForTrolley, foodId, isExtend) {
         let temp = null;
-        orderForTrolley.forEach(function(orderItem) {
+        orderForTrolley.every(function(orderItem) {
             if (Number(foodId) === Number(orderItem.id)) {
                 temp = orderItem;
                 return false;
             }
+            return true;
         });
 
         // 若找不到则新建一个
