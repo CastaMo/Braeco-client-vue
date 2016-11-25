@@ -5,7 +5,7 @@
                 v-for="(comboSubItem, index) in comboItem.combos"
                 class='combo-item'
                 v-bind:class="{
-                    'active': activeArray[index]
+                    'active': currentActiveIndex === index
                 }"
             >
                 <div
@@ -72,7 +72,7 @@ module.exports = {
             groupsMap: {},
             comboItem: null,
             chooseOptions: [],
-            activeArray: [],
+            currentActiveIndex: -1,
             foodPropertyItem: {properties: []},
         }
     },
@@ -106,12 +106,11 @@ module.exports = {
         let requireLen = this.comboItem.require.length;
         this.chooseOptions =  Array(requireLen).fill([]);
         this.chooseOptions = this.getChooseOptions(this.comboItem);
-        this.activeArray = Array(requireLen).fill(false);
         this.showFirstRequireUnFinish();
     },
     methods: {
         prepareForFoodProperty(opts) {
-            let index = this.getActiveIndex();
+            let index = this.currentActiveIndex;
             if (
                 this.comboItem.require[index] > 0
             &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
@@ -129,7 +128,7 @@ module.exports = {
             return temp;
         },
         addChoose(opts) {
-            let index = this.getActiveIndex();
+            let index = this.currentActiveIndex;
             if (
                 this.comboItem.require[index] > 0
             &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
@@ -187,7 +186,7 @@ module.exports = {
             return `还需选${require - chooseNum}项`;
         },
         getFoodListHeightByActive(index) {
-            if (this.activeArray[index]) {
+            if (this.currentActiveIndex === index) {
                 return this.comboItem.combos[index].content.length * 125;
             }
             return 0;
@@ -204,39 +203,23 @@ module.exports = {
         },
         showFirstRequireUnFinish() {
             let vm = this;
-            this.activeArray.every(function(activeItem, activeIndex) {
+            this.comboItem.require.every(function(requireItem, index) {
                 if (
-                    vm.comboItem.require[activeIndex] <= 0
-                ||  vm.comboItem.require[activeIndex] <= vm.getChooseNumByIndex(activeIndex)
+                    requireItem <= 0
+                ||  requireItem <= vm.getChooseNumByIndex(index)
                 ) {
                     return true;
                 }
-                vm.setActiveStateByIndex(activeIndex, true);
+                vm.currentActiveIndex = index;
                 return false;
             });
         },
-        getActiveIndex() {
-            let index = -1;
-            this.activeArray.every(function(activeItem, activeIndex) {
-                if (activeItem) {
-                    index = activeIndex;
-                    return false;
-                }
-                return true;
-            });
-            return index;
-        },
-        setActiveStateByIndex(index, active) {
-            let vm = this;
-            this.activeArray.forEach(function(activeItem, activeIndex) {
-                if (index != activeIndex) {
-                    vm.$set(vm.activeArray, activeIndex, false);
-                }
-            });
-            vm.$set(vm.activeArray, index, active);
-        },
         titleClickEvent(index) {
-            this.setActiveStateByIndex(index, !this.activeArray[index]);
+            if (this.currentActiveIndex !== index) {
+                this.currentActiveIndex = index;
+            } else {
+                this.currentActiveIndex = -1;
+            }
         }
     },
     components: {
