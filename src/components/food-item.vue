@@ -44,12 +44,23 @@
                         <div class='init-price' v-if="foodItem.chooseAllFirstPrice > foodItem.currentPrice">{{Number(foodItem.chooseAllFirstPrice.toFixed(2))}}</div>
                         <div class='controll'>
                             <div
+                                class='minus-btn'
+                                v-if="num"
+                                v-on:click.stop="minusBtnClickEvent($event)"
+                            >
+                                <div class='minus-btn-img'></div>
+                            </div>
+                            <div class='num' v-if="num">
+                                {{num}}
+                            </div>
+                            <div
                                 class='add-btn'
                                 v-on:click.stop="addBtnClickEvent($event)"
                             >
                                 <div class='add-btn-img' v-if="foodItem.type === 'normal'"></div>
                                 <div class='add-btn-word' v-else>选择</div>
                             </div>
+                            <div class='clear'></div>
                         </div>
                         <div class='clear'></div>
                     </div>
@@ -66,7 +77,8 @@
 module.exports = {
     name: 'food-item',
     props: {
-        foodItem: Object
+        foodItem: Object,
+        num: Number
     },
     directives: {
         'lazy': Vue.directive('lazy')
@@ -93,6 +105,12 @@ module.exports = {
                 });
             }
             return false;
+        },
+        minusBtnClickEvent(event) {
+            let vm = this;
+            this.$emit("food-minus-click", {
+                id: vm.foodItem.id
+            });
         }
     }
 }
@@ -234,6 +252,23 @@ module.exports = {
                 }
                 .controll {
                     float: right;
+                    > *:not(.clear) {
+                        float: left;
+                    }
+                    .minus-btn {
+                        .minus-btn-img {
+                            .background-norm();
+                            width: 25px;
+                            height: 25px;
+                            background-size: 25px 25px;
+                            background-image: url("../assets/Icon/Round/Minus.png");
+                        }
+                    }
+                    .num {
+                        line-height: 25px;
+                        margin: 0 12px;
+                        font-size: 14px;
+                    }
                     .add-btn {
                         .add-btn-img {
                             .background-norm();
