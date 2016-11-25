@@ -44,12 +44,21 @@
                         <food-item
                             v-for="foodItem in comboSubItem.foodItems"
                             :foodItem="foodItem"
+                            v-on:food-with-property-click="prepareForFoodProperty"
+                            v-on:food-with-normal-click="addChoose"
                         >
                         </food-item>
                     </ul>
                 </div>
             </div>
         </div>
+        <combo-footer-bar
+            :enableFlag="isReadyForAddToTrolley"
+        ></combo-footer-bar>
+        <food-property
+            :foodPropertyItem="foodPropertyItem"
+            v-on:confirm-add="addChoose"
+        ></food-property>
     </div>
 </template>
 
@@ -63,7 +72,25 @@ module.exports = {
             groupsMap: {},
             comboItem: null,
             chooseOptions: [],
-            activeArray: []
+            activeArray: [],
+            foodPropertyItem: {properties: []},
+        }
+    },
+    computed: {
+        isReadyForAddToTrolley() {
+            let flag = true;
+            let vm = this;
+            this.comboItem.require.every(function(requireItem, index) {
+                if (
+                    requireItem === 0
+                ||  vm.getChooseNumByIndex(index) >= requireItem
+                ) {
+                    return true;
+                }
+                flag = false;
+                return false;
+            });
+            return flag;
         }
     },
     created() {
@@ -83,6 +110,42 @@ module.exports = {
         this.showFirstRequireUnFinish();
     },
     methods: {
+        prepareForFoodProperty(opts) {
+            let index = this.getActiveIndex();
+            if (
+                this.comboItem.require[index] > 0
+            &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
+            ) {
+                return console.log("gg");
+            }
+            let id = opts.id;
+            this.foodPropertyItem = this.getItemForFoodProperty(id);
+            this.$root.$emit("root:food-property-show");
+        },
+        getItemForFoodProperty(foodId) {
+            let vm = this;
+            let dish = this.$root.getDishById(foodId);
+            let temp = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
+            return temp;
+        },
+        addChoose(opts) {
+            let index = this.getActiveIndex();
+            if (
+                this.comboItem.require[index] > 0
+            &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
+            ) {
+                return console.log("gg");
+            }
+            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.chooseOptions[index] ,opts.id);
+            let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups, true);
+            subItem.num += 1;
+            if (
+                this.comboItem.require[index]
+            &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
+            ) {
+                this.showFirstRequireUnFinish();
+            }
+        },
         getItemForCombo(id) {
             let vm = this;
             let dish = this.$root.getDishById(id);
@@ -134,7 +197,7 @@ module.exports = {
             let num = 0;
             chooseOption.forEach(function(option) {
                 option.subItems.forEach(function(subItem) {
-                    num += subItem;
+                    num += subItem.num;
                 });
             });
             return num;
@@ -152,6 +215,17 @@ module.exports = {
                 return false;
             });
         },
+        getActiveIndex() {
+            let index = -1;
+            this.activeArray.every(function(activeItem, activeIndex) {
+                if (activeItem) {
+                    index = activeIndex;
+                    return false;
+                }
+                return true;
+            });
+            return index;
+        },
         setActiveStateByIndex(index, active) {
             let vm = this;
             this.activeArray.forEach(function(activeItem, activeIndex) {
@@ -166,7 +240,9 @@ module.exports = {
         }
     },
     components: {
-        'food-item': Vue.component('food-item')
+        'food-item': Vue.component('food-item'),
+        'combo-footer-bar': require("./components/combo-footer-bar"),
+        'food-property': require("./components/food-property")
     }
 }
 
