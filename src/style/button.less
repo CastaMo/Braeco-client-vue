@@ -7,7 +7,7 @@
 
 @yellow-btn: #FFC107;                      // 绿色按钮背景色
 @yellow-btn-hover: #FFB300;                // 绿色按钮hover颜色
-@yellow-btn-disabled: rgba(8,204,106,0.40); // 无效黄色按钮颜色
+@yellow-btn-disabled: #E7DED8; // 无效黄色按钮颜色
 
 
 .braeco-btn {
@@ -27,6 +27,11 @@
     &:hover {
         background-color: @white-btn-hover;
     }
+
+    &.rect {
+        border-radius: 0px;
+    }
+
     &.disabled {
         color: @white-btn-disabled-color;
         background-color: @white-btn;
