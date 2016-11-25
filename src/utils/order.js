@@ -15,9 +15,9 @@ const order = {
 		temp.num = num;
 		return temp;
 	},
-    tryGetOrderItemByFoodId(orderForTrolley, foodId, isExtend) {
+    tryGetFoodItemByFoodId(Items, foodId, isExtend) {
         let temp = null;
-        orderForTrolley.every(function(orderItem) {
+        Items.every(function(orderItem) {
             if (Number(foodId) === Number(orderItem.id)) {
                 temp = orderItem;
                 return false;
@@ -27,7 +27,7 @@ const order = {
 
         // 若找不到则新建一个
         if (!temp && isExtend) {
-            orderForTrolley.push(temp = {
+            Items.push(temp = {
                 id: foodId,
                 subItems: []
             });

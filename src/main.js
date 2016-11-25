@@ -126,14 +126,14 @@ let init = function() {
                 });
             },
             addOrderForTrolley(order) {
-                let orderItem = Braeco.utils.order.tryGetOrderItemByFoodId(this.tempData.orderForTrolley, order.id, true);
+                let orderItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.tempData.orderForTrolley, order.id, true);
                 let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true);
                 let num = order.num || 1;
                 subItem.num += num;
             },
 
             minusOrderForTrolley(order) {
-                let orderItem = Braeco.utils.order.tryGetOrderItemByFoodId(this.tempData.orderForTrolley, order.id, true);
+                let orderItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.tempData.orderForTrolley, order.id, true);
                 let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true);
                 subItem.num--;
                 if (subItem.num <= 0) {
