@@ -100,6 +100,7 @@ module.exports = {
             let id = opts.id;
             let dish = this.$root.getDishById(id);
             this.foodPropertyItem = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
+            this.$root.$emit("root:food-property-show");
         },
         recordBallSetOutDom(dom) {
             this.ballSetOutDom = dom;

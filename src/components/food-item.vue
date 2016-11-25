@@ -83,7 +83,6 @@ module.exports = {
                 this.$emit("food-with-property-click", {
                     id: vm.foodItem.id
                 });
-                this.$root.$emit("root:food-property-show");
             } else if (this.foodItem.type === 'normal') {
                 this.$emit("food-with-normal-click", {
                     id: vm.foodItem.id

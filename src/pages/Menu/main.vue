@@ -86,6 +86,7 @@ module.exports = {
         prepareForFoodProperty(opts) {
             let id = opts.id;
             this.foodPropertyItem = this.getItemForFoodProperty(id);
+            this.$root.$emit("root:food-property-show");
         },
         recordBallSetOutDom(dom) {
             this.ballSetOutDom = dom;
@@ -114,20 +115,8 @@ module.exports = {
         },
         getItemForFoodProperty(foodId) {
             let vm = this;
-            let temp = {};
-            this.$root.requireData.menu.categories.every(function(category) {
-                if (Number(category.id) === vm.categoryId) {
-                    category.dishes.every(function(dish) {
-                        if (Number(dish.id) === Number(foodId)) {
-                            temp = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
-                            return false;
-                        }
-                        return true;
-                    });
-                    return false;
-                }
-                return true;
-            });
+            let dish = this.$root.getDishById(foodId);
+            let temp = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
             return temp;
         },
         getItemsForCategory() {
