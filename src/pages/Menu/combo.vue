@@ -245,10 +245,7 @@ module.exports = {
             let vm = this;
             let flag = false;
             this.comboItem.require.every(function(requireItem, index) {
-                if (
-                    requireItem <= 0
-                ||  requireItem <= vm.getChooseNumByIndex(index)
-                ) {
+                if (vm.getIsFullChooseByIndex(index)) {
                     return true;
                 }
                 vm.currentActiveIndex = index;
