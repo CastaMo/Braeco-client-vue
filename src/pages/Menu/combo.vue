@@ -1,5 +1,6 @@
 <template>
     <div id='Menu-Combo'>
+        {{chooseOptionsArray}}
         <div v-if="comboItem" class='combo-item-container'>
             <div
                 v-for="(comboSubItem, index) in comboItem.combos"
@@ -54,6 +55,7 @@
         </div>
         <combo-footer-bar
             :enableFlag="isReadyForAddToTrolley"
+            v-on:confirm-add="addOrder"
         ></combo-footer-bar>
         <food-property
             :foodPropertyItem="foodPropertyItem"
@@ -71,7 +73,7 @@ module.exports = {
             dishLimit: null,
             groupsMap: {},
             comboItem: null,
-            chooseOptions: [],
+            allFoodChooseOptions: [],
             currentActiveIndex: -1,
             foodPropertyItem: {properties: []},
         }
@@ -91,6 +93,27 @@ module.exports = {
                 return false;
             });
             return flag;
+        },
+        chooseOptionsArray() {
+            let temp = [];
+            this.allFoodChooseOptions.forEach(function(foodListOption) {
+                let foodListTemp = [];
+                foodListOption.forEach(function(foodItem) {
+                    foodItem.subItems.forEach(function(subItem) {
+                        let chooseTemp = {
+                            id: foodItem.id,
+                            num: subItem.num
+                        };
+                        if (subItem.groups && subItem.groups.length > 0) {
+                            chooseTemp.groups = subItem.groups;
+                        }
+                        foodListTemp.push(chooseTemp);
+                    });
+                });
+                temp.push(foodListTemp);
+            });
+            console.log(JSON.parse(JSON.stringify(temp)));
+            return temp;
         }
     },
     created() {
@@ -104,8 +127,8 @@ module.exports = {
         this.comboItem = this.getItemForCombo(foodId);
 
         let requireLen = this.comboItem.require.length;
-        this.chooseOptions =  Array(requireLen).fill([]);
-        this.chooseOptions = this.getChooseOptions(this.comboItem);
+        this.allFoodChooseOptions =  Array(requireLen).fill([]);
+        this.allFoodChooseOptions = this.getAllFoodChooseOptions(this.comboItem);
         this.showFirstRequireUnFinish();
     },
     methods: {
@@ -135,7 +158,7 @@ module.exports = {
             ) {
                 return console.log("gg");
             }
-            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.chooseOptions[index] ,opts.id);
+            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index] ,opts.id);
             let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups, true);
             subItem.num += 1;
             if (
@@ -144,6 +167,9 @@ module.exports = {
             ) {
                 this.showFirstRequireUnFinish();
             }
+        },
+        addOrder() {
+            this.$root.$router.back();
         },
         getItemForCombo(id) {
             let vm = this;
@@ -162,8 +188,8 @@ module.exports = {
             console.log(JSON.parse(JSON.stringify(combo)));
             return combo;
         },
-        getChooseOptions(comboItem) {
-            let chooseOptions = [];
+        getAllFoodChooseOptions(comboItem) {
+            let allFoodChooseOptions = [];
             comboItem.combos.forEach(function(comboSubItem) {
                 let optionSubItem = [];
                 comboSubItem.content.forEach(function(foodId) {
@@ -172,9 +198,9 @@ module.exports = {
                         subItems: []
                     });
                 });
-                chooseOptions.push(optionSubItem);
+                allFoodChooseOptions.push(optionSubItem);
             });
-            return chooseOptions;
+            return allFoodChooseOptions;
         },
         getLabelByRequireAndChooseNum(require, chooseNum) {
             if (require === 0) {
@@ -192,9 +218,9 @@ module.exports = {
             return 0;
         },
         getChooseNumByIndex(index) {
-            let chooseOption = this.chooseOptions[index];
+            let foodListOption = this.allFoodChooseOptions[index];
             let num = 0;
-            chooseOption.forEach(function(option) {
+            foodListOption.forEach(function(option) {
                 option.subItems.forEach(function(subItem) {
                     num += subItem.num;
                 });
@@ -203,6 +229,7 @@ module.exports = {
         },
         showFirstRequireUnFinish() {
             let vm = this;
+            let flag = false;
             this.comboItem.require.every(function(requireItem, index) {
                 if (
                     requireItem <= 0
@@ -211,8 +238,12 @@ module.exports = {
                     return true;
                 }
                 vm.currentActiveIndex = index;
+                flag = true;
                 return false;
             });
+            if (!flag) {
+                this.currentActiveIndex = -1;
+            }
         },
         titleClickEvent(index) {
             if (this.currentActiveIndex !== index) {
