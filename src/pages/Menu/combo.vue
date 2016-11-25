@@ -134,10 +134,7 @@ module.exports = {
     methods: {
         prepareForFoodProperty(opts) {
             let index = this.currentActiveIndex;
-            if (
-                this.comboItem.require[index] > 0
-            &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
-            ) {
+            if (this.getIsFullChooseByIndex(index)) {
                 return console.log("gg");
             }
             let id = opts.id;
@@ -152,24 +149,22 @@ module.exports = {
         },
         addChoose(opts) {
             let index = this.currentActiveIndex;
-            if (
-                this.comboItem.require[index] > 0
-            &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
-            ) {
+            if (this.getIsFullChooseByIndex(index)) {
                 return console.log("gg");
             }
             let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index] ,opts.id);
             let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups, true);
             subItem.num += 1;
-            if (
-                this.comboItem.require[index]
-            &&  this.comboItem.require[index] <= this.getChooseNumByIndex(index)
-            ) {
+            if (this.getIsFullChooseByIndex(index)) {
                 this.showFirstRequireUnFinish();
             }
         },
         addOrder() {
             this.$root.$router.back();
+        },
+        getIsFullChooseByIndex(index) {
+            return  this.comboItem.require[index] > 0
+            &&      this.comboItem.require[index] <= this.getChooseNumByIndex(index);
         },
         getItemForCombo(id) {
             let vm = this;
