@@ -1,6 +1,5 @@
 <template>
     <div id='Menu-Combo'>
-        {{chooseOptionsArray}}
         <div v-if="comboItem" class='combo-item-container'>
             <div
                 v-for="(comboSubItem, index) in comboItem.combos"
@@ -43,10 +42,12 @@
                     }">
                     <ul class='food-item-list'>
                         <food-item
-                            v-for="foodItem in comboSubItem.foodItems"
+                            v-for="(foodItem, foodIndex) in comboSubItem.foodItems"
                             :foodItem="foodItem"
+                            :num="chooseNumForFood[index][foodIndex]"
                             v-on:food-with-property-click="prepareForFoodProperty"
                             v-on:food-with-normal-click="addChoose"
+                            v-on:food-minus-click="judgeMinusChoose"
                         >
                         </food-item>
                     </ul>
@@ -114,6 +115,21 @@ module.exports = {
             });
             console.log(JSON.parse(JSON.stringify(temp)));
             return temp;
+        },
+        chooseNumForFood() {
+            let temp = [];
+            this.allFoodChooseOptions.forEach(function(foodListOption) {
+                let numListTemp = [];
+                foodListOption.forEach(function(foodItem) {
+                    let num = 0;
+                    foodItem.subItems.forEach(function(subItem) {
+                        num += subItem.num;
+                    });
+                    numListTemp.push(num);
+                });
+                temp.push(numListTemp);
+            });
+            return temp;
         }
     },
     created() {
@@ -146,6 +162,9 @@ module.exports = {
             let dish = this.$root.getDishById(foodId);
             let temp = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
             return temp;
+        },
+        judgeMinusChoose(opts) {
+            console.log(opts);
         },
         addChoose(opts) {
             let index = this.currentActiveIndex;
