@@ -10,11 +10,11 @@
                                     <food-item
                                         v-for="foodItem in foodItems"
                                         :foodItem="foodItem"
-                                        v-on:food-with-property-click="prepareForFoodProperty"
-                                        v-on:food-with-normal-click="addFood"
+                                        v-on:food-with-property-add-click="prepareForFoodProperty"
+                                        v-on:food-with-normal-add-click="addFood"
                                         v-on:record-ball-set-out-dom="recordBallSetOutDom"
                                         v-on:view-food-info-by-id="viewFoodInfoById"
-                                        v-on:food-with-combo-click="routeToCombo"
+                                        v-on:food-with-combo-add-click="routeToCombo"
                                     >
                                     </food-item>
                                 </ul>

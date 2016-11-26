@@ -91,16 +91,20 @@ module.exports = {
             let dom = event.target || event.srcElement;
             let vm = this;
             this.$emit("record-ball-set-out-dom", dom);
-            if (this.foodItem.groups[0] && this.foodItem.type === 'normal') {
-                this.$emit("food-with-property-click", {
+            if (
+                this.foodItem.groups
+            &&  this.foodItem.groups.length > 0
+            &&  this.foodItem.type === 'normal'
+            ) {
+                this.$emit("food-with-property-add-click", {
                     id: vm.foodItem.id
                 });
             } else if (this.foodItem.type === 'normal') {
-                this.$emit("food-with-normal-click", {
+                this.$emit("food-with-normal-add-click", {
                     id: vm.foodItem.id
                 });
             } else {
-                this.$emit("food-with-combo-click", {
+                this.$emit("food-with-combo-add-click", {
                     id: vm.foodItem.id
                 });
             }
@@ -108,9 +112,19 @@ module.exports = {
         },
         minusBtnClickEvent(event) {
             let vm = this;
-            this.$emit("food-minus-click", {
-                id: vm.foodItem.id
-            });
+            if (
+                this.foodItem.groups
+            &&  this.foodItem.groups.length > 0
+            &&  this.foodItem.type === 'normal'
+            ) {
+                this.$emit("food-with-property-minus-click", {
+                    id: vm.foodItem.id
+                });
+            } else {
+                this.$emit("food-with-normal-minus-click", {
+                    id: vm.foodItem.id
+                });
+            }
         }
     }
 }
