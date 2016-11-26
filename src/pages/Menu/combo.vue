@@ -1,5 +1,6 @@
 <template>
     <div id='Menu-Combo'>
+        {{chooseAllInfoForFood}}
         <div v-if="comboItem" class='combo-item-container'>
             <div
                 v-for="(comboSubItem, index) in comboItem.combos"
@@ -30,6 +31,23 @@
                             {{getLabelByRequireAndChooseNum(comboItem.require[index], getChooseNumByIndex(index))}}
                         </div>
                         <div class='clear'></div>
+                    </div>
+                    <div
+                        class='choose-info-container'
+                        v-if="  currentActiveIndex !== index
+                            && chooseAllInfoForFood[index].length>0"
+                    >
+                        <ul class='choose-info-list'>
+                            <li
+                                class='choose-info'
+                                v-for="item in chooseAllInfoForFood[index]"
+                            >
+                                <div class='dot'></div>
+                                <div class='name'>{{item.name}} <span v-if="item.propertyInfo">({{item.propertyInfo}})</span></div>
+                                <div class='num'>{{item.num}}</div>
+                                <div class='clear'></div>
+                            </li>
+                        </ul>
                     </div>
                     <div class='arrow-field vertical-center'>
                         <div class='arrow'></div>
@@ -95,6 +113,8 @@ module.exports = {
             });
             return flag;
         },
+
+        // 用于使选项与food顺序对齐
         chooseOptionsArray() {
             let temp = [];
             this.allFoodChooseOptions.forEach(function(foodListOption) {
@@ -116,6 +136,8 @@ module.exports = {
             console.log(JSON.parse(JSON.stringify(temp)));
             return temp;
         },
+
+        // 用于记录每一个food的选择记录
         chooseNumForFood() {
             let temp = [];
             this.allFoodChooseOptions.forEach(function(foodListOption) {
@@ -128,6 +150,29 @@ module.exports = {
                     numListTemp.push(num);
                 });
                 temp.push(numListTemp);
+            });
+            return temp;
+        },
+
+        // 用于显示每一个food的选择信息
+        chooseAllInfoForFood() {
+            let temp = [];
+            let vm = this;
+            this.chooseOptionsArray.forEach(function(foodList) {
+                let infoListTemp = [];
+                foodList.forEach(function(foodItem) {
+                    let dish = vm.$root.getDishById(foodItem.id);
+                    let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
+                    let infoTemp = {
+                        name: dish.name,
+                        num: foodItem.num
+                    };
+                    if (foodItem.groups && foodItem.groups.length > 0) {
+                        infoTemp.propertyInfo = Braeco.utils.property.getInfoArrayByChoose(foodItem.groups, foodProperty.properties).join("、");
+                    }
+                    infoListTemp.push(infoTemp);
+                });
+                temp.push(infoListTemp);
             });
             return temp;
         }
@@ -364,6 +409,40 @@ module.exports = {
             .transition(.3s);
             ul.food-item-list {
                 border-top: solid 1px #C8C7CC;
+            }
+        }
+        .choose-info-container {
+            padding-bottom: 9px;
+            ul.choose-info-list {
+                li.choose-info {
+                    line-height: 17px;
+                    margin-bottom: 4px;
+                    color: #9B9B9B;
+                    font-size: 12px;
+                    .dot {
+                        float: left;
+                        width: 4px;
+                        height: 4px;
+                        .rounded-corners(50%);
+                        background-color: #FFC107;
+                        margin: 7.5px 0 0 16px;
+                    }
+                    .name {
+                        float: left;
+                        margin-left: 8px;
+                        width: 60%;
+                    }
+                    .num {
+                        float: right;
+                        margin-right: 50px;
+                        &:before {
+                            content: '×';
+                        }
+                    }
+                    &:last-of-type {
+                        margin-bottom: 0;
+                    }
+                }
             }
         }
         &.active {
