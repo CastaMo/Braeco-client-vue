@@ -1,6 +1,5 @@
 <template>
     <div id='Menu-Combo'>
-        {{chooseAllInfoForFood}}
         <div v-if="comboItem" class='combo-item-container'>
             <div
                 v-for="(comboSubItem, index) in comboItem.combos"
@@ -63,9 +62,10 @@
                             v-for="(foodItem, foodIndex) in comboSubItem.foodItems"
                             :foodItem="foodItem"
                             :num="chooseNumForFood[index][foodIndex]"
-                            v-on:food-with-property-click="prepareForFoodProperty"
-                            v-on:food-with-normal-click="addChoose"
-                            v-on:food-minus-click="judgeMinusChoose"
+                            v-on:food-with-property-add-click="prepareForFoodProperty"
+                            v-on:food-with-normal-add-click="addChoose"
+                            v-on:food-with-normal-minus-click="minusChoose"
+                            v-on:food-with-property-minus-click="judgeForMinusChoose"
                         >
                         </food-item>
                     </ul>
@@ -80,6 +80,11 @@
             :foodPropertyItem="foodPropertyItem"
             v-on:confirm-add="addChoose"
         ></food-property>
+        <combo-delete
+            :comboDeleteItem="comboDeleteItem"
+            v-on:confirm-minus="minusChoose"
+        >
+        </combo-delete>
     </div>
 </template>
 
@@ -95,6 +100,7 @@ module.exports = {
             allFoodChooseOptions: [],
             currentActiveIndex: -1,
             foodPropertyItem: {properties: []},
+            comboDeleteItem: {deleteItems: []}
         }
     },
     computed: {
@@ -133,7 +139,6 @@ module.exports = {
                 });
                 temp.push(foodListTemp);
             });
-            console.log(JSON.parse(JSON.stringify(temp)));
             return temp;
         },
 
@@ -208,8 +213,50 @@ module.exports = {
             let temp = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
             return temp;
         },
-        judgeMinusChoose(opts) {
-            console.log(opts);
+        judgeForMinusChoose(opts) {
+            let index = this.currentActiveIndex;
+            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index], opts.id);
+            if (foodItem.subItems.length === 1) {
+                return this.minusChoose({
+                    id: opts.id,
+                    groups: foodItem.subItems[0].groups
+                });
+            }
+            this.$root.$emit("root:combo-delete-show");
+            this.comboDeleteItem = this.getItemForComboDelete(opts.id, foodItem.subItems);
+        },
+        getItemForComboDelete(id, subItems) {
+            let temp = {};
+            let vm = this;
+            let dish = vm.$root.getDishById(id);
+            let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
+
+            temp.id = id;
+            temp.name = foodProperty.name;
+            temp.deleteItems = [];
+            subItems.forEach(function(subItem) {
+                let propertyInfo = Braeco.utils.property.getInfoArrayByChoose(subItem.groups, foodProperty.properties).join("、");
+                let diffPrice = Braeco.utils.property.getDiffPriceByChoose(subItem.groups, foodProperty.properties);
+                temp.deleteItems.push({
+                    groups: subItem.groups,
+                    price: diffPrice + foodProperty.default_price,
+                    propertyInfo: propertyInfo
+                });
+            });
+            return temp;
+        },
+        minusChoose(opts) {
+            let index = this.currentActiveIndex;
+            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index], opts.id);
+            let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups);
+            if (subItem.num <= 0) {
+                return console.log("gg");
+            }
+            subItem.num -= 1;
+            if (subItem.num <= 0) {
+                let subItemIndex = foodItem.subItems.indexOf(subItem);
+                foodItem.subItems.splice(subItemIndex, 1);
+            }
         },
         addChoose(opts) {
             let index = this.currentActiveIndex;
@@ -312,7 +359,8 @@ module.exports = {
     components: {
         'food-item': Vue.component('food-item'),
         'combo-footer-bar': require("./components/combo-footer-bar"),
-        'food-property': require("./components/food-property")
+        'food-property': require("./components/food-property"),
+        'combo-delete': require('./components/combo-delete')
     }
 }
 
