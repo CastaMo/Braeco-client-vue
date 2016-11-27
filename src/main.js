@@ -109,7 +109,23 @@ let init = function() {
                             let dish = vm.getDishById(orderItem.id);
                             let food = Braeco.utils.food.getFixedDataForFood(dish, vm.tempData.groupsMap, vm.requireData.dish_limit);
                             let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.tempData.groupsMap);
-                            let order = Braeco.utils.order.getFixedDataForOrder(food, foodProperty.properties, subItem.groups, subItem.num);
+
+                            let extras = foodProperty.properties;
+                            // 如果是套餐，那么就要给groups再做一次预处理
+                            if (food.type !== 'normal' && subItem.groups && subItem.groups.length > 0) {
+                                extras = [];
+                                subItem.groups.forEach(function(groupItem) {
+                                    let extra = {};
+                                    extra.dish = vm.getDishById(groupItem.id);
+                                    extra.num = groupItem.num;
+                                    extra.groups = groupItem.groups;
+                                    extra.food = Braeco.utils.food.getFixedDataForFood(extra.dish, vm.tempData.groupsMap, vm.requireData.dish_limit);
+                                    extra.foodProperty = Braeco.utils.property.getFixedDataForProperty(extra.dish, vm.tempData.groupsMap);
+                                    extras.push(extra);
+                                });
+                            }
+
+                            let order = Braeco.utils.order.getFixedDataForOrder(food, subItem.groups, subItem.num, extras);
 
                             let temp = {
                                 id: orderItem.id,

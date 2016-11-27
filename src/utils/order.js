@@ -1,5 +1,5 @@
 const order = {
-	getFixedDataForOrder(food, properties, groups, num) {
+	getFixedDataForOrder(food, groups, num, extras) {
 		let temp = {};
 		temp.id = food.id;
 		temp.name = food.name;
@@ -8,11 +8,23 @@ const order = {
 		temp.price = food.default_price;
 		temp.type = food.type;
 		temp.groups = groups;
-		if (temp.type === 'normal' && properties.length > 0) {
-			temp.price += Braeco.utils.property.getDiffPriceByChoose(groups, properties);
-			temp.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(groups, properties).join("、");
-		}
+		if (temp.type === 'normal' && groups && groups.length > 0) {
+			temp.price += Braeco.utils.property.getDiffPriceByChoose(groups, extras);
+			temp.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(groups, extras).join("、");
+		} else if (temp.type !== 'normal' && groups && groups.length > 0) {
+            temp.comboChooseInfoArray = [];
+            extras.forEach(function(extra) {
+                let comboChooseInfoItem = {};
+                comboChooseInfoItem.name = extra.food.name;
+                comboChooseInfoItem.num = extra.num;
+                if (extra.groups && extra.groups.length > 0) {
+                    comboChooseInfoItem.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(extra.groups, extra.foodProperty.properties).join("、");
+                }
+                temp.comboChooseInfoArray.push(comboChooseInfoItem);
+            });
+        }
 		temp.num = num;
+        console.log(temp);
 		return temp;
 	},
     tryGetFoodItemByFoodId(Items, foodId, isExtend) {
