@@ -94,6 +94,7 @@ module.exports = {
     name: 'menu-combo',
     data() {
         return {
+            foodId: -1,
             dishLimit: null,
             groupsMap: {},
             comboItem: null,
@@ -121,7 +122,7 @@ module.exports = {
         },
 
         // 用于使选项与food顺序对齐
-        chooseOptionsArray() {
+        comboChooseOptionsArray() {
             let temp = [];
             this.allFoodChooseOptions.forEach(function(foodListOption) {
                 let foodListTemp = [];
@@ -163,7 +164,7 @@ module.exports = {
         chooseAllInfoForFood() {
             let temp = [];
             let vm = this;
-            this.chooseOptionsArray.forEach(function(foodList) {
+            this.comboChooseOptionsArray.forEach(function(foodList) {
                 let infoListTemp = [];
                 foodList.forEach(function(foodItem) {
                     let dish = vm.$root.getDishById(foodItem.id);
@@ -183,14 +184,14 @@ module.exports = {
         }
     },
     created() {
-        let foodId = this.$root.$route.params.foodId;
+        this.foodId = this.$root.$route.params.foodId;
         let vm = this;
         this.$root.requireData.menu.groups.forEach(function(group) {
             vm.groupsMap[group.id] = group;
         });
 
         this.dishLimit = this.$root.requireData.dish_limit;
-        this.comboItem = this.getItemForCombo(foodId);
+        this.comboItem = this.getItemForCombo(this.foodId);
 
         let requireLen = this.comboItem.require.length;
         this.allFoodChooseOptions =  Array(requireLen).fill([]);
@@ -271,6 +272,16 @@ module.exports = {
             }
         },
         addOrder() {
+            let groups = [];
+            let vm = this;
+            // 合并, 准备用于添加到order中
+            this.comboChooseOptionsArray.forEach(function(comboChooseOption) {
+                groups = groups.concat(comboChooseOption);
+            });
+            this.$root.addOrderForTrolley({
+                id: vm.foodId,
+                groups: groups
+            });
             this.$root.$router.back();
         },
         getIsFullChooseByIndex(index) {
