@@ -18,6 +18,15 @@ const food = {
         if (dc_type === "discount") {
             return price * dc / 100;
         }
+        if (dc_type === "static_combo") {
+            return price;
+        }
+        if (dc_type === "discount_combo") {
+            return price * dc / 10000;
+        }
+        if (dc_type === "combo_static") {
+            return price;
+        }
         return price;
     },
 
@@ -42,6 +51,21 @@ const food = {
         if (food.dc_type === "limit") {
             let dc = dishLimit[food.id];
             return `剩${dc}件`;
+        }
+        if (food.dc_type === "static_combo") {
+            return `底价${food.default_price}元`;
+        }
+        if (food.dc_type === "combo_static") {
+            return "只计属性价差";
+        }
+        if (food.dc_type === "discount_combo") {
+            let num = food.dc;
+            if (food.dc % 1000 === 0) {
+                num = numToChinese[Math.round(food.dc) / 1000];
+            } else {
+                num = food.dc / 1000;
+            }
+            return `套餐内${num}折`;
         }
     },
     getFixedDataForFood(dish, groupsMap, dishLimit) {
