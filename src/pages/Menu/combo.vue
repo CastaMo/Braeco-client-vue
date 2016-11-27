@@ -1,6 +1,5 @@
 <template>
     <div id='Menu-Combo'>
-        {{chooseAllInfoForFood}}
         <div v-if="comboItem" class='combo-item-container'>
             <div
                 v-for="(comboSubItem, index) in comboItem.combos"
