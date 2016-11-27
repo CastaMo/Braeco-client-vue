@@ -21,6 +21,27 @@ const combo = {
             temp.combos.push(comboSubItem);
         });
         return temp;
+    },
+    adjustItemByCombo(item, subItemIndex, comboItem) {
+        if (comboItem.type === "combo_static") {
+            item.dc_type = "combo_static";
+            item.dc = 0;
+            item.default_price = 0;
+        } else {
+            let subItem = comboItem.combos[subItemIndex];
+            switch (subItem.type) {
+                case "static_combo":
+                    item.default_price = subItem.price;
+                    item.dc_type = "static_combo";
+                    item.dc = 0;
+                    break;
+                case "discount_combo":
+                default:
+                    item.dc_type = "discount_combo";
+                    item.dc = subItem.discount_combo;
+                    break;
+            }
+        }
     }
 };
 
