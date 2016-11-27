@@ -4,7 +4,7 @@
             <div class='combo-full-bar'>
                 <div class='left-part combo-price-field'>
                     <span><b>套餐总价:</b></span>
-                    <span class='price'>45</span>
+                    <span class='price'>{{Number(comboPrice.toFixed(2))}}</span>
                 </div>
                 <div class='right-part btn-field'>
                     <button

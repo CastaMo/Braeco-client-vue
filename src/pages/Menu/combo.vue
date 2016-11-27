@@ -1,5 +1,6 @@
 <template>
     <div id='Menu-Combo'>
+        {{chooseAllInfoForFood}}
         <div v-if="comboItem" class='combo-item-container'>
             <div
                 v-for="(comboSubItem, index) in comboItem.combos"
@@ -74,6 +75,7 @@
         </div>
         <combo-footer-bar
             :enableFlag="isReadyForAddToTrolley"
+            :comboPrice="totalPriceForCombo"
             v-on:confirm-add="addOrder"
         ></combo-footer-bar>
         <food-property
@@ -160,21 +162,33 @@ module.exports = {
             return temp;
         },
 
-        // 用于显示每一个food的选择信息
+        totalPriceForCombo() {
+            let price = Braeco.utils.combo.getPriceForCombo(this.comboItem, this.chooseAllInfoForFood);
+            return price;
+        },
+
+        // 用于显示每一个food的选择信息，以及价格的更新
         chooseAllInfoForFood() {
             let temp = [];
             let vm = this;
-            this.comboChooseOptionsArray.forEach(function(foodList) {
+            this.comboChooseOptionsArray.forEach(function(foodList, index) {
                 let infoListTemp = [];
                 foodList.forEach(function(foodItem) {
                     let dish = vm.$root.getDishById(foodItem.id);
                     let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
+
+                    Braeco.utils.combo.adjustItemByCombo(foodProperty, index, vm.comboItem, vm.groupsMap, vm.dishLimit);
+
                     let infoTemp = {
                         name: dish.name,
                         num: foodItem.num
                     };
+                    infoTemp.default_price = foodProperty.default_price;
+                    infoTemp.dc_type = foodProperty.dc_type;
+                    infoTemp.dc = foodProperty.dc;
                     if (foodItem.groups && foodItem.groups.length > 0) {
                         infoTemp.propertyInfo = Braeco.utils.property.getInfoArrayByChoose(foodItem.groups, foodProperty.properties).join("、");
+                        infoTemp.diff = Braeco.utils.property.getDiffPriceByChoose(foodItem.groups, foodProperty.properties);
                     }
                     infoListTemp.push(infoTemp);
                 });
@@ -212,6 +226,9 @@ module.exports = {
             let vm = this;
             let dish = this.$root.getDishById(foodId);
             let temp = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
+
+            // 将套餐的优惠传递进去
+            Braeco.utils.combo.adjustItemByCombo(temp, this.currentActiveIndex, this.comboItem, vm.groupsMap, vm.dishLimit);
             return temp;
         },
         judgeForMinusChoose(opts) {
@@ -235,6 +252,10 @@ module.exports = {
             temp.id = id;
             temp.name = foodProperty.name;
             temp.deleteItems = [];
+
+            // 将套餐的优惠传递进去
+            Braeco.utils.combo.adjustItemByCombo(foodProperty, this.currentActiveIndex, this.comboItem, this.groupsMap, this.dishLimit);
+
             subItems.forEach(function(subItem) {
                 let propertyInfo = Braeco.utils.property.getInfoArrayByChoose(subItem.groups, foodProperty.properties).join("、");
                 let diffPrice = Braeco.utils.property.getDiffPriceByChoose(subItem.groups, foodProperty.properties);
@@ -293,12 +314,16 @@ module.exports = {
             let dish = this.$root.getDishById(id);
             console.log(JSON.parse(JSON.stringify(dish)));
             let combo = Braeco.utils.combo.getFixedDataForCombo(dish, this.groupsMap);
-            combo.combos.forEach(function(comboSubItem) {
+            combo.combos.forEach(function(comboSubItem, subItemIndex) {
                 comboSubItem.foodItems = [];
                 comboSubItem.content.forEach(function(foodId) {
                     let dish = vm.$root.getDishById(foodId);
                     let food = Braeco.utils.food.getFixedDataForFood(dish, vm.groupsMap, vm.dishLimit);
                     food.lastNoBottom = true;
+
+                    // 将套餐的优惠传递进去
+                    Braeco.utils.combo.adjustItemByCombo(food, subItemIndex, combo, vm.groupsMap, vm.dishLimit);
+
                     comboSubItem.foodItems.push(food);
                 });
             });

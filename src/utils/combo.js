@@ -22,7 +22,7 @@ const combo = {
         });
         return temp;
     },
-    adjustItemByCombo(item, subItemIndex, comboItem) {
+    adjustItemByCombo(item, subItemIndex, comboItem, groupsMap, dishLimit) {
         if (comboItem.type === "combo_static") {
             item.dc_type = "combo_static";
             item.dc = 0;
@@ -38,10 +38,45 @@ const combo = {
                 case "discount_combo":
                 default:
                     item.dc_type = "discount_combo";
-                    item.dc = subItem.discount_combo;
+                    item.dc = subItem.discount;
                     break;
             }
         }
+        item.chooseAllFirstPrice = Braeco.utils.food.getChooseAllFirstPrice(item, groupsMap);
+        item.currentPrice = Braeco.utils.food.getPriceByDcTypeAndDc(item.chooseAllFirstPrice, item.dc_type, item.dc);
+        item.dcStr = Braeco.utils.food.getDcForFood(item, dishLimit);
+    },
+    getPriceForCombo(combo, chooseAllInfoForFood) {
+        let price;
+        switch (combo.type) {
+            // 只算default_price和diff
+            case "combo_static":
+                price = combo.default_price;
+                chooseAllInfoForFood.forEach(function(chooseAllInfoFoodList) {
+                    chooseAllInfoFoodList.forEach(function(chooseAllInfoForFood) {
+                        if (chooseAllInfoForFood.diff) {
+                            price += chooseAllInfoForFood.diff * chooseAllInfoForFood.num
+                        }
+                    });
+                });
+                break;
+            case "combo_sum":
+                price = 0;
+                chooseAllInfoForFood.forEach(function(chooseAllInfoFoodList) {
+                    chooseAllInfoFoodList.forEach(function(chooseAllInfoForFood) {
+                        let foodPrice = chooseAllInfoForFood.default_price;
+                        if (chooseAllInfoForFood.diff) {
+                            foodPrice += chooseAllInfoForFood.diff;
+                        }
+                        price += Braeco.utils.food.getPriceByDcTypeAndDc(foodPrice, chooseAllInfoForFood.dc_type, chooseAllInfoForFood.dc);
+                    });
+                });
+                break;
+            default:
+                price = 0;
+                break;
+        }
+        return price;
     }
 };
 
