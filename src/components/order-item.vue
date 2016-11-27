@@ -8,8 +8,26 @@
                     <div class='tag label' v-if="orderItem.tag">{{orderItem.tag}}</div>
                     <div class='clear'></div>
                 </div>
-                <div class='property-choose-info-field'>
+                <div class='property-choose-info-field' v-if="orderItem.chooseInfo">
                     <p>{{orderItem.chooseInfo}}</p>
+                </div>
+                <div class='combo-choose-info-field' v-if="orderItem.comboChooseInfoArray">
+                    <div class='combo-choose-info-wrapper'>
+                        <div class='combo-choose-info-container'>
+                            <ul class='combo-choose-info-list'>
+                                <li
+                                    class='combo-choose-info-item'
+                                    v-for="comboChooseInfoItem in orderItem.comboChooseInfoArray"
+                                >
+                                    <div class='name left-part'>
+                                        {{comboChooseInfoItem.name}}<span v-if="comboChooseInfoItem.chooseInfo"> ({{comboChooseInfoItem.chooseInfo}})</span>
+                                    </div>
+                                    <div class='num right-part'>{{comboChooseInfoItem.num}}</div>
+                                    <div class='clear'></div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class='price-field'>
                     <div class='left-part price'>{{orderItem.price}}</div>
@@ -99,6 +117,36 @@ module.exports = {
         margin-top: 7px;
         font-size: 12px;
         color: #9B9B9B;
+    }
+    .combo-choose-info-field {
+        .combo-choose-info-wrapper {
+            margin: 8px 0 5px 0;
+            .combo-choose-info-container {
+                padding-left: 8.5px;
+                border-left: solid 2px #FFC107;
+                ul.combo-choose-info-list {
+                    li.combo-choose-info-item {
+                        font-size: 12px;
+                        line-height: 17px;
+                        margin-bottom: 4px;
+                        color: #9B9B9B;
+                        .name {
+                            width: 60%;
+                            word-break: break-all;
+                        }
+                        .num {
+                            &:before {
+                                content: '×';
+                            }
+                        }
+
+                        &:last-of-type {
+                            margin-bottom: 0;
+                        }
+                    }
+                }
+            }
+        }
     }
     .price-field {
         margin-top: 8px;
