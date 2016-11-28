@@ -101,7 +101,8 @@ module.exports = {
                 });
             } else if (this.foodItem.type === 'normal') {
                 this.$emit("food-with-normal-add-click", {
-                    id: vm.foodItem.id
+                    id: vm.foodItem.id,
+                    orderInitPrice: vm.foodItem.default_price
                 });
             } else {
                 this.$emit("food-with-combo-add-click", {

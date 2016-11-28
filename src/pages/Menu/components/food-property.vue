@@ -116,7 +116,8 @@ module.exports = {
             this.showFlag = false;
             this.$emit("confirm-add", {
                 id: vm.foodPropertyItem.id,
-                groups: vm.chooseArray
+                groups: vm.chooseArray,
+                orderInitPrice: vm.initPrice
             });
         }
     }
