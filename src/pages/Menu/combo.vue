@@ -33,7 +33,7 @@
                     </div>
                     <div
                         class='choose-info-container'
-                        v-if="  currentActiveIndex !== index
+                        v-show="  currentActiveIndex !== index
                             && chooseAllInfoForFood[index].length>0"
                     >
                         <ul class='choose-info-list'>
@@ -300,7 +300,8 @@ module.exports = {
             });
             this.$root.addOrderForTrolley({
                 id: vm.foodId,
-                groups: groups
+                groups: groups,
+                orderInitPrice: vm.totalPriceForCombo
             });
             this.$root.$router.back();
         },
