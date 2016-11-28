@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class='price-field'>
-                    <div class='left-part price'>{{orderItem.price}}</div>
+                    <div class='left-part price'>{{orderItem.orderInitPrice}}</div>
                     <div class='right-part controll'>
                         <div class='minus' v-on:click="minusClickEvent"></div>
                         <div class='num'>{{orderItem.num}}</div>

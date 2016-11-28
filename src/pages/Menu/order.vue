@@ -90,6 +90,7 @@ module.exports = {
                     }
 
                     let order = Braeco.utils.order.getFixedDataForOrder(food, subItem.groups, subItem.num, extras);
+                    order.orderInitPrice = subItem.orderInitPrice;
                     temp.push(order);
                 });
             });

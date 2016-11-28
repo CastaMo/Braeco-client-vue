@@ -5,9 +5,11 @@ const order = {
         temp.name = food.name;
         temp.dcStr = food.dcStr;
         temp.tag = food.tag;
-        temp.price = food.default_price;
         temp.type = food.type;
         temp.groups = groups;
+        temp.num = num;
+        temp.dc_type = food.dc_type;
+        temp.dc = food.dc;
         if (temp.type === 'normal' && groups && groups.length > 0) {
             temp.price += Braeco.utils.property.getDiffPriceByChoose(groups, extras);
             temp.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(groups, extras).join("、");
@@ -23,8 +25,6 @@ const order = {
                 temp.comboChooseInfoArray.push(comboChooseInfoItem);
             });
         }
-        temp.num = num;
-        console.log(temp);
         return temp;
     },
     tryGetFoodItemByFoodId(Items, foodId, isExtend) {
@@ -46,7 +46,7 @@ const order = {
         }
         return temp;
     },
-    tryGetSubItemByGroups(subItems, groups, isExtend) {
+    tryGetSubItemByGroups(subItems, groups, isExtend, orderInitPrice) {
         let temp = null;
         subItems.forEach(function(subItem) {
             // 若为普通单品或者groups项相同，则匹配成功
@@ -60,10 +60,14 @@ const order = {
         });
         // 若找不到则新建一个
         if (!temp && isExtend) {
-            subItems.push(temp = {
+            temp = {
                 num: 0,
                 groups: groups
-            });
+            };
+            if (typeof orderInitPrice === 'number') {
+                temp.orderInitPrice = orderInitPrice;
+            }
+            subItems.push(temp);
         }
         return temp;
     }
