@@ -98,7 +98,7 @@ let init = function() {
                 return temp;
             },
             readFromLocStor() {
-                return JSON.parse(utils.locStor.get('orderForTrolley')) || [];
+                return JSON.parse(utils.locStor.get('orderForTrolley') || "[]");
             },
             validateAndAssignForOraderForTrolley(lsOrderForTrolley) {
                 let vm = this;
@@ -129,7 +129,8 @@ let init = function() {
 
                             let temp = {
                                 id: orderItem.id,
-                                num: subItem.num
+                                num: subItem.num,
+                                orderInitPrice: subItem.orderInitPrice
                             };
                             if (subItem.groups) {
                                 temp.groups = subItem.groups;
@@ -143,7 +144,7 @@ let init = function() {
             },
             addOrderForTrolley(order) {
                 let orderItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.tempData.orderForTrolley, order.id, true);
-                let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true);
+                let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true, order.orderInitPrice);
                 let num = order.num || 1;
                 subItem.num += num;
             },
