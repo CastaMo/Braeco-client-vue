@@ -29,9 +29,9 @@ const order = {
     },
     tryGetFoodItemByFoodId(Items, foodId, isExtend) {
         let temp = null;
-        Items.every(function(orderItem) {
-            if (Number(foodId) === Number(orderItem.id)) {
-                temp = orderItem;
+        Items.every(function(item) {
+            if (Number(foodId) === Number(item.id)) {
+                temp = item;
                 return false;
             }
             return true;
@@ -70,6 +70,81 @@ const order = {
             subItems.push(temp);
         }
         return temp;
+    },
+    getDiscountForOrderItem(orderItem, dish, user) {
+        function getUserDiscount(price, num, user) {
+            if (user && user.discount > 0) {
+                return {
+                    type: "userDiscount",
+                    value: num * price * (100 - user.discount) / 100
+                };
+            }
+            return {
+                value: 0
+            };
+        }
+        // 第二杯半价
+        if (dish.dc_type === 'half') {
+            if (
+                orderItem.subItems.length === 1
+            &&  orderItem.subItems[0].num === 1
+            ) {
+                return getUserDiscount(orderItem.subItems[0].orderInitPrice, 1, user);
+            }
+            // 将所有价格都塞到一个容器中准备排序进行计算第二杯半价优惠
+            let temp = [];
+            orderItem.subItems.forEach(function(subItem) {
+                temp = temp.concat(Array(subItem.num).fill(subItem.orderInitPrice));
+            });
+
+            // 取最高的前半段
+            temp.sort(function(a, b) {
+                return b - a;
+            });
+            let value = 0;
+            let middle = Math.floor(temp.length / 2);
+            for (let i = 0, len = middle; i < len; i++) {
+                value += (temp[i] / 2);
+            }
+            return {
+                type: "half",
+                value: value
+            };
+        }
+        if (dish.dc_type === 'sale') {
+            let value = 0;
+            orderItem.subItems.forEach(function(subItem) {
+                value += dish.dc * subItem.num;
+            });
+            return {
+                type: "sale",
+                value: value
+            }
+        }
+        if (dish.dc_type === 'discount') {
+            let value = 0;
+            orderItem.subItems.forEach(function(subItem) {
+                value += (100 - dish.dc) * subItem.orderInitPrice * subItem.num / 100;
+            });
+            return {
+                type: "discount",
+                value: value
+            };
+        }
+        let value = 0;
+        let type;
+        orderItem.subItems.forEach(function(subItem) {
+            let discount = getUserDiscount(subItem.orderInitPrice, subItem.num, user)
+            value += discount.value;
+            type = discount.type;
+        });
+        let result = {
+            value: value
+        };
+        if (type) {
+            result.type = type;
+        }
+        return result;
     }
 }
 
