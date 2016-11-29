@@ -29,7 +29,13 @@ let init = function() {
                 requireData: requireData,
                 tempData: {
                     orderForTrolley: [],
-                    groupsMap: {}
+                    groupsMap: {},
+                    discountMap: {
+                        half: 0,
+                        discount: 0,
+                        sale: 0,
+                        userDiscount: 0
+                    }
                 }
             }
         },
@@ -176,6 +182,20 @@ let init = function() {
             },
             'tempData.orderForTrolley': {
                 handler: function(newData, oldData) {
+                    // 更新优惠信息
+                    let vm = this;
+                    vm.tempData.discountMap.half = 0;
+                    vm.tempData.discountMap.discount = 0;
+                    vm.tempData.discountMap.sale = 0;
+                    vm.tempData.discountMap.userDiscount = 0;
+                    newData.forEach(function(orderItem) {
+                        let dish = vm.getDishById(orderItem.id);
+                        let discount = Braeco.utils.order.getDiscountForOrderItem(orderItem, dish);
+                        if (discount.type) {
+                            vm.tempData.discountMap[discount.type] += discount.value;
+                        }
+                    });
+
                     this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
                 },
                 deep: true
