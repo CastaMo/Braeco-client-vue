@@ -40,23 +40,6 @@ let init = function() {
             }
         },
         computed: {
-            discountMap() {
-                let vm = this;
-                let temp = {
-                    half: 0,
-                    discount: 0,
-                    sale: 0,
-                    userDiscount: 0
-                };
-                this.tempData.orderForTrolley.forEach(function(orderItem) {
-                    let dish = vm.getDishById(orderItem.id);
-                    let discount = Braeco.utils.order.getDiscountForOrderItem(orderItem, dish);
-                    if (discount.type) {
-                        temp[discount.type] += discount.value;
-                    }
-                });
-                return temp;
-            },
             totalInitPrice() {
                 let temp = 0;
                 this.tempData.orderForTrolley.forEach(function(orderItem) {
@@ -65,6 +48,78 @@ let init = function() {
                     });
                 });
                 return temp;
+            },
+            discountMap() {
+                let vm = this;
+                let temp = {
+                    half: 0,
+                    discount: 0,
+                    sale: 0,
+                    userDiscount: 0,
+                    reduce: 0
+                };
+                this.tempData.orderForTrolley.forEach(function(orderItem) {
+                    let dish = vm.getDishById(orderItem.id);
+                    let discount = Braeco.utils.order.getDiscountForOrderItem(orderItem, dish);
+                    if (discount.type) {
+                        temp[discount.type] += discount.value;
+                    }
+                });
+
+                // 获取单品优惠以及会员优惠计算之后的订单价格
+                let price = this.totalInitPrice
+                                - temp.half
+                                - temp.discount
+                                - temp.sale
+                                - temp.userDiscount
+                                ;
+                let maxReduce = 0;
+
+                // 获取满减优惠
+                this.requireData.dc_tool.reduce.forEach(function(reduceItem) {
+                    if (
+                        price >= reduceItem[0]
+                    &&  maxReduce < reduceItem[1]
+                    ) {
+                        maxReduce = reduceItem[1];
+                    }
+                });
+                temp.reduce = maxReduce;
+                return temp;
+            },
+            totalFinalPrice() {
+                let price = this.totalInitPrice
+                                - this.discountMap.half
+                                - this.discountMap.discount
+                                - this.discountMap.sale
+                                - this.discountMap.userDiscount
+                                - this.discountMap.reduce
+                                ;
+                return price;
+            },
+            giveItem() {
+                let price = this.totalFinalPrice;
+                let giveName = "";
+                let maxGive = 0;
+                this.requireData.dc_tool.give.forEach(function(giveItem) {
+                    if (
+                        price >= giveItem[0]
+                    &&  giveItem[0] >= maxGive
+                    ) {
+                        giveName = giveItem[1];
+                        maxGive = giveItem[0];
+                    }
+                });
+                if (giveName) {
+                    return {
+                        name: giveName,
+                        dcStr: "满送",
+                        orderInitPrice: 0,
+                        num: 1,
+                        isGive: true
+                    }
+                }
+                return null;
             },
             orderTotalNumber() {
                 let temp = 0;
