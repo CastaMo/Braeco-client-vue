@@ -56,6 +56,16 @@ let init = function() {
                     }
                 });
                 return temp;
+            },
+            totalInitPrice() {
+                let temp = 0;
+                this.tempData.orderForTrolley.forEach(function(orderItem) {
+                    orderItem.subItems.forEach(function(subItem) {
+                        temp += subItem.orderInitPrice * subItem.num;
+                    });
+                });
+                console.log(temp);
+                return temp;
             }
         },
         created() {

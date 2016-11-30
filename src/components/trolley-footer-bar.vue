@@ -4,7 +4,7 @@
             <div class='trolley-full-bar'>
                 <div class='left-part order-price-field'>
                     <span>总价:</span>
-                    <span class='order-price'>43</span>
+                    <span class='order-price'>{{orderFinalPrice}}</span>
                 </div>
                 <div class='right-part btn-field'>
                     <button
@@ -84,6 +84,9 @@ module.exports = {
         this.$root.$watch('tempData.orderForTrolley', function(newData) {
             vm.setOrderLenByData(newData);
         }, {deep: true});
+    },
+    props: {
+        orderFinalPrice: Number
     },
     data() {
         return {
