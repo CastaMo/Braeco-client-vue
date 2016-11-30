@@ -32,9 +32,21 @@
                 <div class='price-field'>
                     <div class='left-part price'>{{orderItem.orderInitPrice}}</div>
                     <div class='right-part controll'>
-                        <div class='minus' v-if="!orderItem.isGive" v-on:click="minusClickEvent"></div>
-                        <div class='num'>{{orderItem.num}}</div>
-                        <div class='add' v-if="!orderItem.isGive" v-on:click="addClickEvent"></div>
+                        <div
+                            class='minus'
+                            v-if="!orderItem.isGive"
+                            v-on:click="minusClickEvent"
+                        ></div>
+                        <div class='num'
+                            v-bind:class="{
+                                'only-show': orderItem.isGive
+                            }"
+                        >{{orderItem.num}}</div>
+                        <div
+                            class='add'
+                            v-if="!orderItem.isGive"
+                            v-on:click="addClickEvent"
+                        ></div>
                     </div>
                     <div class='clear'></div>
                 </div>
@@ -180,6 +192,13 @@ module.exports = {
                 line-height: 24px;
                 font-size: 14px;
                 margin: 0 12px;
+                &.only-show {
+                    margin: 0;
+                    &:before {
+                        content: '×';
+                        font-size: 14px;
+                    }
+                }
             }
         }
     }
