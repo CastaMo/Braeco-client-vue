@@ -29,13 +29,7 @@ let init = function() {
                 requireData: requireData,
                 tempData: {
                     orderForTrolley: [],
-                    groupsMap: {},
-                    discountMap: {
-                        half: 0,
-                        discount: 0,
-                        sale: 0,
-                        userDiscount: 0
-                    }
+                    groupsMap: {}
                 }
             }
         },
