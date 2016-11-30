@@ -11,6 +11,10 @@
                             v-on:minus-click="minusFood"
                         >
                         </order-item>
+                        <order-item
+                            v-if="giveItem"
+                            :orderItem="giveItem"
+                        ></order-item>
                     </ul>
                 </div>
                 <div class='additional-container'>
@@ -80,7 +84,8 @@ module.exports = {
                 "reduce": "满减优惠",
                 "userDiscount": "会员优惠",
                 "coupon": "代金券"
-            }
+            },
+            giveItem: null
         }
     },
     created() {
@@ -100,6 +105,12 @@ module.exports = {
         this.$root.$watch("discountMap", function(newData) {
             vm.discountMap = vm.$root.discountMap;
         });
+
+        this.giveItem = this.$root.giveItem;
+        this.$root.$watch("giveItem", function(newData) {
+            vm.giveItem = vm.$root.giveItem;
+        });
+
     },
     components: {
         'order-item': Vue.component('order-item')
