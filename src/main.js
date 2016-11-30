@@ -61,10 +61,9 @@ let init = function() {
                 let temp = 0;
                 this.tempData.orderForTrolley.forEach(function(orderItem) {
                     orderItem.subItems.forEach(function(subItem) {
-                        temp += subItem.orderInitPrice * subItem.num;
+                        temp += Number(subItem.orderInitPrice) * Number(subItem.num);
                     });
                 });
-                console.log(temp);
                 return temp;
             }
         },

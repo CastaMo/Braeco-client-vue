@@ -4,7 +4,7 @@
             <div class='trolley-full-bar'>
                 <div class='left-part order-price-field'>
                     <span>总价:</span>
-                    <span class='order-price'>{{orderFinalPrice}}</span>
+                    <span class='order-price'>{{Number(orderFinalPrice.toFixed(2))}}</span>
                 </div>
                 <div class='right-part btn-field'>
                     <button
