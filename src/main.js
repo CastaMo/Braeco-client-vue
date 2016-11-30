@@ -65,6 +65,15 @@ let init = function() {
                     });
                 });
                 return temp;
+            },
+            orderTotalNumber() {
+                let temp = 0;
+                this.tempData.orderForTrolley.forEach(function(orderItem) {
+                    orderItem.subItems.forEach(function(subItem) {
+                        temp += Number(subItem.num);
+                    });
+                });
+                return temp;
             }
         },
         created() {

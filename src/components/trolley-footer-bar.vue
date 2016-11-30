@@ -22,7 +22,7 @@
                     }"
                     v-on:click="routeToOrder"
                 >
-                    <div class='order-number'>{{orderLen}}</div>
+                    <div class='order-number'>{{orderTotalNumber}}</div>
                 </div>
             </div>
             <div id='ball-container'>
@@ -79,14 +79,10 @@ module.exports = {
             }
             vm.animationFlagForAdd = false;
         });
-
-        this.setOrderLenByData(this.$root.tempData.orderForTrolley);
-        this.$root.$watch('tempData.orderForTrolley', function(newData) {
-            vm.setOrderLenByData(newData);
-        }, {deep: true});
     },
     props: {
-        orderFinalPrice: Number
+        orderFinalPrice: Number,
+        orderTotalNumber: Number
     },
     data() {
         return {
@@ -176,15 +172,6 @@ module.exports = {
                 ball.stepCallback();
             }
         },
-        setOrderLenByData(orderForTrolley) {
-            let vm = this;
-            vm.orderLen = 0;
-            orderForTrolley.forEach(function(orderItem) {
-                orderItem.subItems.forEach(function(subItem) {
-                    vm.orderLen += subItem.num;
-                });
-            });
-        }
     },
     watch: {
         ballItems(newItems, oldItems) {
