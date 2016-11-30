@@ -25,9 +25,9 @@
             </div>
         </div>
         <category-bar
-            :categoryId="categoryId"
-            :categoryItems="categoryItems"
-            :categoryName="categoryName"
+            :category-id="categoryId"
+            :category-items="categoryItems"
+            :category-name="categoryName"
             v-on:category-id-change="updateCategoryId"
         ></category-bar>
         <food-property
