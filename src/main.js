@@ -39,6 +39,25 @@ let init = function() {
                 }
             }
         },
+        computed: {
+            discountMap() {
+                let vm = this;
+                let temp = {
+                    half: 0,
+                    discount: 0,
+                    sale: 0,
+                    userDiscount: 0
+                };
+                this.tempData.orderForTrolley.forEach(function(orderItem) {
+                    let dish = vm.getDishById(orderItem.id);
+                    let discount = Braeco.utils.order.getDiscountForOrderItem(orderItem, dish);
+                    if (discount.type) {
+                        temp[discount.type] += discount.value;
+                    }
+                });
+                return temp;
+            }
+        },
         created() {
             let vm = this;
             this.requireData.menu.groups.forEach(function(group) {
@@ -173,20 +192,6 @@ let init = function() {
             },
             saveToLocStor(key, val) {
                 utils.locStor.set(key, val);
-            },
-            updateDiscount() {
-                let vm = this;
-                vm.tempData.discountMap.half = 0;
-                vm.tempData.discountMap.discount = 0;
-                vm.tempData.discountMap.sale = 0;
-                vm.tempData.discountMap.userDiscount = 0;
-                this.tempData.orderForTrolley.forEach(function(orderItem) {
-                    let dish = vm.getDishById(orderItem.id);
-                    let discount = Braeco.utils.order.getDiscountForOrderItem(orderItem, dish);
-                    if (discount.type) {
-                        vm.tempData.discountMap[discount.type] += discount.value;
-                    }
-                });
             }
         },
         watch: {
@@ -196,9 +201,6 @@ let init = function() {
             },
             'tempData.orderForTrolley': {
                 handler: function(newData, oldData) {
-                    // 更新优惠信息
-                    this.updateDiscount();
-
                     this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
                 },
                 deep: true

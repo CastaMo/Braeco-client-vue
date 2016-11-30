@@ -95,7 +95,11 @@ module.exports = {
         this.$root.$watch('tempData.orderForTrolley', function(newData) {
             vm.orderItems = vm.getItemsForOrder();
         }, {deep: true});
-        this.discountMap = this.$root.tempData.discountMap;
+
+        this.discountMap = this.$root.discountMap;
+        this.$root.$watch("discountMap", function(newData) {
+            vm.discountMap = vm.$root.discountMap;
+        });
     },
     components: {
         'order-item': Vue.component('order-item')
