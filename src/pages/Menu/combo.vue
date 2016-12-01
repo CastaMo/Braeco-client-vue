@@ -215,7 +215,7 @@ module.exports = {
         prepareForFoodProperty(opts) {
             let index = this.currentActiveIndex;
             if (this.getIsFullChooseByIndex(index)) {
-                return console.log("gg");
+                return this.$root.$emit("tips:error", "若需继续添加, 请先删除已选的餐品");
             }
             let id = opts.id;
             this.foodPropertyItem = this.getItemForFoodProperty(id);
@@ -271,7 +271,7 @@ module.exports = {
             let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index], opts.id);
             let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups);
             if (subItem.num <= 0) {
-                return console.log("gg");
+                return this.$root.$emit("tips:error", "数量已为0, 无法删除");
             }
             subItem.num -= 1;
             if (subItem.num <= 0) {
@@ -282,7 +282,7 @@ module.exports = {
         addChoose(opts) {
             let index = this.currentActiveIndex;
             if (this.getIsFullChooseByIndex(index)) {
-                return console.log("gg");
+                return this.$root.$emit("tips:error", "若需继续添加, 请先删除已选的餐品");
             }
             let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index] ,opts.id);
             let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups, true);
@@ -303,6 +303,7 @@ module.exports = {
                 groups: groups,
                 orderInitPrice: vm.totalPriceForCombo
             });
+            this.$root.$emit("tips:success", "添加套餐成功");
             this.$root.$router.back();
         },
         getIsFullChooseByIndex(index) {
