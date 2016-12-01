@@ -21,7 +21,8 @@ module.exports = {
     data() {
         return {
             tipsItem: null,
-            timestampForhide: 3000
+            timestampForhide: 2000,
+            timerId: null
         };
     },
     created() {
@@ -45,6 +46,7 @@ module.exports = {
             let vm = this;
             this.debounce(function() {
                 vm.tipsItem = null;
+                vm.timerId = null;
             }, vm.timestampForhide)();
         },
         showContent(opts) {
@@ -58,26 +60,25 @@ module.exports = {
             });
         },
         debounce(fn, timestamp) {
-            let lastEmitTimestamp = -1;
-            let timerId = null;
+            var lastEmitTimestamp = -1;
+            let vm = this;
             function callback() {
-                let now = +new Date();
-                let diffTimestamp = now - lastEmitTimestamp;
+                var now = +new Date();
+                var diffTimestamp = now - lastEmitTimestamp;
                 if (diffTimestamp >= timestamp) {
-                    timerId = null;
                     if (typeof fn === 'function') {
                         fn();
                     }
                 } else {
-                    timerId = setTimeout(function() {
+                    vm.timerId = setTimeout(function() {
                         callback();
                     }, timestamp - diffTimestamp);
                 }
             }
             return function() {
                 lastEmitTimestamp = +new Date();
-                if (!timerId) {
-                    timerId = setTimeout(function() {
+                if (!vm.timerId) {
+                    vm.timerId = setTimeout(function() {
                         callback();
                     }, timestamp);
                 }
