@@ -31,6 +31,14 @@ body {
     background-position: center;
 }
 
+.rounded-corners (@radius: 5px) {
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    -ms-border-radius: @radius;
+    -o-border-radius: @radius;
+    border-radius: @radius;
+}
+
 .transition (@time: .3s) {
     -webkit-transition: all @time ease-in-out;
     -moz-transition: all @time ease-in-out;
@@ -95,7 +103,13 @@ body {
     float: right;
 }
 
-
+#popout {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
 
 .active-container {
     position: relative;
@@ -119,7 +133,6 @@ body {
 }
 
 @import "./nprogress.less";
-@import "./toast.less";
 @import "./dialog.less";
 @import "./button.less";
 @import "./transition.less";
