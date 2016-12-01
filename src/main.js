@@ -276,6 +276,7 @@ let init = function() {
         components: {
             "footer-bar": Vue.component("footer-bar"),
             "trolley-footer-bar": Vue.component("trolley-footer-bar"),
+            "tips": Vue.component("tips"),
             "router-link": Vue.component("router-link"),
             "router-view": Vue.component("router-view")
         }
