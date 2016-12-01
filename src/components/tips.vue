@@ -1,9 +1,9 @@
 <template>
     <div id="tips">
         <div class='tips-container'>
-            <transition name="page-fade" mode="out-in">
+            <transition :name="transitionName" mode="out-in">
                 <div class='tips'
-                    v-if="tipsItem"
+                    v-if="tipsItem.content"
                     v-bind:class="{
                         'success': tipsItem.status === 'success',
                         'error': tipsItem.status === 'error'
@@ -20,8 +20,9 @@ module.exports = {
     name: 'tips',
     data() {
         return {
-            tipsItem: null,
-            timestampForhide: 2000,
+            transitionName: 'fade',
+            tipsItem: {},
+            timestampForhide: 1500,
             timerId: null
         };
     },
@@ -45,19 +46,19 @@ module.exports = {
             this.showContent(opts);
             let vm = this;
             this.debounce(function() {
-                vm.tipsItem = null;
+                vm.tipsItem = {};
                 vm.timerId = null;
             }, vm.timestampForhide)();
         },
         showContent(opts) {
-            this.tipsItem = null;
+            this.tipsItem = {};
             let vm = this;
             setTimeout(function() {
                 vm.tipsItem = {
                     status: opts.status,
                     content: opts.content
                 };
-            });
+            }, 100);
         },
         debounce(fn, timestamp) {
             var lastEmitTimestamp = -1;
