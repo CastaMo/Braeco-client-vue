@@ -91,7 +91,9 @@ module.exports = {
             vm.init();
         }
         this.$root.$on("root:getData", function() {
-            vm.init();
+            setTimeout(function() {
+                vm.init();
+            }, 200);
         });
     },
     beforeDestroy() {
