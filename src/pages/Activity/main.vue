@@ -86,8 +86,13 @@ module.exports = {
     },
 
     created() {
-        this.headerItems = this.getItemsForHeader();
-        this.activityItems = this.getItemsForActivity();
+        let vm = this;
+        if (this.$root.isLoaded) {
+            vm.init();
+        }
+        this.$root.$on("root:getData", function() {
+            vm.init();
+        });
     },
     directives: {
         'lazy': Vue.directive('lazy')
@@ -96,6 +101,10 @@ module.exports = {
         'rotate-display': Vue.component('rotate-display')
     },
     methods: {
+        init() {
+            this.headerItems = this.getItemsForHeader();
+            this.activityItems = this.getItemsForActivity();
+        },
         getItemsForHeader() {
             let result = [];
             let clientWidth = document.body.clientWidth;
