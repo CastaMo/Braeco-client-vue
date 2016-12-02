@@ -20,7 +20,7 @@ const router = new VueRouter({
 });
 let count = 3,
     requireData = {};
-let init = function() {
+let initMainVM = function() {
     return new Vue({
         router: router,
         data() {
@@ -336,4 +336,4 @@ getData("getTableDinner");
 getData("getTableLimit");
 getData("getTableMember");
 
-let mainVM = init();
+let mainVM = initMainVM();
