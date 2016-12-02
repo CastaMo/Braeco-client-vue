@@ -21,20 +21,24 @@ const router = new VueRouter({
 let count = 3,
     requireData = {};
 let init = function() {
-    new Vue({
+    return new Vue({
         router: router,
         data() {
             return {
                 transitionName: "page-fade",
-                requireData: requireData,
+                requireData: {},
                 tempData: {
                     orderForTrolley: [],
                     groupsMap: {}
-                }
+                },
+                isLoaded: false
             }
         },
         computed: {
             totalInitPrice() {
+                if (!this.isLoaded) {
+                    return 0;
+                }
                 let temp = 0;
                 this.tempData.orderForTrolley.forEach(function(orderItem) {
                     orderItem.subItems.forEach(function(subItem) {
@@ -44,6 +48,9 @@ let init = function() {
                 return temp;
             },
             discountMap() {
+                if (!this.isLoaded) {
+                    return {};
+                }
                 let vm = this;
                 let temp = {
                     half: 0,
@@ -82,6 +89,9 @@ let init = function() {
                 return temp;
             },
             totalFinalPrice() {
+                if (!this.isLoaded) {
+                    return 0;
+                }
                 let price = this.totalInitPrice
                                 - this.discountMap.half
                                 - this.discountMap.discount
@@ -92,6 +102,9 @@ let init = function() {
                 return price;
             },
             giveItem() {
+                if (!this.isLoaded) {
+                    return null;
+                }
                 let price = this.totalFinalPrice;
                 let giveName = "";
                 let maxGive = 0;
@@ -116,6 +129,9 @@ let init = function() {
                 return null;
             },
             orderTotalNumber() {
+                if (!this.isLoaded) {
+                    return 0;
+                }
                 let temp = 0;
                 this.tempData.orderForTrolley.forEach(function(orderItem) {
                     orderItem.subItems.forEach(function(subItem) {
@@ -126,16 +142,24 @@ let init = function() {
             }
         },
         created() {
-            let vm = this;
-            this.requireData.menu.groups.forEach(function(group) {
-                vm.tempData.groupsMap[group.id] = group;
-            });
             this.checkIsUnfiniteState();
-
-            let lsOrderForTrolley = this.readFromLocStor();
-            this.validateAndAssignForOraderForTrolley(lsOrderForTrolley);
+            let vm = this;
+            this.$on("root:init", function(requireData) {
+                this.requireData = requireData;
+                vm.init();
+            });
         },
         methods: {
+            init() {
+                let vm = this;
+                this.isLoaded = true;
+                this.requireData.menu.groups.forEach(function(group) {
+                    vm.tempData.groupsMap[group.id] = group;
+                });
+                let lsOrderForTrolley = this.readFromLocStor();
+                this.validateAndAssignForOraderForTrolley(lsOrderForTrolley);
+                this.$emit("root:getData");
+            },
             checkIsUnfiniteState() {
                 let routerArray = this.$route.path.split('/')
                 if (routerArray.pop() === 'x') {
@@ -289,6 +313,7 @@ let getData = requireName =>
         method: "GET",
         success: function(result) {
             let data = result.data;
+            NProgress.inc(0.3);
             if (result.message === "success") {
                 for (let key in data) {
                     requireData[key] = data[key];
@@ -298,7 +323,7 @@ let getData = requireName =>
             if (count === 0) {
                 console.log(JSON.parse(JSON.stringify(requireData)));
                 NProgress.done();
-                init();
+                mainVM.$emit("root:init", requireData);
             }
         },
         always: function() {
@@ -310,3 +335,5 @@ NProgress.start();
 getData("getTableDinner");
 getData("getTableLimit");
 getData("getTableMember");
+
+let mainVM = init();
