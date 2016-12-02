@@ -44,6 +44,9 @@
                             <p class='name total-center'>{{category.name}}</p>
                         </div>
                     </li>
+                    <div class='loadding' v-if="!categoryItems || categoryItems.length === 0" style="margin-bottom: 20px">
+                        正在加载数据中
+                    </div>
                     <div class='clear'></div>
                 </ul>
             </div>
@@ -56,13 +59,18 @@ module.exports = {
     name: 'home-menu',
     data() {
         return {
-            activityItems: null,
-            categoryItems: null
+            activityItems: [],
+            categoryItems: []
         }
     },
     created() {
-        this.activityItems = this.getItemsForActivity();
-        this.categoryItems = this.getItemsForCategory();
+        let vm = this;
+        if (this.$root.isLoaded) {
+            vm.init();
+        }
+        this.$root.$on("root:getData", function() {
+            vm.init();
+        });
     },
     components: {
         "rotate-display": Vue.component("rotate-display")
@@ -71,6 +79,10 @@ module.exports = {
         lazy: Vue.directive('lazy')
     },
     methods: {
+        init() {
+            this.activityItems = this.getItemsForActivity();
+            this.categoryItems = this.getItemsForCategory();
+        },
         getItemsForActivity() {
             let result = [];
             let clientWidth = document.body.clientWidth;
@@ -194,7 +206,7 @@ module.exports = {
                         font-size: 20px;
                     }
                 }
-                
+
                 &.left {
                     float: left;
                 }
