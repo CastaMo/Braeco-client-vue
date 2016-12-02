@@ -97,7 +97,7 @@ module.exports = {
         });
     },
     beforeDestroy() {
-        this.$root.$emit("root:getData");
+        this.$root.$off("root:getData");
     },
     directives: {
         'lazy': Vue.directive('lazy')

@@ -75,7 +75,7 @@ module.exports = {
         });
     },
     beforeDestroy() {
-        this.$root.$emit("root:getData");
+        this.$root.$off("root:getData");
     },
     components: {
         "rotate-display": Vue.component("rotate-display")
