@@ -1,6 +1,6 @@
 <template>
 	<div id='category-bar'>
-		<div class='popup-field' v-if="categoryId">
+		<div class='popup-field'>
             <transition name="fade" mode="out-in">
                 <div
                     class='cover'
@@ -12,7 +12,8 @@
                 <div class='category-name'>
                     <div class='category-name-wrapper'>
                         <div class='category-name-container'>
-                            <p>{{categoryName}}</p>
+                            <p v-if="categoryId">{{categoryName}}</p>
+                            <p v-else>正在加载数据中</p>
                         </div>
                     </div>
                 </div>
