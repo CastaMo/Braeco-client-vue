@@ -8,6 +8,11 @@ const utils = require("./utils/index.js");
 
 const style = require('./style/index.less');
 
+const store = require("./store/index.js");
+
+const mapGetters = require("Vuex").mapGetters;
+const mapState = require("Vuex").mapState;
+
 const router = new VueRouter({
     mode: 'history',
     routes: routes,
@@ -26,7 +31,6 @@ let initMainVM = function() {
         data() {
             return {
                 transitionName: "page-fade",
-                requireData: {},
                 tempData: {
                     orderForTrolley: [],
                     groupsMap: {}
@@ -34,6 +38,7 @@ let initMainVM = function() {
                 isLoaded: false
             }
         },
+        store: store,
         computed: {
             totalInitPrice() {
                 if (!this.isLoaded) {
@@ -139,20 +144,23 @@ let initMainVM = function() {
                     });
                 });
                 return temp;
-            }
+            },
+            ...mapGetters([
+                'groupsMap'
+            ]),
+            ...mapState([
+                'requireData'
+            ])
         },
         created() {
             this.checkIsUnfiniteState();
             let vm = this;
-            this.$on("root:init", function(requireData) {
-                this.requireData = requireData;
-                vm.init();
-            });
         },
         methods: {
             init() {
                 let vm = this;
                 this.isLoaded = true;
+                console.log(this.requireData);
                 this.requireData.menu.groups.forEach(function(group) {
                     vm.tempData.groupsMap[group.id] = group;
                 });
@@ -314,16 +322,24 @@ let getData = requireName =>
         success: function(result) {
             let data = result.data;
             NProgress.inc(0.3);
-            if (result.message === "success") {
-                for (let key in data) {
-                    requireData[key] = data[key];
+            try {
+                if (result.message === "success") {
+                    for (let key in data) {
+                        requireData[key] = data[key];
+                    }
+                    count--;
                 }
-                count--;
-            }
-            if (count === 0) {
-                console.log(JSON.parse(JSON.stringify(requireData)));
-                NProgress.done();
-                mainVM.$emit("root:init", requireData);
+                if (count === 0) {
+                    console.log(JSON.parse(JSON.stringify(requireData)));
+                    NProgress.done();
+                    mainVM.$emit("tips:success", "初始化成功！");
+                    mainVM.$store.commit("getData", {
+                        requireData: requireData
+                    });
+                    console.log(mainVM.requireData);
+                }
+            } catch (e) {
+                mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
             }
         },
         always: function() {
@@ -337,3 +353,9 @@ getData("getTableLimit");
 getData("getTableMember");
 
 let mainVM = initMainVM();
+
+window.onerror = function(msg, url, line, col, error) {
+    if (error.stack.indexOf("JSON.parse") >= 0) {
+        mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
+    };
+}
