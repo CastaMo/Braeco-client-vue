@@ -90,32 +90,45 @@ module.exports = {
     },
     created() {
         let vm = this;
-        this.$root.requireData.menu.groups.forEach(function(group) {
-            vm.groupsMap[group.id] = group;
+        if (this.$root.isLoaded) {
+            vm.init();
+        }
+        this.$root.$on("root:getData", function() {
+            setTimeout(function() {
+                vm.init();
+            }, 200);
         });
-
-        this.dishLimit = this.$root.requireData.dish_limit;
-
-        this.orderItems = this.getItemsForOrder();
-        this.$root.$watch('tempData.orderForTrolley', function(newData) {
-            vm.orderItems = vm.getItemsForOrder();
-        }, {deep: true});
-
-        this.discountMap = this.$root.discountMap;
-        this.$root.$watch("discountMap", function(newData) {
-            vm.discountMap = vm.$root.discountMap;
-        });
-
-        this.giveItem = this.$root.giveItem;
-        this.$root.$watch("giveItem", function(newData) {
-            vm.giveItem = vm.$root.giveItem;
-        });
-
+    },
+    beforeDestroy() {
+        this.$root.$off("root:getData");
     },
     components: {
         'order-item': Vue.component('order-item')
     },
     methods: {
+        init() {
+            let vm = this;
+            this.$root.requireData.menu.groups.forEach(function(group) {
+                vm.groupsMap[group.id] = group;
+            });
+
+            this.dishLimit = this.$root.requireData.dish_limit;
+
+            this.orderItems = this.getItemsForOrder();
+            this.$root.$watch('tempData.orderForTrolley', function(newData) {
+                vm.orderItems = vm.getItemsForOrder();
+            }, {deep: true});
+
+            this.discountMap = this.$root.discountMap;
+            this.$root.$watch("discountMap", function(newData) {
+                vm.discountMap = vm.$root.discountMap;
+            });
+
+            this.giveItem = this.$root.giveItem;
+            this.$root.$watch("giveItem", function(newData) {
+                vm.giveItem = vm.$root.giveItem;
+            });
+        },
         getItemsForOrder() {
             let temp = [];
             let vm = this;
