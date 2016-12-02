@@ -49,16 +49,25 @@ module.exports = {
         }
     },
     created() {
-        let id = Number(this.$root.$route.params.activityId);
-        this.activityItem = this.getActivityItem(id);
-        if (!this.activityItem) {
-            this.$root.$router.back();
+        let vm = this;
+        if (this.$root.isLoaded) {
+            vm.init();
         }
+        this.$root.$on("root:getData", function() {
+            vm.init();
+        });
     },
     directives: {
         'lazy': Vue.directive('lazy')
     },
     methods: {
+        init() {
+            let id = Number(this.$root.$route.params.activityId);
+            this.activityItem = this.getActivityItem(id);
+            if (!this.activityItem) {
+                this.$root.$router.back();
+            }
+        },
         getActivityItem(id) {
             let activity;
             let temp = {};
