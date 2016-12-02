@@ -102,11 +102,15 @@ module.exports = {
             allFoodChooseOptions: [],
             currentActiveIndex: -1,
             foodPropertyItem: {properties: []},
-            comboDeleteItem: {deleteItems: []}
+            comboDeleteItem: {deleteItems: []},
+            isLoaded: false
         }
     },
     computed: {
         isReadyForAddToTrolley() {
+            if (!this.isLoaded) {
+                return false;
+            }
             let flag = true;
             let vm = this;
             this.comboItem.require.every(function(requireItem, index) {
@@ -124,6 +128,9 @@ module.exports = {
 
         // 用于使选项与food顺序对齐
         comboChooseOptionsArray() {
+            if (!this.isLoaded) {
+                return [[]];
+            }
             let temp = [];
             this.allFoodChooseOptions.forEach(function(foodListOption) {
                 let foodListTemp = [];
@@ -146,6 +153,9 @@ module.exports = {
 
         // 用于记录每一个food的选择记录
         chooseNumForFood() {
+            if (!this.isLoaded) {
+                return [[{num: 0}]];
+            }
             let temp = [];
             this.allFoodChooseOptions.forEach(function(foodListOption) {
                 let numListTemp = [];
@@ -162,12 +172,18 @@ module.exports = {
         },
 
         totalPriceForCombo() {
+            if (!this.isLoaded) {
+                return 0;
+            }
             let price = Braeco.utils.combo.getPriceForCombo(this.comboItem, this.chooseAllInfoForFood);
             return price;
         },
 
         // 用于显示每一个food的选择信息，以及价格的更新
         chooseAllInfoForFood() {
+            if (!this.isLoaded) {
+                return [];
+            }
             let temp = [];
             let vm = this;
             this.comboChooseOptionsArray.forEach(function(foodList, index) {
@@ -197,21 +213,36 @@ module.exports = {
         }
     },
     created() {
-        this.foodId = this.$root.$route.params.foodId;
         let vm = this;
-        this.$root.requireData.menu.groups.forEach(function(group) {
-            vm.groupsMap[group.id] = group;
+        if (this.$root.isLoaded) {
+            vm.init();
+        }
+        this.$root.$on("root:getData", function() {
+            setTimeout(function() {
+                vm.init();
+            }, 200);
         });
-
-        this.dishLimit = this.$root.requireData.dish_limit;
-        this.comboItem = this.getItemForCombo(this.foodId);
-
-        let requireLen = this.comboItem.require.length;
-        this.allFoodChooseOptions =  Array(requireLen).fill([]);
-        this.allFoodChooseOptions = this.getAllFoodChooseOptions(this.comboItem);
-        this.showFirstRequireUnFinish();
+    },
+    beforeDestroy() {
+        this.$root.$off("root:getData");
     },
     methods: {
+        init() {
+            this.isLoaded = true;
+            this.foodId = this.$root.$route.params.foodId;
+            let vm = this;
+            this.$root.requireData.menu.groups.forEach(function(group) {
+                vm.groupsMap[group.id] = group;
+            });
+
+            this.dishLimit = this.$root.requireData.dish_limit;
+            this.comboItem = this.getItemForCombo(this.foodId);
+
+            let requireLen = this.comboItem.require.length;
+            this.allFoodChooseOptions =  Array(requireLen).fill([]);
+            this.allFoodChooseOptions = this.getAllFoodChooseOptions(this.comboItem);
+            this.showFirstRequireUnFinish();
+        },
         prepareForFoodProperty(opts) {
             let index = this.currentActiveIndex;
             if (this.getIsFullChooseByIndex(index)) {
