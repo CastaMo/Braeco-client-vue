@@ -72,6 +72,9 @@ module.exports = {
             vm.init();
         });
     },
+    beforeDestroy() {
+        this.$root.$emit("root:getData");
+    },
     components: {
         "rotate-display": Vue.component("rotate-display")
     },

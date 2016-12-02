@@ -57,6 +57,9 @@ module.exports = {
             vm.init();
         });
     },
+    beforeDestroy() {
+        this.$root.$emit("root:getData");
+    },
     directives: {
         'lazy': Vue.directive('lazy')
     },
