@@ -1,6 +1,5 @@
 <template>
     <div id="Menu-Info">
-        <div class=''>
         <div class='img-container' v-if="foodItem">
             <div
                 class='img'
@@ -22,7 +21,7 @@
                 v-on:food-with-combo-add-click="routeToCombo"
             ></food-item>
         </div>
-        <div class='detail' v-if="foodItem.detail">
+        <div class='detail' v-if="foodItem && foodItem.detail">
             <div class='detail-header'>
                 <div class='detail-header-wrapper margin-left-wrapper'>
                     <div class='detail-header-container'>
@@ -61,22 +60,16 @@ module.exports = {
         }
     },
     created() {
-        let foodId = Number(this.$root.$route.params.foodId);
-        this.foodId = foodId;
 
-
-        let vm = this;
-        this.$root.requireData.menu.groups.forEach(function(group) {
-            vm.groupsMap[group.id] = group;
-        });
-
-
-        this.dishLimit = this.$root.requireData.dish_limit;
-
-        this.foodItem = this.getItemForFood(foodId);
-        if (!this.foodItem) {
-            this.$root.$router.back();
+        if (this.$root.isLoaded) {
+            this.init();
         }
+        let vm = this;
+        this.$root.$on("root:getData", function() {
+            setTimeout(function() {
+                vm.init();
+            }, 200)
+        });
 
         this.$root.$once("root:route-to-order", function() {
             vm.$root.$router.back();
@@ -89,6 +82,22 @@ module.exports = {
         this.$root.$off("root:route-to-order");
     },
     methods: {
+        init() {
+            let foodId = Number(this.$root.$route.params.foodId);
+            this.foodId = foodId;
+            let vm = this;
+            this.$root.requireData.menu.groups.forEach(function(group) {
+                vm.groupsMap[group.id] = group;
+            });
+
+
+            this.dishLimit = this.$root.requireData.dish_limit;
+
+            this.foodItem = this.getItemForFood(foodId);
+            if (!this.foodItem) {
+                this.$root.$router.back();
+            }
+        },
         getItemForFood(foodId) {
             let dish = this.$root.getDishById(foodId);
             let food = Braeco.utils.food.getFixedDataForFood(dish, this.groupsMap, this.dishLimit);
