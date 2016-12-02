@@ -55,24 +55,17 @@ module.exports = {
         };
     },
     created() {
-
         let vm = this;
-        this.$root.requireData.menu.groups.forEach(function(group) {
-            vm.groupsMap[group.id] = group;
+        if (this.$root.isLoaded) {
+            this.init();
+        }
+        this.$root.$on("root:getData", function() {
+            vm.init();
         });
-
-        this.dishLimit = this.$root.requireData.dish_limit;
-        this.categoryId = Number(this.$root.$route.params.categoryId);
-        this.categoryItems = this.getItemsForCategory();
-        this.foodItems = this.getItemsForFood();
-
-        this.$root.$once("root:route-to-order", function() {
-            vm.$root.$router.push('/menu/order');
-        });
-
     },
     beforeDestroy() {
         this.$root.$off("root:route-to-order");
+        this.$root.$off("roo:getData");
     },
     directives: {
         lazy: Vue.directive('lazy')
@@ -83,6 +76,21 @@ module.exports = {
         "food-property": require("./components/food-property")
     },
     methods: {
+        init() {
+            let vm = this;
+            this.$root.requireData.menu.groups.forEach(function(group) {
+                vm.groupsMap[group.id] = group;
+            });
+
+            this.dishLimit = this.$root.requireData.dish_limit;
+            this.categoryId = Number(this.$root.$route.params.categoryId);
+            this.categoryItems = this.getItemsForCategory();
+            this.foodItems = this.getItemsForFood();
+
+            this.$root.$once("root:route-to-order", function() {
+                vm.$root.$router.push('/menu/order');
+            });
+        },
         prepareForFoodProperty(opts) {
             let id = opts.id;
             this.foodPropertyItem = this.getItemForFoodProperty(id);
