@@ -1,6 +1,7 @@
 <template>
     <div class='rotate-display'>
         <ul class='display-list'
+            v-if="items && items.length > 0"
             v-bind:style="{
                 'width': `${itemWidth * (items.length+2)}px`,
                 'height': `${itemHeight}px`,
@@ -63,6 +64,22 @@
                 </div>
             </li>
         </ul>
+        <div class='display-loadding' v-else>
+            <li
+                class='display-item'
+                v-bind:style="{
+                    'width': `${itemWidth}px`,
+                    'height': `${itemHeight}px`,
+                    'background-size': `${itemWidth}px ${itemHeight}px`
+                }"
+            >
+                <div class='title-field'>
+                    <div class='title-container'>
+                        <p>正在加载数据中</p>
+                    </div>
+                </div>
+            </li>
+        </div>
         <div class='choose-field'>
             <ul class='choose-dot-list'>
                 <li
@@ -220,22 +237,25 @@ module.exports = {
     overflow-x: hidden;
     width: 100%;
     position: relative;
-    ul.display-list {
-        li.display-item {
-            float: left;
-            position: relative;
-            .title-field {
-                position: absolute;
-                width: 100%;
-                bottom: 0;
-                left: 0;
-                background-color: rgba(0, 0, 0, 0.5);
-                p {
-                    line-height: 30px;
-                    color: #fff;
-                    padding-left: 16px;
-                }
+    li.display-item {
+        float: left;
+        position: relative;
+        .title-field {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            p {
+                line-height: 30px;
+                color: #fff;
+                padding-left: 16px;
             }
+        }
+    }
+    .display-loadding {
+        li.display-item {
+            background-image: url("data:image/png;base64,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");
         }
     }
     .choose-field {
