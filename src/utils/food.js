@@ -1,4 +1,24 @@
 const food = {
+
+    getDishById(menu, foodId) {
+        let temp = {};
+        let flag = false;
+        menu.categories.every(function(category) {
+            category.dishes.every(function(dish) {
+                if (Number(dish.id) === Number(foodId)) {
+                    temp = dish;
+                    flag = true;
+                    return false;
+                }
+                return true;
+            });
+            if (flag) {
+                return false;
+            }
+            return true;
+        });
+        return temp;
+    },
 	getChooseAllFirstPrice(food, groupsMap) {
         let price = food.default_price;
         if (food.type === "normal") {

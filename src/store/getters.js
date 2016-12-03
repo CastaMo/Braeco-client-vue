@@ -1,6 +1,6 @@
 const getters = {
     groupsMap(state, getters) {
-        if (state.isLoaded) {
+        if (!state.isLoaded) {
             return {};
         } else {
             let temp = {};

@@ -75,16 +75,11 @@
 
 <script>
 
-import Vue from "vue"
-
 module.exports = {
     name: 'food-item',
     props: {
         foodItem: Object,
         num: Number
-    },
-    directives: {
-        'lazy': Vue.directive('lazy')
     },
     methods: {
         foodClickEvent(id) {

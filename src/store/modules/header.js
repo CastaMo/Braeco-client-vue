@@ -1,7 +1,3 @@
-
-
-
-
 const header = {
     getters: {
         headerItems: function(state, getters, rootState) {

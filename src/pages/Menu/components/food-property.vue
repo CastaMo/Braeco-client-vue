@@ -65,6 +65,8 @@
 
 <script>
 
+const Vue = require("vue");
+
 module.exports = {
     name: 'food-property',
     props: {

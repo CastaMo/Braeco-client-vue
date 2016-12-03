@@ -11,6 +11,8 @@ Vue.use(Vuex);
 const category = require("./modules/category.js");
 const activity = require("./modules/activity.js");
 const header = require("./modules/header.js");
+const food = require("./modules/food.js");
+const property = require("./modules/property.js");
 
 const store = new Vuex.Store({
     state: state,
@@ -20,7 +22,9 @@ const store = new Vuex.Store({
     modules: {
         category: category,
         activity: activity,
-        header: header
+        header: header,
+        food: food,
+        property: property
     }
 });
 

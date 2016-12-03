@@ -12,7 +12,8 @@
                 <div class='category-name'>
                     <div class='category-name-wrapper'>
                         <div class='category-name-container'>
-                            <p v-if="categoryId">{{categoryName}}</p>
+                            <p v-if="currentCategoryItem.name">{{currentCategoryItem.name}}</p>
+                            <p v-if="currentCategoryItem.inValid">请重新选择</p>
                             <p v-else>正在加载数据中</p>
                         </div>
                     </div>
@@ -33,7 +34,7 @@
                                     v-for="category in categoryItems"
                                     v-on:click="categoryItemClickEvent(category.id)"
                                     v-bind:class="{
-                                        'choose': categoryId === category.id
+                                        'choose': currentCategoryItem.id === category.id
                                     }"
                                 >
                                     <div class='category-wrapper margin-left-wrapper'>
@@ -65,7 +66,8 @@ module.exports = {
 	props: {
 		categoryId: Number,
 		categoryItems: Array,
-		categoryName: String
+		categoryName: String,
+        currentCategoryItem: Object
 	},
 
 	data() {
@@ -85,9 +87,6 @@ module.exports = {
             this.$emit("category-id-change", id);
             this.rightBarFlag = false;
         }
-	},
-	directives: {
-		'lazy': Vue.directive('lazy')
 	}
 }
 
