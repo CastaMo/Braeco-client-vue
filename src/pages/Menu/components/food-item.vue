@@ -279,7 +279,7 @@ module.exports = {
                             width: 25px;
                             height: 25px;
                             background-size: 25px 25px;
-                            background-image: url("../assets/Icon/Round/Minus.png");
+                            background-image: url("../../../assets/Icon/Round/Minus.png");
                         }
                     }
                     .num {
@@ -293,7 +293,7 @@ module.exports = {
                             width: 25px;
                             height: 25px;
                             background-size: 25px 25px;
-                            background-image: url("../assets/Icon/Round/Plus.png");
+                            background-image: url("../../../assets/Icon/Round/Plus.png");
                         }
                         .add-btn-word {
                             line-height: 25px;

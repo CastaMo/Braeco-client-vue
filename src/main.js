@@ -1,6 +1,5 @@
 const routeWeight = require("./routeWeight.js");
 const config = require("./common/config.js");
-const components = require('./components/index.js');
 
 const utils = require("./utils/index.js");
 
