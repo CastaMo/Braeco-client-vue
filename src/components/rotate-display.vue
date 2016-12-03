@@ -22,7 +22,7 @@
                     'width': `${itemWidth}px`,
                     'height': `${itemHeight}px`
                 }"
-                v-lazy:background-image="items[items.length-1].pic"
+                v-lazy:background-image="items[items.length-1].rdPic"
             >
                 <div class='title-field'>
                     <div class='title-container'>
@@ -39,7 +39,7 @@
                     'height': `${itemHeight}px`,
                     'background-size': `${itemWidth}px ${itemHeight}px`
                 }"
-                v-lazy:background-image="item.pic"
+                v-lazy:background-image="item.rdPic"
             >
                 <div class='title-field'>
                     <div class='title-container'>
@@ -55,7 +55,7 @@
                     'height': `${itemHeight}px`,
                     'background-size': `${itemWidth}px ${itemHeight}px`
                 }"
-                v-lazy:background-image="items[0].pic"
+                v-lazy:background-image="items[0].rdPic"
             >
                 <div class='title-field'>
                     <div class='title-container'>
@@ -148,9 +148,6 @@ module.exports = {
             intervalId: null
         }
     },
-    directives: {
-        lazy: Vue.directive('lazy')
-    },
     methods: {
         touchstartEvent(event) {
             let touch = event.touches[0];
@@ -209,6 +206,9 @@ module.exports = {
             this.transitionStr = 'all 0.3s ease-in-out';
         },
         onAnimateCallback() {
+            if (!this.items || !this.items.length > 0) {
+                return;
+            }
             if (this.currentIndex >= this.items.length) {
                 this.transitionStr = '';
                 this.currentIndex = 0;

@@ -56,10 +56,9 @@
 
 <script>
 
-const mapState = require("Vuex").mapState;
+const mapGetters = require("Vuex").mapGetters;
 
 const store = require("../../store/index.js");
-import Vue from "vue"
 
 module.exports = {
     name: 'home-menu',
@@ -69,12 +68,10 @@ module.exports = {
         }
     },
     computed: {
-        categoryItems() {
-            return this.$root.$store.getters.categoryItems;
-        },
-        requireData() {
-            return store.state.requireData;
-        }
+        ...mapGetters([
+            'categoryItems',
+            'activityItems'
+        ])
     },
     created() {
     },
@@ -97,20 +94,8 @@ module.exports = {
             }
             return result;
         },
-        getItemsForCategory() {
-            let result = [];
-            for (let i = 0, len = this.$root.requireData.menu.categories.length; i < len; i++) {
-                let category = this.$root.requireData.menu.categories[i];
-                if (!category.display_flag) {
-                    continue;
-                }
-                let temp = Braeco.utils.category.getFixedDataForCategory(category);
-                result.push(temp);
-            }
-            return result;
-        },
         categoryClickEvent(id) {
-            this.$root.$router.push('/menu/main/' + id);
+            this.$router.push(`/menu/main/${id}`);
         },
         RDContainerClickEvent() {
             this.$root.$router.push('/activity/main/');
