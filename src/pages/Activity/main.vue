@@ -75,17 +75,16 @@
 </template>
 
 <script>
-
-const mapGetters = require("Vuex").mapGetters;
-
 module.exports = {
     name: 'activity-main',
 
     computed: {
-        ...mapGetters([
-            'headerItems',
-            'activityMapTypeItems'
-        ])
+        headerItems: function() {
+            return this.$store.getters.headerItems;
+        },
+        activityMapTypeItems: function() {
+            return this.$store.getters.activityMapTypeItems;
+        }
     },
 
     created() {

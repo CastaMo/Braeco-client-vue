@@ -56,10 +56,6 @@
 
 <script>
 
-const mapGetters = require("Vuex").mapGetters;
-
-const store = require("../../store/index.js");
-
 module.exports = {
     name: 'home-menu',
     data() {
@@ -68,10 +64,12 @@ module.exports = {
         }
     },
     computed: {
-        ...mapGetters([
-            'categoryItems',
-            'activityItems'
-        ])
+        categoryItems: function() {
+            return this.$store.getters.categoryItems;
+        },
+        activityItems: function() {
+            return this.$store.getters.activityItems;
+        }
     },
     created() {
     },

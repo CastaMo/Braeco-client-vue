@@ -26,7 +26,6 @@ const activity = {
                 let result = [];
                 rootState.requireData.activity.forEach(function(activity) {
                     let temp = getFixedDataForActivity(activity);
-                    console.log(temp);
                     result.push(temp);
                 });
                 return result;
