@@ -1,19 +1,25 @@
 <template>
-    <div id="Activity-Info" v-if="activityItem">
+    <div id="Activity-Info">
+        <iframe
+            v-if="activityItem.inValid"
+            v-on:load="backRoute"
+        ></iframe>
         <div class='activity-pic'>
             <div
                 class='pic'
                 v-bind:style="{
-                    'width': `${activityItem.width}px`,
-                    'height': `${activityItem.height}px`,
-                    'background-size': `${activityItem.width}px ${activityItem.height}px`
+                    'width': `${picWidth}px`,
+                    'height': `${picHeight}px`,
+                    'background-size': `${picWidth}px ${picHeight}px`
                 }"
                 v-lazy:background-image="activityItem.pic"
             ></div>
         </div>
         <div class='activity-title'>
-            <div class='type'>{{activityItem.typeStr}}</div>
-            <p class='title'>{{activityItem.title}}</p>
+            <div class='type' v-if="activityItem.typeStr">{{activityItem.typeStr}}</div>
+            <div class='type' v-else>加载</div>
+            <p class='title' v-if="activityItem.title">{{activityItem.title}}</p>
+            <p class='title' v-else>正在加载数据中</p>
             <div class='clear'></div>
         </div>
         <div class='activity-intro'>
@@ -43,63 +49,24 @@
 <script>
 module.exports = {
     name: 'activity-info',
-    data() {
-        return {
-            activityItem: null
+    computed: {
+        activityItem: function() {
+            return this.$store.getters.activityInfoItem;
+        },
+        picWidth: function() {
+            let clientWidth = document.body.clientWidth;
+            return clientWidth - 32;
+        },
+        picHeight: function() {
+            return this.picWidth * 182.93 / 343;
         }
     },
     created() {
-        let vm = this;
-        if (this.$root.isLoaded) {
-            vm.init();
-        }
-        this.$root.$on("root:getData", function() {
-            setTimeout(function() {
-                vm.init();
-            }, 200);
-        });
-    },
-    beforeDestroy() {
-        this.$root.$off("root:getData");
-    },
-    directives: {
-        'lazy': Vue.directive('lazy')
     },
     methods: {
-        init() {
-            let id = Number(this.$root.$route.params.activityId);
-            this.activityItem = this.getActivityItem(id);
-            if (!this.activityItem) {
-                this.$root.$router.back();
-            }
-        },
-        getActivityItem(id) {
-            let activity;
-            let temp = {};
-            let clientWidth = document.body.clientWidth;
-            for (let i = 0, len = this.$root.requireData.activity.length; i < len; i++) {
-                activity = this.$root.requireData.activity[i];
-                if (Number(activity.id) === id) {
-                    temp.title = activity.title;
-                    temp.content = activity.content;
-                    temp.intro = activity.intro;
-                    temp.width = clientWidth - 32;
-                    temp.height = temp.width * 182.93 / 343;
-                    temp.pic = `${activity.pic}?imageView2/1/w/${temp.width * 2}/h/${Math.floor(temp.height) * 2}`;
-                    if (activity.type === "sales") {
-                        temp.typeStr = "促销";
-                    } else if (activity.type === "theme") {
-                        temp.typeStr = "主题";
-                    }
-                    if (activity.date_begin === 0 && activity.date_end === 0) {
-                        temp.dateStr = "永久";
-                    } else {
-                        temp.dateStr = `${new Date(activity.date_begin * 1000).Format('yyyy.MM.dd')} - ${new Date(activity.date_end * 1000).Format('yyyy.MM.dd')}`
-                    }
-                    return temp;
-                }
-            }
-            return null;
+        backRoute() {
+            this.$root.$emit("tips:error", "活动已过期");
+            this.$router.back();
         }
     }
 }
