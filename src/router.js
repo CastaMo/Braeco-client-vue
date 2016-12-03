@@ -50,4 +50,19 @@ const routes = [
     { path: '/test', component: test}
 ];
 
-module.exports = routes;
+const Vue = require("vue");
+const VueRouter = require("vue-router");
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+    mode: 'history',
+    routes: routes,
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        }
+        return { x: 0, y: 0 };
+    }
+});
+
+module.exports = router;

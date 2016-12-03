@@ -1,5 +1,3 @@
-
-const routes = require('./routes.js');
 const routeWeight = require("./routeWeight.js");
 const config = require("./common/config.js");
 const components = require('./components/index.js');
@@ -9,28 +7,14 @@ const utils = require("./utils/index.js");
 const style = require('./style/index.less');
 const store = require("./store/index.js");
 
+
+const Vue = require("vue");
+const Vuex = require("vuex");
+
 const mapGetters = Vuex.mapGetters;
 const mapState = Vuex.mapState;
 
-const App = require("./App.vue");
-console.log(App);
-
-import Vue from "vue";
-import VueRouter from "vue-router"
-import Vuex from "vuex"
-
-Vue.use(VueRouter);
-
-const router = new VueRouter({
-    mode: 'history',
-    routes: routes,
-    scrollBehavior(to, from, savedPosition) {
-        if (savedPosition) {
-            return savedPosition;
-        }
-        return { x: 0, y: 0 };
-    }
-});
+const router = require("./router.js");
 
 const sync = require("vuex-router-sync").sync;
 sync(store, router);
@@ -39,8 +23,8 @@ let count = 3,
     requireData = {};
 let initMainVM = function() {
     return new Vue({
-        router,
-        store,
+        router: router,
+        store: store,
         data() {
             return {
                 transitionName: "page-fade",
@@ -321,9 +305,7 @@ let initMainVM = function() {
         components: {
             "footer-bar": require("./components/footer-bar"),
             "trolley-footer-bar": require("./components/trolley-footer-bar"),
-            "tips": require("./components/tips"),
-            "router-link": Vue.component("router-link"),
-            "router-view": Vue.component("router-view")
+            "tips": require("./components/tips")
         }
     });
 }
@@ -368,7 +350,7 @@ let mainVM = initMainVM();
 mainVM.$mount('#braeco-client');
 
 window.onerror = function(msg, url, line, col, error) {
-    if (error.stack.indexOf("JSON.parse") >= 0) {
+    if (error && error.stack && error.stack.indexOf("JSON.parse") >= 0) {
         mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
     };
 }
