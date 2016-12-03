@@ -10,6 +10,7 @@ Vue.use(Vuex);
 
 const category = require("./modules/category.js");
 const activity = require("./modules/activity.js");
+const header = require("./modules/header.js");
 
 const store = new Vuex.Store({
     state: state,
@@ -17,8 +18,9 @@ const store = new Vuex.Store({
     mutations: mutations,
     actions: actions,
     modules: {
-        category,
-        activity
+        category: category,
+        activity: activity,
+        header: header
     }
 });
 

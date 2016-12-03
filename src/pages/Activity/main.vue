@@ -4,7 +4,7 @@
             <rotate-display :items="headerItems"></rotate-display>
         </div>
         <div class='activity-display-container'>
-            <div class='sales-display-container display-container' v-if="activityItems.sales">
+            <div class='sales-display-container display-container' v-if="activityMapTypeItems.sales">
                 <div class='display-header'>
                     <div class='display-header-wrapper margin-left-wrapper'>
                         <div class='display-header-container'>
@@ -16,14 +16,14 @@
                     <ul class='activity-list'>
                         <li
                             class='activity active-container'
-                            v-for="activity in activityItems.sales"
+                            v-for="activity in activityMapTypeItems.sales"
                             v-on:click="activityLiClickEvent(activity.id)"
                         >
                             <div class='activity-wrapper margin-left-wrapper'>
                                 <div class='img-field'>
                                     <div
                                         class='img'
-                                        v-lazy:background-image="activity.pic">
+                                        v-lazy:background-image="activity.smallPic">
                                     </div>
                                 </div>
                                 <div class='info-field'>
@@ -37,7 +37,7 @@
                     </ul>
                 </div>
             </div>
-            <div class='theme-display-container display-container' v-if="activityItems.theme">
+            <div class='theme-display-container display-container' v-if="activityMapTypeItems.theme">
                 <div class='display-header'>
                     <div class='display-header-wrapper margin-left-wrapper'>
                         <div class='display-header-container'>
@@ -49,7 +49,7 @@
                     <ul class='activity-list'>
                         <li
                             class='activity active-container'
-                            v-for="activity in activityItems.theme"
+                            v-for="activity in activityMapTypeItems.theme"
                             v-on:click="activityLiClickEvent(activity.id)"
                         >
                             <div class='activity-wrapper margin-left-wrapper'>
@@ -75,73 +75,25 @@
 </template>
 
 <script>
+
+const mapGetters = require("Vuex").mapGetters;
+
 module.exports = {
     name: 'activity-main',
 
-    data() {
-        return {
-            headerItems: [],
-            activityItems: {}
-        }
+    computed: {
+        ...mapGetters([
+            'headerItems',
+            'activityMapTypeItems'
+        ])
     },
 
     created() {
-        let vm = this;
-        if (this.$root.isLoaded) {
-            vm.init();
-        }
-        this.$root.$on("root:getData", function() {
-            setTimeout(function() {
-                vm.init();
-            }, 200);
-        });
-    },
-    beforeDestroy() {
-        this.$root.$off("root:getData");
-    },
-    directives: {
-        'lazy': Vue.directive('lazy')
     },
     components: {
-        'rotate-display': Vue.component('rotate-display')
+        'rotate-display': require('../../components/rotate-display')
     },
     methods: {
-        init() {
-            this.headerItems = this.getItemsForHeader();
-            this.activityItems = this.getItemsForActivity();
-        },
-        getItemsForHeader() {
-            let result = [];
-            let clientWidth = document.body.clientWidth;
-
-            let canteenName = this.$root.requireData.dinner.name;
-            for (let i = 0, len = this.$root.requireData.covers.length; i < len; i++) {
-                let cover = this.$root.requireData.covers[i];
-                let temp = {};
-                temp.pic = `${cover}?imageView2/1/w/${Math.floor(clientWidth) * 2}/h/${Math.floor(clientWidth * 200 / 375) * 2}`;
-                temp.title = canteenName;
-                result.push(temp);
-            }
-            return result;
-        },
-        getItemsForActivity() {
-            let result = {
-                theme: [],
-                sales: []
-            };
-            for (let i = 0, len = this.$root.requireData.activity.length; i < len; i++) {
-                let activity = this.$root.requireData.activity[i];
-                let temp = {};
-                temp.pic = `${activity.pic}?imageView2/1/w/${80 * 2}/h/${80 * 2}`
-                temp.title = activity.title;
-                temp.intro = activity.intro;
-                temp.id = activity.id;
-                if (result[activity.type]) {
-                    result[activity.type].push(temp);
-                }
-            }
-            return result;
-        },
         activityLiClickEvent(id) {
             this.$root.$router.push(`/activity/info/${id}`);
         }
