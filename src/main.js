@@ -7,11 +7,19 @@ const components = require('./components/index.js');
 const utils = require("./utils/index.js");
 
 const style = require('./style/index.less');
-
 const store = require("./store/index.js");
 
-const mapGetters = require("Vuex").mapGetters;
-const mapState = require("Vuex").mapState;
+const mapGetters = Vuex.mapGetters;
+const mapState = Vuex.mapState;
+
+const App = require("./App.vue");
+console.log(App);
+
+import Vue from "vue";
+import VueRouter from "vue-router"
+import Vuex from "vuex"
+
+Vue.use(VueRouter);
 
 const router = new VueRouter({
     mode: 'history',
@@ -23,11 +31,16 @@ const router = new VueRouter({
         return { x: 0, y: 0 };
     }
 });
+
+const sync = require("vuex-router-sync").sync;
+sync(store, router);
+
 let count = 3,
     requireData = {};
 let initMainVM = function() {
     return new Vue({
-        router: router,
+        router,
+        store,
         data() {
             return {
                 transitionName: "page-fade",
@@ -38,7 +51,6 @@ let initMainVM = function() {
                 isLoaded: false
             }
         },
-        store: store,
         computed: {
             totalInitPrice() {
                 if (!this.isLoaded) {
@@ -146,7 +158,8 @@ let initMainVM = function() {
                 return temp;
             },
             ...mapGetters([
-                'groupsMap'
+                'groupsMap',
+                'categoryItems'
             ]),
             ...mapState([
                 'requireData'
@@ -306,13 +319,13 @@ let initMainVM = function() {
             }
         },
         components: {
-            "footer-bar": Vue.component("footer-bar"),
-            "trolley-footer-bar": Vue.component("trolley-footer-bar"),
-            "tips": Vue.component("tips"),
+            "footer-bar": require("./components/footer-bar"),
+            "trolley-footer-bar": require("./components/trolley-footer-bar"),
+            "tips": require("./components/tips"),
             "router-link": Vue.component("router-link"),
             "router-view": Vue.component("router-view")
         }
-    }).$mount('#braeco-client');
+    });
 }
 
 //试试箭头函数
@@ -333,10 +346,9 @@ let getData = requireName =>
                     console.log(JSON.parse(JSON.stringify(requireData)));
                     NProgress.done();
                     mainVM.$emit("tips:success", "初始化成功！");
-                    mainVM.$store.commit("getData", {
+                    mainVM.$store.dispatch("getData", {
                         requireData: requireData
                     });
-                    console.log(mainVM.requireData);
                 }
             } catch (e) {
                 mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
@@ -353,6 +365,7 @@ getData("getTableLimit");
 getData("getTableMember");
 
 let mainVM = initMainVM();
+mainVM.$mount('#braeco-client');
 
 window.onerror = function(msg, url, line, col, error) {
     if (error.stack.indexOf("JSON.parse") >= 0) {

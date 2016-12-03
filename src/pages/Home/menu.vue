@@ -55,38 +55,35 @@
 </template>
 
 <script>
+
+const mapState = require("Vuex").mapState;
+
+const store = require("../../store/index.js");
+import Vue from "vue"
+
 module.exports = {
     name: 'home-menu',
     data() {
         return {
-            activityItems: [],
-            categoryItems: []
+            activityItems: []
+        }
+    },
+    computed: {
+        categoryItems() {
+            return this.$root.$store.getters.categoryItems;
+        },
+        requireData() {
+            return store.state.requireData;
         }
     },
     created() {
-        let vm = this;
-        if (this.$root.isLoaded) {
-            vm.init();
-        }
-        this.$root.$on("root:getData", function() {
-            setTimeout(function() {
-                vm.init();
-            }, 200);
-        });
-    },
-    beforeDestroy() {
-        this.$root.$off("root:getData");
     },
     components: {
-        "rotate-display": Vue.component("rotate-display")
-    },
-    directives: {
-        lazy: Vue.directive('lazy')
+        "rotate-display": require("../../components/rotate-display")
     },
     methods: {
         init() {
             this.activityItems = this.getItemsForActivity();
-            this.categoryItems = this.getItemsForCategory();
         },
         getItemsForActivity() {
             let result = [];

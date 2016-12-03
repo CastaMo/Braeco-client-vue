@@ -5,6 +5,7 @@ let lazyLoad = require("./vue-lazyload.js");
 let dateFormat = require("./dateFormat.js");
 
 window.requireManage = requireManage;
+import Vue from "vue"
 
 new fastclick(document.body);
 

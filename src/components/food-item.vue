@@ -74,6 +74,9 @@
 
 
 <script>
+
+import Vue from "vue"
+
 module.exports = {
     name: 'food-item',
     props: {

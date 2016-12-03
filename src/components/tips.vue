@@ -27,6 +27,7 @@ module.exports = {
         };
     },
     created() {
+        console.log(this);
         let vm = this;
         this.$root.$on("tips:success", function(content) {
             vm.getData({
