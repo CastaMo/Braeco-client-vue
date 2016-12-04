@@ -1,13 +1,13 @@
 <template>
     <transition name="fade" mode="out-in">
         <div id='food-property' class='modal' v-show="showFlag">
-            <div class='cover' v-on:click="showFlag = !showFlag"></div>
+            <div class='cover' v-on:click="closeFoodProperty"></div>
             <transition name='modal' mode="out-in">
                 <div class='modal-dialog adapt-center' v-show="showFlag">
                     <div class='modal-content'>
                         <div class='modal-header'>
-                            <b class='icon-close' v-on:click="showFlag = !showFlag"></b>
-                            <p>{{foodPropertyItem.name}}</p>
+                            <b class='icon-close' v-on:click="closeFoodProperty"></b>
+                            <p>{{currentFoodProperty.name}}</p>
                         </div>
                         <div class='modal-body'>
                             <div class='food-property'>
@@ -16,7 +16,7 @@
                                         <ul class='property-list'>
                                             <li
                                                 class='property'
-                                                v-for="(property, index) in foodPropertyItem.properties"
+                                                v-for="(property, index) in currentFoodProperty.properties"
                                             >
                                                 <div class='property-wrapper margin-left-wrapper'>
                                                     <div class='property-container'>
@@ -69,30 +69,24 @@ const Vue = require("vue");
 
 module.exports = {
     name: 'food-property',
-    props: {
-        foodPropertyItem: Object,
-    },
-    data() {
-        return {
-            showFlag: false,
-            chooseArray: []
-        }
-    },
     computed: {
+        currentFoodProperty: function() {
+            return this.$store.getters.currentFoodProperty;
+        },
         chooseInfo: function() {
-            let infoArray = Braeco.utils.property.getInfoArrayByChoose(this.chooseArray, this.foodPropertyItem.properties);
-            return infoArray.join("、");
+            return this.$store.getters.chooseInfo
         },
         initPrice: function() {
-            let defaultPrice = this.foodPropertyItem.default_price;
-            defaultPrice += Braeco.utils.property.getDiffPriceByChoose(this.chooseArray, this.foodPropertyItem.properties);
-            return defaultPrice;
+            return this.$store.getters.initPrice;
         },
         currentPrice: function() {
-            let initPrice = this.initPrice;
-            let dc_type = this.foodPropertyItem.dc_type;
-            let dc = this.foodPropertyItem.dc;
-            return Braeco.utils.food.getPriceByDcTypeAndDc(initPrice, dc_type, dc);
+            return this.$store.getters.currentPrice;
+        },
+        showFlag: function() {
+            return this.$store.state.property.showFlag;
+        },
+        chooseArray: function() {
+            return this.$store.state.property.chooseArray;
         }
     },
     created() {
@@ -101,23 +95,21 @@ module.exports = {
             vm.showFlag = true;
         });
     },
-    watch: {
-        foodPropertyItem() {
-            let vm = this,
-                len = this.foodPropertyItem.properties.length;
-            this.chooseArray = Array(len).fill(0);
-        }
-    },
     methods: {
         chooseItem(chooseIndex, itemIndex) {
-            // 必须这样才能触发更新，或者其他的变异办法
-            Vue.set(this.chooseArray, chooseIndex, itemIndex);
+            this.$store.commit("property:setChoose", {
+                chooseIndex: chooseIndex,
+                itemIndex: itemIndex
+            });
+        },
+        closeFoodProperty() {
+            this.$store.dispatch("property:endFoodProperty");
         },
         confirmBtnClickEvent() {
             let vm = this;
-            this.showFlag = false;
+            this.closeFoodProperty();
             this.$emit("confirm-add", {
-                id: vm.foodPropertyItem.id,
+                id: vm.currentFoodProperty.id,
                 groups: vm.chooseArray,
                 orderInitPrice: vm.initPrice
             });

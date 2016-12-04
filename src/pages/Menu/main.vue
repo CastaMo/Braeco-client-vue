@@ -30,7 +30,6 @@
             v-on:category-id-change="updateCategoryId"
         ></category-bar>
         <food-property
-            :foodPropertyItem="currentFoodProperty"
             v-on:confirm-add="addFood"
         >
         </food-property>
@@ -83,10 +82,11 @@ module.exports = {
     methods: {
         prepareForFoodProperty(opts) {
             let id = opts.id;
-            this.$store.commit("property:updateFoodId", {
-                foodId: id
+            let dish = this.$store.getters.dishMap[id];
+            this.$store.dispatch("property:startFoodProperty", {
+                foodId: id,
+                chooseArrayLen: dish.groups.length
             });
-            this.$root.$emit("root:food-property-show");
         },
         recordBallSetOutDom(dom) {
             this.ballSetOutDom = dom;
