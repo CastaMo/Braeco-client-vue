@@ -65,8 +65,6 @@
 
 <script>
 
-const Vue = require("vue");
-
 module.exports = {
     name: 'food-property',
     computed: {
@@ -90,10 +88,6 @@ module.exports = {
         }
     },
     created() {
-        let vm = this;
-        this.$root.$on("root:food-property-show", function(food) {
-            vm.showFlag = true;
-        });
     },
     methods: {
         chooseItem(chooseIndex, itemIndex) {
