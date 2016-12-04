@@ -8,8 +8,8 @@ const store = require("./store/index.js");
 
 
 const Vue = require("vue");
-const Vuex = require("vuex");
-
+// const Vuex = require("vuex");
+//
 const mapGetters = Vuex.mapGetters;
 const mapState = Vuex.mapState;
 
