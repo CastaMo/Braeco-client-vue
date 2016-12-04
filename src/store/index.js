@@ -5,7 +5,7 @@ const actions = require("./actions.js");
 
 
 const Vue = require("vue");
-const Vuex = require("vuex");
+// const Vuex = require("vuex");
 Vue.use(Vuex);
 
 const category = require("./modules/category.js");

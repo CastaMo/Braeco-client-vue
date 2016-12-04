@@ -51,7 +51,7 @@ const routes = [
 ];
 
 const Vue = require("vue");
-const VueRouter = require("vue-router");
+// const VueRouter = require("vue-router");
 Vue.use(VueRouter);
 
 const router = new VueRouter({
