@@ -12,7 +12,7 @@ const property = {
             ) {
                 return temp;
             }
-            let dish = Braeco.utils.food.getDishById(rootState.requireData.menu, state.currentFoodId);
+            let dish = getters.dishMap[state.currentFoodId];
             if (!dish) {
                 return temp;
             }
