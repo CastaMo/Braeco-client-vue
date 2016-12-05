@@ -59,7 +59,7 @@ const property = {
             let chooseIndex = playload.chooseIndex;
             let itemIndex = playload.itemIndex;
             state.chooseArray[chooseIndex] = itemIndex;
-            state.chooseArray = state.chooseArray.concat();
+            state.chooseArray.splice(chooseIndex, 1, itemIndex);
         }
     },
     actions: {

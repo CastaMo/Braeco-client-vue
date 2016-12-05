@@ -1,9 +1,5 @@
 <template>
     <div id="Activity-Info">
-        <iframe
-            v-if="activityItem.inValid"
-            v-on:load="backRoute"
-        ></iframe>
         <div class='activity-pic'>
             <div
                 class='pic'
@@ -19,7 +15,8 @@
             <div class='type' v-if="activityItem.typeStr">{{activityItem.typeStr}}</div>
             <div class='type' v-else>加载</div>
             <p class='title' v-if="activityItem.title">{{activityItem.title}}</p>
-            <p class='title' v-else>正在加载数据中</p>
+            <p class='title' v-if="activityItem.inValid">已过期或不存在的活动</p>
+            <p class='title' v-if="!activityItem.title && !activityItem.inValid">正在加载数据中</p>
             <div class='clear'></div>
         </div>
         <div class='activity-intro'>
@@ -64,10 +61,6 @@ module.exports = {
     created() {
     },
     methods: {
-        backRoute() {
-            this.$root.$emit("tips:error", "活动已过期");
-            this.$router.back();
-        }
     }
 }
 
