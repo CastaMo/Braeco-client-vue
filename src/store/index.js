@@ -13,6 +13,7 @@ const activity = require("./modules/activity.js");
 const header = require("./modules/header.js");
 const food = require("./modules/food.js");
 const property = require("./modules/property.js");
+const combo = require("./modules/combo.js");
 
 const store = new Vuex.Store({
     state: state,
@@ -24,7 +25,8 @@ const store = new Vuex.Store({
         activity: activity,
         header: header,
         food: food,
-        property: property
+        property: property,
+        combo: combo
     }
 });
 

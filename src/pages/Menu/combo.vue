@@ -1,8 +1,8 @@
 <template>
     <div id='Menu-Combo'>
-        <div v-if="comboItem" class='combo-item-container'>
+        <div v-if="!currentComboItem.inValid" class='combo-item-container'>
             <div
-                v-for="(comboSubItem, index) in comboItem.combos"
+                v-for="(comboSubItem, index) in currentComboItem.combos"
                 class='combo-item'
                 v-bind:class="{
                     'active': currentActiveIndex === index
@@ -14,20 +14,20 @@
                 >
                     <div class='combo-item-title-container'>
                         <div class='combo-item-name'>
-                            {{comboSubItem.name}} <span v-if="comboItem.require[index]">×{{comboItem.require[index]}}</span>
+                            {{comboSubItem.name}} <span v-if="currentComboItem.require[index]">×{{currentComboItem.require[index]}}</span>
                         </div>
-                        <div class='combo-item-label label-option' v-if="comboItem.require[index] === 0">
+                        <div class='combo-item-label label-option' v-if="currentComboItem.require[index] === 0">
                             可任意选择
                         </div>
                         <div
                             v-bind:class="{
-                                'label-danger': comboItem.require[index]-getChooseNumByIndex(index),
-                                'label-success': !comboItem.require[index]-getChooseNumByIndex(index)
+                                'label-danger': currentComboItem.require[index]-getChooseNumByIndex(index),
+                                'label-success': !currentComboItem.require[index]-getChooseNumByIndex(index)
                             }"
                             class='combo-item-label'
                             v-else
                         >
-                            {{getLabelByRequireAndChooseNum(comboItem.require[index], getChooseNumByIndex(index))}}
+                            {{getLabelByRequireAndChooseNum(currentComboItem.require[index], getChooseNumByIndex(index))}}
                         </div>
                         <div class='clear'></div>
                     </div>
@@ -95,25 +95,25 @@ module.exports = {
     name: 'menu-combo',
     data() {
         return {
-            foodId: -1,
-            dishLimit: null,
-            groupsMap: {},
-            comboItem: null,
-            allFoodChooseOptions: [],
             currentActiveIndex: -1,
             foodPropertyItem: {properties: []},
             comboDeleteItem: {deleteItems: []},
-            isLoaded: false
         }
     },
     computed: {
+        allFoodChooseOptions: function() {
+            return this.$store.state.combo.allFoodChooseOptions;
+        },
+        currentComboItem() {
+            return this.$store.getters.currentComboItem;
+        },
         isReadyForAddToTrolley() {
             if (!this.isLoaded) {
                 return false;
             }
             let flag = true;
             let vm = this;
-            this.comboItem.require.every(function(requireItem, index) {
+            this.currentComboItem.require.every(function(requireItem, index) {
                 if (
                     requireItem === 0
                 ||  vm.getChooseNumByIndex(index) >= requireItem
@@ -128,119 +128,33 @@ module.exports = {
 
         // 用于使选项与food顺序对齐
         comboChooseOptionsArray() {
-            if (!this.isLoaded) {
-                return [[]];
-            }
-            let temp = [];
-            this.allFoodChooseOptions.forEach(function(foodListOption) {
-                let foodListTemp = [];
-                foodListOption.forEach(function(foodItem) {
-                    foodItem.subItems.forEach(function(subItem) {
-                        let chooseTemp = {
-                            id: foodItem.id,
-                            num: subItem.num
-                        };
-                        if (subItem.groups && subItem.groups.length > 0) {
-                            chooseTemp.groups = subItem.groups;
-                        }
-                        foodListTemp.push(chooseTemp);
-                    });
-                });
-                temp.push(foodListTemp);
-            });
-            return temp;
+            return this.$store.getters.comboChooseOptionsArray;
         },
 
         // 用于记录每一个food的选择记录
         chooseNumForFood() {
-            if (!this.isLoaded) {
-                return [[{num: 0}]];
-            }
-            let temp = [];
-            this.allFoodChooseOptions.forEach(function(foodListOption) {
-                let numListTemp = [];
-                foodListOption.forEach(function(foodItem) {
-                    let num = 0;
-                    foodItem.subItems.forEach(function(subItem) {
-                        num += subItem.num;
-                    });
-                    numListTemp.push(num);
-                });
-                temp.push(numListTemp);
-            });
-            return temp;
+            return this.$store.getters.chooseNumForFood;
         },
 
         totalPriceForCombo() {
             if (!this.isLoaded) {
                 return 0;
             }
-            let price = Braeco.utils.combo.getPriceForCombo(this.comboItem, this.chooseAllInfoForFood);
+            let price = Braeco.utils.combo.getPriceForCombo(this.currentComboItem, this.chooseAllInfoForFood);
             return price;
         },
 
         // 用于显示每一个food的选择信息，以及价格的更新
         chooseAllInfoForFood() {
-            if (!this.isLoaded) {
-                return [];
-            }
-            let temp = [];
-            let vm = this;
-            this.comboChooseOptionsArray.forEach(function(foodList, index) {
-                let infoListTemp = [];
-                foodList.forEach(function(foodItem) {
-                    let dish = vm.$root.getDishById(foodItem.id);
-                    let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
-
-                    Braeco.utils.combo.adjustItemByCombo(foodProperty, index, vm.comboItem, vm.groupsMap, vm.dishLimit);
-
-                    let infoTemp = {
-                        name: dish.name,
-                        num: foodItem.num
-                    };
-                    infoTemp.default_price = foodProperty.default_price;
-                    infoTemp.dc_type = foodProperty.dc_type;
-                    infoTemp.dc = foodProperty.dc;
-                    if (foodItem.groups && foodItem.groups.length > 0) {
-                        infoTemp.propertyInfo = Braeco.utils.property.getInfoArrayByChoose(foodItem.groups, foodProperty.properties).join("、");
-                        infoTemp.diff = Braeco.utils.property.getDiffPriceByChoose(foodItem.groups, foodProperty.properties);
-                    }
-                    infoListTemp.push(infoTemp);
-                });
-                temp.push(infoListTemp);
-            });
-            return temp;
+            return this.$store.getters.chooseAllInfoForFood;
         }
     },
     created() {
-        let vm = this;
-        if (this.$root.isLoaded) {
-            vm.init();
-        }
-        this.$root.$on("root:getData", function() {
-            setTimeout(function() {
-                vm.init();
-            }, 200);
-        });
-    },
-    beforeDestroy() {
-        this.$root.$off("root:getData");
+        this.init();
     },
     methods: {
         init() {
-            this.isLoaded = true;
-            this.foodId = this.$root.$route.params.foodId;
-            let vm = this;
-            this.$root.requireData.menu.groups.forEach(function(group) {
-                vm.groupsMap[group.id] = group;
-            });
-
-            this.dishLimit = this.$root.requireData.dish_limit;
-            this.comboItem = this.getItemForCombo(this.foodId);
-
-            let requireLen = this.comboItem.require.length;
-            this.allFoodChooseOptions =  Array(requireLen).fill([]);
-            this.allFoodChooseOptions = this.getAllFoodChooseOptions(this.comboItem);
+            this.$store.dispatch("combo:initCombo");
             this.showFirstRequireUnFinish();
         },
         prepareForFoodProperty(opts) {
@@ -258,7 +172,7 @@ module.exports = {
             let temp = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
 
             // 将套餐的优惠传递进去
-            Braeco.utils.combo.adjustItemByCombo(temp, this.currentActiveIndex, this.comboItem, vm.groupsMap, vm.dishLimit);
+            Braeco.utils.combo.adjustItemByCombo(temp, this.currentActiveIndex, this.currentComboItem, vm.groupsMap, vm.dishLimit);
             return temp;
         },
         judgeForMinusChoose(opts) {
@@ -284,7 +198,7 @@ module.exports = {
             temp.deleteItems = [];
 
             // 将套餐的优惠传递进去
-            Braeco.utils.combo.adjustItemByCombo(foodProperty, this.currentActiveIndex, this.comboItem, this.groupsMap, this.dishLimit);
+            Braeco.utils.combo.adjustItemByCombo(foodProperty, this.currentActiveIndex, this.currentComboItem, this.groupsMap, this.dishLimit);
 
             subItems.forEach(function(subItem) {
                 let propertyInfo = Braeco.utils.property.getInfoArrayByChoose(subItem.groups, foodProperty.properties).join("、");
@@ -338,43 +252,8 @@ module.exports = {
             this.$root.$router.back();
         },
         getIsFullChooseByIndex(index) {
-            return  this.comboItem.require[index] > 0
-            &&      this.comboItem.require[index] <= this.getChooseNumByIndex(index);
-        },
-        getItemForCombo(id) {
-            let vm = this;
-            let dish = this.$root.getDishById(id);
-            console.log(JSON.parse(JSON.stringify(dish)));
-            let combo = Braeco.utils.combo.getFixedDataForCombo(dish, this.groupsMap);
-            combo.combos.forEach(function(comboSubItem, subItemIndex) {
-                comboSubItem.foodItems = [];
-                comboSubItem.content.forEach(function(foodId) {
-                    let dish = vm.$root.getDishById(foodId);
-                    let food = Braeco.utils.food.getFixedDataForFood(dish, vm.groupsMap, vm.dishLimit);
-                    food.lastNoBottom = true;
-
-                    // 将套餐的优惠传递进去
-                    Braeco.utils.combo.adjustItemByCombo(food, subItemIndex, combo, vm.groupsMap, vm.dishLimit);
-
-                    comboSubItem.foodItems.push(food);
-                });
-            });
-            console.log(JSON.parse(JSON.stringify(combo)));
-            return combo;
-        },
-        getAllFoodChooseOptions(comboItem) {
-            let allFoodChooseOptions = [];
-            comboItem.combos.forEach(function(comboSubItem) {
-                let optionSubItem = [];
-                comboSubItem.content.forEach(function(foodId) {
-                    optionSubItem.push({
-                        id: foodId,
-                        subItems: []
-                    });
-                });
-                allFoodChooseOptions.push(optionSubItem);
-            });
-            return allFoodChooseOptions;
+            return  this.currentComboItem.require[index] > 0
+            &&      this.currentComboItem.require[index] <= this.getChooseNumByIndex(index);
         },
         getLabelByRequireAndChooseNum(require, chooseNum) {
             if (require === 0) {
@@ -387,7 +266,7 @@ module.exports = {
         },
         getFoodListHeightByActive(index) {
             if (this.currentActiveIndex === index) {
-                return this.comboItem.combos[index].content.length * 125;
+                return this.currentComboItem.combos[index].content.length * 125;
             }
             return 0;
         },
@@ -404,7 +283,13 @@ module.exports = {
         showFirstRequireUnFinish() {
             let vm = this;
             let flag = false;
-            this.comboItem.require.every(function(requireItem, index) {
+            if (
+                !this.currentComboItem.require
+            ||  this.currentComboItem.require.length <= 0
+            ) {
+                return;
+            }
+            this.currentComboItem.require.every(function(requireItem, index) {
                 if (vm.getIsFullChooseByIndex(index)) {
                     return true;
                 }
@@ -425,10 +310,15 @@ module.exports = {
         }
     },
     components: {
-        'food-item': Vue.component('food-item'),
+        'food-item': require("./components/food-item"),
         'combo-footer-bar': require("./components/combo-footer-bar"),
         'food-property': require("./components/food-property"),
         'combo-delete': require('./components/combo-delete')
+    },
+    watch: {
+        "currentComboItem": function() {
+            this.init();
+        }
     }
 }
 
