@@ -1,27 +1,27 @@
 <template>
     <div id="Menu-Info">
-        <div class='img-container' v-if="foodItem">
+        <div class='img-container' v-if="currentFoodInfoItem">
             <div
                 class='img'
-                v-lazy:background-image="foodItem.largePic"
+                v-lazy:background-image="currentFoodInfoItem.largePic"
                 v-bind:style="{
-                    'width': `${foodItem.largeWidth}px`,
-                    'height': `${foodItem.largeHeight}px`,
-                    'background-size': `${foodItem.largeWidth}px ${foodItem.largeHeight}px`
+                    'width': `${largeWidth}px`,
+                    'height': `${largeHeight}px`,
+                    'background-size': `${largeWidth}px ${largeHeight}px`
                 }"
             >
             </div>
         </div>
-        <div class='food-info-container'>
+        <div class='food-info-container' v-if="!currentFoodInfoItem.inValid">
             <food-item
-                :foodItem="foodItem"
+                :foodItem="currentFoodInfoItem"
                 v-on:food-with-property-add-click="prepareForFoodProperty"
                 v-on:food-with-normal-add-click="addFood"
                 v-on:record-ball-set-out-dom="recordBallSetOutDom"
                 v-on:food-with-combo-add-click="routeToCombo"
             ></food-item>
         </div>
-        <div class='detail' v-if="foodItem && foodItem.detail">
+        <div class='detail' v-if="currentFoodInfoItem && currentFoodInfoItem.detail">
             <div class='detail-header'>
                 <div class='detail-header-wrapper margin-left-wrapper'>
                     <div class='detail-header-container'>
@@ -32,13 +32,12 @@
             <div class='detail-content'>
                 <div class='detail-content-wrapper'>
                     <div class='detail-content-container'>
-                        <p>{{foodItem.detail}}</p>
+                        <p>{{currentFoodInfoItem.detail}}</p>
                     </div>
                 </div>
             </div>
         </div>
         <food-property
-            :foodPropertyItem="foodPropertyItem"
             v-on:confirm-add="addFood"
         >
         </food-property>
@@ -51,25 +50,20 @@ module.exports = {
     name: 'menu-info',
     data() {
         return {
-            foodId: null,
-            foodItem: null,
-            groupsMap: {},
-            dishLimit: null,
-            foodPropertyItem: {properties: []},
-            ballSetOutDom: null
+            ballSetOutDom: null,
+            largeWidth: null,
+            largeHeight: null
+        };
+    },
+    computed: {
+        currentFoodInfoItem: function() {
+            return this.$store.getters.currentFoodInfoItem;
         }
     },
     created() {
-
-        if (this.$root.isLoaded) {
-            this.init();
-        }
         let vm = this;
-        this.$root.$on("root:getData", function() {
-            setTimeout(function() {
-                vm.init();
-            }, 200)
-        });
+        vm.largeWidth = document.body.clientWidth;
+        vm.largeHeight = Math.floor(vm.largeWidth * 200 / 375);
 
         this.$root.$once("root:route-to-order", function() {
             vm.$root.$router.back();
@@ -82,34 +76,13 @@ module.exports = {
         this.$root.$off("root:route-to-order");
     },
     methods: {
-        init() {
-            let foodId = Number(this.$root.$route.params.foodId);
-            this.foodId = foodId;
-            let vm = this;
-            this.$root.requireData.menu.groups.forEach(function(group) {
-                vm.groupsMap[group.id] = group;
-            });
-
-
-            this.dishLimit = this.$root.requireData.dish_limit;
-
-            this.foodItem = this.getItemForFood(foodId);
-            if (!this.foodItem) {
-                this.$root.$router.back();
-            }
-        },
-        getItemForFood(foodId) {
-            let dish = this.$root.getDishById(foodId);
-            let food = Braeco.utils.food.getFixedDataForFood(dish, this.groupsMap, this.dishLimit);
-            food.isViewInfo = true;
-            return food;
-        },
-
         prepareForFoodProperty(opts) {
             let id = opts.id;
-            let dish = this.$root.getDishById(id);
-            this.foodPropertyItem = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
-            this.$root.$emit("root:food-property-show");
+            let dish = this.$store.getters.dishMap[id];
+            this.$store.dispatch("property:startFoodProperty", {
+                foodId: id,
+                chooseArrayLen: dish.groups.length
+            });
         },
         recordBallSetOutDom(dom) {
             this.ballSetOutDom = dom;
@@ -128,22 +101,19 @@ module.exports = {
                         }
                     });
                 }, 10);
-                vm.$root.$router.back();
+                vm.$router.back();
             }
         },
         routeToCombo(opts) {
             let vm = this;
-            vm.$root.$router.back();
+            vm.$router.back();
             setTimeout(function() {
-                vm.$root.$router.push(`/menu/combo/${opts.id}`);
+                vm.$router.push(`/menu/combo/${opts.id}`);
             }, 10);
         }
     },
-    directives: {
-        'lazy': Vue.directive('lazy')
-    },
     components: {
-        'food-item': Vue.component('food-item'),
+        'food-item': require('./components/food-item'),
         'food-property': require("./components/food-property")
     }
 }
