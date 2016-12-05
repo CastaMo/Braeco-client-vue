@@ -293,6 +293,7 @@ let initMainVM = function() {
             $route: function(to, from) {
                 this.checkIsUnfiniteState();
                 this.checkForTransition(to.fullPath, from.fullPath);
+                this.$store.dispatch("property:endFoodProperty");
             },
             'tempData.orderForTrolley': {
                 handler: function(newData, oldData) {
