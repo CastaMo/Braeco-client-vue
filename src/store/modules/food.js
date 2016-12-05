@@ -43,26 +43,14 @@ const food = {
             let foodId = Number(rootState.route.params.foodId);
             let flag = false;
             if (foodId === 0 || foodId) {
-                rootState.requireData.menu.categories.every(function(category) {
-                    category.dishes.every(function(dish) {
-                        if (Number(dish.id) === foodId) {
-                            temp = Braeco.utils.food.getFixedDataForFood(
-                                dish,
-                                getters.groupsMap,
-                                rootState.requireData.dish_limit
-                            );
-                            temp.isViewInfo = true;
-                            temp.inValid = false;
-                            flag = true;
-                            return false;
-                        }
-                        return true;
-                    });
-                    if (flag) {
-                        return false;
-                    }
-                    return true;
-                });
+                let dish = getters.dishMap[foodId];
+                temp = Braeco.utils.food.getFixedDataForFood(
+                    dish,
+                    getters.groupsMap,
+                    rootState.requireData.dish_limit
+                );
+                temp.isViewInfo = true;
+                temp.inValid = false;
             }
             return temp;
         }
