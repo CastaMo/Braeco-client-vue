@@ -137,6 +137,17 @@ const combo = {
                 temp.push(infoListTemp);
             });
             return temp;
+        },
+
+        totalPriceForCombo(state, getters, rootState) {
+            if (!rootState.isLoaded) {
+                return 0;
+            }
+            let price = Braeco.utils.combo.getPriceForCombo(
+                getters.currentComboItem,
+                getters.chooseAllInfoForFood
+            );
+            return price;
         }
     },
     mutations: {
@@ -155,6 +166,38 @@ const combo = {
                 });
                 state.allFoodChooseOptions.push(optionSubItem);
             });
+        },
+        "combo:addChoose": function(state, playload) {
+            let index = playload.currentActiveIndex;
+            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(
+                state.allFoodChooseOptions[index],
+                playload.id
+            );
+            let subItem = Braeco.utils.order.tryGetSubItemByGroups(
+                foodItem.subItems,
+                playload.groups,
+                true
+            );
+            subItem.num += 1;
+        },
+        "combo:minusChoose": function(state, playload) {
+            let index = playload.currentActiveIndex;
+            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(
+                state.allFoodChooseOptions[index],
+                playload.id
+            );
+            let subItem = Braeco.utils.order.tryGetSubItemByGroups(
+                foodItem.subItems,
+                playload.groups
+            );
+            if (subItem.num <= 0) {
+                return;
+            }
+            subItem.num -= 1;
+            if (subItem.num <= 0) {
+                let subItemIndex = foodItem.subItems.indexOf(subItem);
+                foodItem.subItems.splice(subItemIndex, 1);
+            }
         }
     },
     actions: {

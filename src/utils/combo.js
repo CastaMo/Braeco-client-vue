@@ -68,7 +68,7 @@ const combo = {
                         if (chooseAllInfoForFood.diff) {
                             foodPrice += chooseAllInfoForFood.diff;
                         }
-                        price += Braeco.utils.food.getPriceByDcTypeAndDc(foodPrice, chooseAllInfoForFood.dc_type, chooseAllInfoForFood.dc);
+                        price += Braeco.utils.food.getPriceByDcTypeAndDc(foodPrice, chooseAllInfoForFood.dc_type, chooseAllInfoForFood.dc) * chooseAllInfoForFood.num;
                     });
                 });
                 break;

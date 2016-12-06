@@ -1,12 +1,12 @@
 <template>
     <transition name="fade" mode="out-in">
         <div id='combo-delete' class='modal' v-show="showFlag">
-            <div class='cover' v-on:click="showFlag = !showFlag"></div>
+            <div class='cover' v-on:click="closeComboDelete"></div>
             <transition name='modal' mode="out-in">
                 <div class='modal-dialog adapt-center' v-show="showFlag">
                     <div class='modal-content'>
                         <div class='modal-header'>
-                            <b class='icon-close' v-on:click="showFlag = !showFlag"></b>
+                            <b class='icon-close' v-on:click="closeComboDelete"></b>
                             <p>单品删除</p>
                         </div>
                         <div class='modal-body'>
@@ -16,7 +16,7 @@
                                         <ul class='delete-item-list'>
                                             <li
                                                 class='delete-item'
-                                                v-for="(deleteItem, index) in comboDeleteItem.deleteItems"
+                                                v-for="(deleteItem, index) in currentComboDeleteItem.deleteItems"
                                                 v-on:click="deleteItemClickEvent(index)"
                                             >
                                                 <div class='delete-item-wrapper margin-left-wrapper'>
@@ -51,37 +51,37 @@
 
 module.exports = {
     name: 'combo-delete',
-    props: {
-        comboDeleteItem: Object,
-    },
     data() {
         return {
-            showFlag: false,
             chooseIndex: -1
         }
     },
     computed: {
-    },
-    created() {
-        let vm = this;
-        this.chooseIndex = 0;
-        this.$root.$on("root:combo-delete-show", function(food) {
-            vm.showFlag = true;
-        });
-    },
-    watch: {
+        currentComboDeleteItem: function() {
+            return this.$store.getters.currentComboDeleteItem;
+        },
+        showFlag: function() {
+            return this.$store.state.comboDelete.showFlag;
+        },
+        chooseIndex: function() {
+            return this.$store.state.comboDelete.chooseIndex;
+        }
     },
     methods: {
         deleteItemClickEvent(index) {
-            this.chooseIndex = index;
+            this.$store.commit("combo-delete:setChoose", {
+                chooseIndex: index
+            });
+        },
+        closeComboDelete() {
+            this.$store.dispatch("combo-delete:endComboDelete");
         },
         confirmBtnClickEvent() {
-            let vm = this;
-            this.showFlag = false;
             this.$emit("confirm-minus", {
-                id: this.comboDeleteItem.id,
-                groups: this.comboDeleteItem.deleteItems[this.chooseIndex].groups
+                id: this.currentComboDeleteItem.id,
+                groups: this.currentComboDeleteItem.deleteItems[this.chooseIndex].groups
             });
+            this.closeComboDelete();
         }
     }
 }

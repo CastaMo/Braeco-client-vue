@@ -27,7 +27,10 @@
                             class='combo-item-label'
                             v-else
                         >
-                            {{getLabelByRequireAndChooseNum(currentComboItem.require[index], getChooseNumByIndex(index))}}
+                            {{getLabelByRequireAndChooseNum(
+                                currentComboItem.require[index],
+                                getChooseNumByIndex(index))
+                            }}
                         </div>
                         <div class='clear'></div>
                     </div>
@@ -78,11 +81,9 @@
             v-on:confirm-add="addOrder"
         ></combo-footer-bar>
         <food-property
-            :foodPropertyItem="foodPropertyItem"
             v-on:confirm-add="addChoose"
         ></food-property>
         <combo-delete
-            :comboDeleteItem="comboDeleteItem"
             v-on:confirm-minus="minusChoose"
         >
         </combo-delete>
@@ -95,9 +96,7 @@ module.exports = {
     name: 'menu-combo',
     data() {
         return {
-            currentActiveIndex: -1,
-            foodPropertyItem: {properties: []},
-            comboDeleteItem: {deleteItems: []},
+            currentActiveIndex: -1
         }
     },
     computed: {
@@ -108,7 +107,7 @@ module.exports = {
             return this.$store.getters.currentComboItem;
         },
         isReadyForAddToTrolley() {
-            if (!this.isLoaded) {
+            if (!this.$store.state.isLoaded) {
                 return false;
             }
             let flag = true;
@@ -137,11 +136,7 @@ module.exports = {
         },
 
         totalPriceForCombo() {
-            if (!this.isLoaded) {
-                return 0;
-            }
-            let price = Braeco.utils.combo.getPriceForCombo(this.currentComboItem, this.chooseAllInfoForFood);
-            return price;
+            return this.$store.getters.totalPriceForCombo;
         },
 
         // 用于显示每一个food的选择信息，以及价格的更新
@@ -163,17 +158,13 @@ module.exports = {
                 return this.$root.$emit("tips:error", "若需继续添加, 请先删除已选的餐品");
             }
             let id = opts.id;
-            this.foodPropertyItem = this.getItemForFoodProperty(id);
-            this.$root.$emit("root:food-property-show");
-        },
-        getItemForFoodProperty(foodId) {
-            let vm = this;
-            let dish = this.$root.getDishById(foodId);
-            let temp = Braeco.utils.property.getFixedDataForProperty(dish, this.groupsMap);
-
-            // 将套餐的优惠传递进去
-            Braeco.utils.combo.adjustItemByCombo(temp, this.currentActiveIndex, this.currentComboItem, vm.groupsMap, vm.dishLimit);
-            return temp;
+            let dish = this.$store.getters.dishMap[id];
+            this.$store.dispatch("property:startFoodProperty", {
+                foodId: id,
+                chooseArrayLen: dish.groups.length,
+                comboItem: this.currentComboItem,
+                currentActiveIndex: index
+            });
         },
         judgeForMinusChoose(opts) {
             let index = this.currentActiveIndex;
@@ -184,54 +175,31 @@ module.exports = {
                     groups: foodItem.subItems[0].groups
                 });
             }
-            this.$root.$emit("root:combo-delete-show");
-            this.comboDeleteItem = this.getItemForComboDelete(opts.id, foodItem.subItems);
-        },
-        getItemForComboDelete(id, subItems) {
-            let temp = {};
-            let vm = this;
-            let dish = vm.$root.getDishById(id);
-            let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
-
-            temp.id = id;
-            temp.name = foodProperty.name;
-            temp.deleteItems = [];
-
-            // 将套餐的优惠传递进去
-            Braeco.utils.combo.adjustItemByCombo(foodProperty, this.currentActiveIndex, this.currentComboItem, this.groupsMap, this.dishLimit);
-
-            subItems.forEach(function(subItem) {
-                let propertyInfo = Braeco.utils.property.getInfoArrayByChoose(subItem.groups, foodProperty.properties).join("、");
-                let diffPrice = Braeco.utils.property.getDiffPriceByChoose(subItem.groups, foodProperty.properties);
-                temp.deleteItems.push({
-                    groups: subItem.groups,
-                    price: diffPrice + foodProperty.default_price,
-                    propertyInfo: propertyInfo
-                });
+            this.$store.dispatch("combo-delete:startComboDelete", {
+                foodId: id,
+                subItems: subItems,
+                comboItem: this.currentComboItem,
+                currentActiveIndex: this.currentActiveIndex
             });
-            return temp;
         },
         minusChoose(opts) {
             let index = this.currentActiveIndex;
-            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index], opts.id);
-            let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups);
-            if (subItem.num <= 0) {
-                return this.$root.$emit("tips:error", "数量已为0, 无法删除");
-            }
-            subItem.num -= 1;
-            if (subItem.num <= 0) {
-                let subItemIndex = foodItem.subItems.indexOf(subItem);
-                foodItem.subItems.splice(subItemIndex, 1);
-            }
+            this.$store.commit("combo:minusChoose", {
+                id: opts.id,
+                currentActiveIndex: index,
+                groups: opts.groups
+            });
         },
         addChoose(opts) {
             let index = this.currentActiveIndex;
             if (this.getIsFullChooseByIndex(index)) {
                 return this.$root.$emit("tips:error", "若需继续添加, 请先删除已选的餐品");
             }
-            let foodItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.allFoodChooseOptions[index] ,opts.id);
-            let subItem = Braeco.utils.order.tryGetSubItemByGroups(foodItem.subItems, opts.groups, true);
-            subItem.num += 1;
+            this.$store.commit("combo:addChoose", {
+                id: opts.id,
+                currentActiveIndex: index,
+                groups: opts.groups
+            });
             if (this.getIsFullChooseByIndex(index)) {
                 this.showFirstRequireUnFinish();
             }
@@ -248,6 +216,7 @@ module.exports = {
                 groups: groups,
                 orderInitPrice: vm.totalPriceForCombo
             });
+            console.log(groups, vm.totalPriceForCombo);
             this.$root.$emit("tips:success", "添加套餐成功");
             this.$root.$router.back();
         },
@@ -318,6 +287,9 @@ module.exports = {
     watch: {
         "currentComboItem": function() {
             this.init();
+        },
+        "$route": function() {
+            this.$store.dispatch("property:endFoodProperty");
         }
     }
 }

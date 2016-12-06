@@ -2,7 +2,9 @@ const property = {
     state: {
         currentFoodId: -1,
         chooseArray: [],
-        showFlag: false
+        showFlag: false,
+        comboItem: null,
+        currentActiveIndex: null
     },
     getters: {
         currentFoodProperty: function(state, getters, rootState) {
@@ -21,6 +23,15 @@ const property = {
                 dish,
                 getters.groupsMap
             );
+            if (state.comboItem) {
+                Braeco.utils.combo.adjustItemByCombo(
+                    temp,
+                    state.currentActiveIndex,
+                    state.comboItem,
+                    getters.groupsMap,
+                    rootState.requireData.dish_limit
+                );
+            }
             return temp;
         },
         chooseInfo: function(state, getters, rootState) {
@@ -58,8 +69,11 @@ const property = {
         "property:setChoose": function(state, playload) {
             let chooseIndex = playload.chooseIndex;
             let itemIndex = playload.itemIndex;
-            state.chooseArray[chooseIndex] = itemIndex;
             state.chooseArray.splice(chooseIndex, 1, itemIndex);
+        },
+        "property:setAdjustConfig": function(state, playload) {
+            state.comboItem = playload.comboItem;
+            state.currentActiveIndex = playload.currentActiveIndex;
         }
     },
     actions: {
@@ -73,6 +87,12 @@ const property = {
             context.commit("property:setShowFlag", {
                 showFlag: true
             });
+            if (playload.comboItem) {
+                context.commit("property:setAdjustConfig", {
+                    comboItem: playload.comboItem,
+                    currentActiveIndex: playload.currentActiveIndex
+                });
+            }
         },
         "property:endFoodProperty": function(context, playload) {
             context.commit("property:updateFoodId", {
@@ -83,6 +103,10 @@ const property = {
             });
             context.commit("property:setShowFlag", {
                 showFlag: false
+            });
+            context.commit("property:setAdjustConfig", {
+                comboItem: null,
+                currentActiveIndex: null
             });
         }
     }

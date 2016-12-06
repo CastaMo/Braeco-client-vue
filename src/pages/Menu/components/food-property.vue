@@ -101,12 +101,12 @@ module.exports = {
         },
         confirmBtnClickEvent() {
             let vm = this;
-            this.closeFoodProperty();
             this.$emit("confirm-add", {
                 id: vm.currentFoodProperty.id,
                 groups: vm.chooseArray,
                 orderInitPrice: vm.initPrice
             });
+            this.closeFoodProperty();
         }
     }
 }
