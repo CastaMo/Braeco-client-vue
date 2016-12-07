@@ -1,4 +1,6 @@
+
 const config = require("./common/config.js");
+const style = require('./style/index.less');
 
 //试试箭头函数
 let getData = requireName =>
@@ -38,8 +40,6 @@ getData("getTableMember");
 
 const routeWeight = require("./routeWeight.js");
 const utils = require("./utils/index.js");
-const style = require('./style/index.less');
-
 
 require.ensure(["vue"], function(require) {
     window.Vue = require("vue");
