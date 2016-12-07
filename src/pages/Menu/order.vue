@@ -103,7 +103,7 @@ module.exports = {
         this.$root.$off("root:getData");
     },
     components: {
-        'order-item': Vue.component('order-item')
+        'order-item': require('../../components/order-item')
     },
     methods: {
         init() {

@@ -1,15 +1,58 @@
-const routeWeight = require("./routeWeight.js");
 const config = require("./common/config.js");
 
-const utils = require("./utils/index.js");
+//试试箭头函数
+let getData = requireName =>
+    requireManage.get(requireName).require({
+        method: "GET",
+        success: function(result) {
+            let data = result.data;
+            NProgress.inc(0.3);
+            try {
+                if (result.message === "success") {
+                    for (let key in data) {
+                        requireData[key] = data[key];
+                    }
+                    count--;
+                }
+                if (count === 0) {
+                    console.log(JSON.parse(JSON.stringify(requireData)));
+                    NProgress.done();
+                    mainVM.$emit("tips:success", "初始化成功！");
+                    mainVM.$store.dispatch("getData", {
+                        requireData: requireData
+                    });
+                }
+            } catch (e) {
+                mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
+            }
+        },
+        always: function() {
+            NProgress.done();
+        }
+    });
 
+NProgress.start();
+getData("getTableDinner");
+getData("getTableLimit");
+getData("getTableMember");
+
+const routeWeight = require("./routeWeight.js");
+const utils = require("./utils/index.js");
 const style = require('./style/index.less');
+
+
+require.ensure(["vue"], function(require) {
+    window.Vue = require("vue");
+});
+
+const lazyLoad = require("./common/vue-lazyload.js");
+
+Vue.use(lazyLoad, {
+  try: 3 // default 1
+});
+
 const store = require("./store/index.js");
 
-
-const Vue = require("vue");
-// const Vuex = require("vuex");
-//
 const mapGetters = Vuex.mapGetters;
 const mapState = Vuex.mapState;
 
@@ -310,41 +353,6 @@ let initMainVM = function() {
     });
 }
 
-//试试箭头函数
-let getData = requireName =>
-    requireManage.get(requireName).require({
-        method: "GET",
-        success: function(result) {
-            let data = result.data;
-            NProgress.inc(0.3);
-            try {
-                if (result.message === "success") {
-                    for (let key in data) {
-                        requireData[key] = data[key];
-                    }
-                    count--;
-                }
-                if (count === 0) {
-                    console.log(JSON.parse(JSON.stringify(requireData)));
-                    NProgress.done();
-                    mainVM.$emit("tips:success", "初始化成功！");
-                    mainVM.$store.dispatch("getData", {
-                        requireData: requireData
-                    });
-                }
-            } catch (e) {
-                mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
-            }
-        },
-        always: function() {
-            NProgress.done();
-        }
-    });
-
-NProgress.start();
-getData("getTableDinner");
-getData("getTableLimit");
-getData("getTableMember");
 
 let mainVM = initMainVM();
 mainVM.$mount('#braeco-client');

@@ -100,7 +100,6 @@
 
 <script>
 
-import Vue from "vue"
 
 module.exports = {
     name: 'rotate-display',
