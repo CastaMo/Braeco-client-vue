@@ -12,9 +12,14 @@
                 <div class='category-name'>
                     <div class='category-name-wrapper'>
                         <div class='category-name-container'>
-                            <p v-if="currentCategoryItem.name">{{currentCategoryItem.name}}</p>
-                            <p v-if="currentCategoryItem.inValid">请重新选择</p>
-                            <p v-else>正在加载数据中</p>
+                            <p>{{
+                                currentCategoryItem.name
+                            ?   currentCategoryItem.name
+                            :   (
+                                    currentCategoryItem.inValid
+                                ?   "请重新选择"
+                                :   "正在加载数据中"
+                                )}}</p>
                         </div>
                     </div>
                 </div>
