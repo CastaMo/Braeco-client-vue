@@ -79,33 +79,6 @@ let initMainVM = function() {
         computed: {
             orderForTrolley: function() {
                 return this.$store.state.order.orderForTrolley;
-            },
-            giveItem() {
-                if (!this.isLoaded) {
-                    return null;
-                }
-                let price = this.totalFinalPrice;
-                let giveName = "";
-                let maxGive = 0;
-                this.requireData.dc_tool.give.forEach(function(giveItem) {
-                    if (
-                        price >= giveItem[0]
-                    &&  giveItem[0] >= maxGive
-                    ) {
-                        giveName = giveItem[1];
-                        maxGive = giveItem[0];
-                    }
-                });
-                if (giveName) {
-                    return {
-                        name: giveName,
-                        dcStr: "满送",
-                        orderInitPrice: 0,
-                        num: 1,
-                        isGive: true
-                    }
-                }
-                return null;
             }
         },
         created() {
