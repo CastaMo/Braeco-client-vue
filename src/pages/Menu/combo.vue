@@ -211,8 +211,8 @@ module.exports = {
             this.comboChooseOptionsArray.forEach(function(comboChooseOption) {
                 groups = groups.concat(comboChooseOption);
             });
-            this.$root.addOrderForTrolley({
-                id: vm.foodId,
+            this.$store.commit("order:addOrderForTrolley", {
+                id: vm.$store.state.route.params.comboId,
                 groups: groups,
                 orderInitPrice: vm.totalPriceForCombo
             });

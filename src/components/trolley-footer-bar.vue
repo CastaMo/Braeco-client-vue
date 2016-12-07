@@ -80,10 +80,6 @@ module.exports = {
             vm.animationFlagForAdd = false;
         });
     },
-    props: {
-        orderFinalPrice: Number,
-        orderTotalNumber: Number
-    },
     data() {
         return {
             animationFlagForAdd: false,
@@ -92,6 +88,14 @@ module.exports = {
             transitionName: 'slide-bottom',
             orderLen: 0
         };
+    },
+    computed: {
+        orderTotalNumber: function() {
+            return this.$store.getters.orderTotalNumber;
+        },
+        orderFinalPrice: function() {
+            return this.$store.getters.totalFinalPrice;
+        }
     },
     methods: {
 

@@ -73,10 +73,6 @@ module.exports = {
     name: 'menu-order',
     data() {
         return {
-            orderItems: [],
-            groupsMap: {},
-            dishLimit: null,
-            discountMap: {},
             discountNameMap: {
                 "half": "第二份半价",
                 "discount": "折扣优惠",
@@ -84,87 +80,32 @@ module.exports = {
                 "reduce": "满减优惠",
                 "userDiscount": "会员优惠",
                 "coupon": "代金券"
-            },
-            giveItem: null
+            }
+        }
+    },
+    computed: {
+        orderItems: function() {
+            return this.$store.getters.orderItems;
+        },
+        discountMap: function() {
+            return this.$store.getters.discountMap;
+        },
+        giveItem: function() {
+            return this.$store.getters.giveItem;
         }
     },
     created() {
         let vm = this;
-        if (this.$root.isLoaded) {
-            vm.init();
-        }
-        this.$root.$on("root:getData", function() {
-            setTimeout(function() {
-                vm.init();
-            }, 200);
-        });
-    },
-    beforeDestroy() {
-        this.$root.$off("root:getData");
     },
     components: {
         'order-item': require('../../components/order-item')
     },
     methods: {
-        init() {
-            let vm = this;
-            this.$root.requireData.menu.groups.forEach(function(group) {
-                vm.groupsMap[group.id] = group;
-            });
-
-            this.dishLimit = this.$root.requireData.dish_limit;
-
-            this.orderItems = this.getItemsForOrder();
-            this.$root.$watch('tempData.orderForTrolley', function(newData) {
-                vm.orderItems = vm.getItemsForOrder();
-            }, {deep: true});
-
-            this.discountMap = this.$root.discountMap;
-            this.$root.$watch("discountMap", function(newData) {
-                vm.discountMap = vm.$root.discountMap;
-            });
-
-            this.giveItem = this.$root.giveItem;
-            this.$root.$watch("giveItem", function(newData) {
-                vm.giveItem = vm.$root.giveItem;
-            });
-        },
-        getItemsForOrder() {
-            let temp = [];
-            let vm = this;
-            this.$root.tempData.orderForTrolley.forEach(function(orderItem) {
-                orderItem.subItems.forEach(function(subItem) {
-                    let dish = vm.$root.getDishById(orderItem.id);
-                    let food = Braeco.utils.food.getFixedDataForFood(dish, vm.groupsMap, vm.dishLimit);
-                    let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.groupsMap);
-
-                    let extras = foodProperty.properties;
-                    // 如果是套餐，那么就要给groups再做一次预处理
-                    if (food.type !== 'normal' && subItem.groups && subItem.groups.length > 0) {
-                        extras = [];
-                        subItem.groups.forEach(function(groupItem) {
-                            let extra = {};
-                            extra.dish = vm.$root.getDishById(groupItem.id);
-                            extra.num = groupItem.num;
-                            extra.groups = groupItem.groups;
-                            extra.food = Braeco.utils.food.getFixedDataForFood(extra.dish, vm.groupsMap, vm.dishLimit);
-                            extra.foodProperty = Braeco.utils.property.getFixedDataForProperty(extra.dish, vm.groupsMap);
-                            extras.push(extra);
-                        });
-                    }
-
-                    let order = Braeco.utils.order.getFixedDataForOrder(food, subItem.groups, subItem.num, extras);
-                    order.orderInitPrice = subItem.orderInitPrice;
-                    temp.push(order);
-                });
-            });
-            return temp;
-        },
         addFood(opts) {
-            this.$root.addOrderForTrolley(opts);
+            this.$store.commit("order:addOrderForTrolley", opts);
         },
         minusFood(opts) {
-            this.$root.minusOrderForTrolley(opts);
+            this.$store.commit("order:minusOrderForTrolley", opts);
         }
     }
 }

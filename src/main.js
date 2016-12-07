@@ -23,6 +23,9 @@ let getData = requireName =>
                     mainVM.$store.dispatch("getData", {
                         requireData: requireData
                     });
+                    setTimeout(function() {
+                        mainVM.init();
+                    }, 205);
                 }
             } catch (e) {
                 mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
@@ -70,79 +73,12 @@ let initMainVM = function() {
         data() {
             return {
                 transitionName: "page-fade",
-                tempData: {
-                    orderForTrolley: [],
-                    groupsMap: {}
-                },
                 isLoaded: false
             }
         },
         computed: {
-            totalInitPrice() {
-                if (!this.isLoaded) {
-                    return 0;
-                }
-                let temp = 0;
-                this.tempData.orderForTrolley.forEach(function(orderItem) {
-                    orderItem.subItems.forEach(function(subItem) {
-                        temp += Number(subItem.orderInitPrice) * Number(subItem.num);
-                    });
-                });
-                return temp;
-            },
-            discountMap() {
-                if (!this.isLoaded) {
-                    return {};
-                }
-                let vm = this;
-                let temp = {
-                    half: 0,
-                    discount: 0,
-                    sale: 0,
-                    userDiscount: 0,
-                    reduce: 0
-                };
-                this.tempData.orderForTrolley.forEach(function(orderItem) {
-                    let dish = vm.getDishById(orderItem.id);
-                    let discount = Braeco.utils.order.getDiscountForOrderItem(orderItem, dish);
-                    if (discount.type) {
-                        temp[discount.type] += discount.value;
-                    }
-                });
-
-                // 获取单品优惠以及会员优惠计算之后的订单价格
-                let price = this.totalInitPrice
-                                - temp.half
-                                - temp.discount
-                                - temp.sale
-                                - temp.userDiscount
-                                ;
-                let maxReduce = 0;
-
-                // 获取满减优惠
-                this.requireData.dc_tool.reduce.forEach(function(reduceItem) {
-                    if (
-                        price >= reduceItem[0]
-                    &&  maxReduce < reduceItem[1]
-                    ) {
-                        maxReduce = reduceItem[1];
-                    }
-                });
-                temp.reduce = maxReduce;
-                return temp;
-            },
-            totalFinalPrice() {
-                if (!this.isLoaded) {
-                    return 0;
-                }
-                let price = this.totalInitPrice
-                                - this.discountMap.half
-                                - this.discountMap.discount
-                                - this.discountMap.sale
-                                - this.discountMap.userDiscount
-                                - this.discountMap.reduce
-                                ;
-                return price;
+            orderForTrolley: function() {
+                return this.$store.state.order.orderForTrolley;
             },
             giveItem() {
                 if (!this.isLoaded) {
@@ -170,26 +106,7 @@ let initMainVM = function() {
                     }
                 }
                 return null;
-            },
-            orderTotalNumber() {
-                if (!this.isLoaded) {
-                    return 0;
-                }
-                let temp = 0;
-                this.tempData.orderForTrolley.forEach(function(orderItem) {
-                    orderItem.subItems.forEach(function(subItem) {
-                        temp += Number(subItem.num);
-                    });
-                });
-                return temp;
-            },
-            ...mapGetters([
-                'groupsMap',
-                'categoryItems'
-            ]),
-            ...mapState([
-                'requireData'
-            ])
+            }
         },
         created() {
             this.checkIsUnfiniteState();
@@ -199,13 +116,10 @@ let initMainVM = function() {
             init() {
                 let vm = this;
                 this.isLoaded = true;
-                console.log(this.requireData);
-                this.requireData.menu.groups.forEach(function(group) {
-                    vm.tempData.groupsMap[group.id] = group;
-                });
                 let lsOrderForTrolley = this.readFromLocStor();
-                this.validateAndAssignForOraderForTrolley(lsOrderForTrolley);
-                this.$emit("root:getData");
+                this.$store.dispatch("order:validateAndAssignForOraderForTrolley", {
+                    lsOrderForTrolley: lsOrderForTrolley
+                });
             },
             checkIsUnfiniteState() {
                 let routerArray = this.$route.path.split('/')
@@ -241,92 +155,8 @@ let initMainVM = function() {
                     this.transitionName = "page-slide-right";
                 }
             },
-            getDishById(foodId) {
-                let temp = null;
-                let getFlag = false;
-                this.requireData.menu.categories.every(function(category) {
-                    category.dishes.every(function(dish) {
-                        if (Number(dish.id) === Number(foodId)) {
-                            temp = dish;
-                            getFlag = true;
-                            return false;
-                        }
-                        return true;
-                    });
-                    if (getFlag) {
-                        return false;
-                    }
-                    return true;
-                });
-                return temp;
-            },
             readFromLocStor() {
                 return JSON.parse(utils.locStor.get('orderForTrolley') || "[]");
-            },
-            validateAndAssignForOraderForTrolley(lsOrderForTrolley) {
-                let vm = this;
-                lsOrderForTrolley.forEach(function(orderItem) {
-                    orderItem.subItems.forEach(function(subItem) {
-                        try {
-                            // 添加来校验，此处校验无法通过，则直接抛出异常而无法加入到orderForTrolley中。
-                            let dish = vm.getDishById(orderItem.id);
-                            let food = Braeco.utils.food.getFixedDataForFood(dish, vm.tempData.groupsMap, vm.requireData.dish_limit);
-                            let foodProperty = Braeco.utils.property.getFixedDataForProperty(dish, vm.tempData.groupsMap);
-
-                            let extras = foodProperty.properties;
-                            // 如果是套餐，那么就要给groups再做一次预处理
-                            if (food.type !== 'normal' && subItem.groups && subItem.groups.length > 0) {
-                                extras = [];
-                                subItem.groups.forEach(function(groupItem) {
-                                    let extra = {};
-                                    extra.dish = vm.getDishById(groupItem.id);
-                                    extra.num = groupItem.num;
-                                    extra.groups = groupItem.groups;
-                                    extra.food = Braeco.utils.food.getFixedDataForFood(extra.dish, vm.tempData.groupsMap, vm.requireData.dish_limit);
-                                    extra.foodProperty = Braeco.utils.property.getFixedDataForProperty(extra.dish, vm.tempData.groupsMap);
-                                    extras.push(extra);
-                                });
-                            }
-
-                            let order = Braeco.utils.order.getFixedDataForOrder(food, subItem.groups, subItem.num, extras);
-
-                            let temp = {
-                                id: orderItem.id,
-                                num: subItem.num,
-                                orderInitPrice: subItem.orderInitPrice
-                            };
-                            if (subItem.groups) {
-                                temp.groups = subItem.groups;
-                            }
-                            vm.addOrderForTrolley(temp);
-                        } catch(e) {
-                            console.log(e);
-                        }
-                    });
-                });
-            },
-            addOrderForTrolley(order) {
-                let orderItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.tempData.orderForTrolley, order.id, true);
-                let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true, order.orderInitPrice);
-                let num = order.num || 1;
-                subItem.num += num;
-            },
-
-            minusOrderForTrolley(order) {
-                let orderItem = Braeco.utils.order.tryGetFoodItemByFoodId(this.tempData.orderForTrolley, order.id, true);
-                let subItem = Braeco.utils.order.tryGetSubItemByGroups(orderItem.subItems, order.groups, true);
-                subItem.num--;
-                if (subItem.num <= 0) {
-                    let index = orderItem.subItems.indexOf(subItem);
-                    orderItem.subItems.splice(index, 1);
-                    if (orderItem.subItems.length === 0) {
-                        let index = this.tempData.orderForTrolley.indexOf(orderItem);
-                        this.tempData.orderForTrolley.splice(index, 1);
-                    }
-                }
-            },
-            getOrderForTrolley() {
-                return this.tempData.orderForTrolley;
             },
             saveToLocStor(key, val) {
                 utils.locStor.set(key, val);
@@ -338,7 +168,7 @@ let initMainVM = function() {
                 this.checkForTransition(to.fullPath, from.fullPath);
                 this.$store.dispatch("property:endFoodProperty");
             },
-            'tempData.orderForTrolley': {
+            "orderForTrolley": {
                 handler: function(newData, oldData) {
                     this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
                 },

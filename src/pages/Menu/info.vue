@@ -97,7 +97,7 @@ module.exports = {
                         initTop: rect.top,
                         initLeft: rect.left,
                         callback: function() {
-                            vm.$root.addOrderForTrolley(opts);
+                            vm.$store.commit("order:addOrderForTrolley", opts);
                         }
                     });
                 }, 10);
