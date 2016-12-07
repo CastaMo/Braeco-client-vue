@@ -216,7 +216,6 @@ module.exports = {
                 groups: groups,
                 orderInitPrice: vm.totalPriceForCombo
             });
-            console.log(groups, vm.totalPriceForCombo);
             this.$root.$emit("tips:success", "添加套餐成功");
             this.$root.$router.back();
         },
