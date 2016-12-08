@@ -86,7 +86,8 @@ const order = {
                 let dish = getters.dishMap[orderItem.id];
                 let discount = Braeco.utils.order.getDiscountForOrderItem(
                     orderItem,
-                    dish
+                    dish,
+                    getters.member_info
                 );
                 if (discount.type) {
                     temp[discount.type] += discount.value;

@@ -14,6 +14,7 @@ const property = require("./modules/property.js");
 const combo = require("./modules/combo.js");
 const comboDelete = require("./modules/combo-delete.js");
 const order = require("./modules/order.js");
+const user = require("./modules/user.js");
 
 const store = new Vuex.Store({
     state: state,
@@ -28,7 +29,8 @@ const store = new Vuex.Store({
         property: property,
         combo: combo,
         comboDelete: comboDelete,
-        order: order
+        order: order,
+        user: user
     }
 });
 

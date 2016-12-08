@@ -2,7 +2,7 @@
 	<div id="Home-Member">
         <div class='home-member-container'>
             <not-login
-                v-if="!user"
+                v-if="!member_info"
                 v-on:btn-click="startLogin"
             ></not-login>
         </div>
@@ -14,8 +14,8 @@ module.exports = {
 	name: 'home-member',
 
     computed: {
-        user: function() {
-            return this.$store.state.user;
+        member_info: function() {
+            return this.$store.getters.member_info;
         }
     },
 
