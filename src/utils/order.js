@@ -71,12 +71,12 @@ const order = {
         }
         return temp;
     },
-    getDiscountForOrderItem(orderItem, dish, user) {
-        function getUserDiscount(price, num, user) {
-            if (user && user.discount > 0) {
+    getDiscountForOrderItem(orderItem, dish, rank_info) {
+        function getUserDiscount(price, num, rank_info) {
+            if (rank_info && rank_info.discount > 0) {
                 return {
                     type: "userDiscount",
-                    value: num * price * (100 - user.discount) / 100
+                    value: num * price * (100 - rank_info.discount) / 100
                 };
             }
             return {
@@ -89,7 +89,7 @@ const order = {
                 orderItem.subItems.length === 1
             &&  orderItem.subItems[0].num === 1
             ) {
-                return getUserDiscount(orderItem.subItems[0].orderInitPrice, 1, user);
+                return getUserDiscount(orderItem.subItems[0].orderInitPrice, 1, rank_info);
             }
             // 将所有价格都塞到一个容器中准备排序进行计算第二杯半价优惠
             let temp = [];
@@ -134,7 +134,7 @@ const order = {
         let value = 0;
         let type;
         orderItem.subItems.forEach(function(subItem) {
-            let discount = getUserDiscount(subItem.orderInitPrice, subItem.num, user)
+            let discount = getUserDiscount(subItem.orderInitPrice, subItem.num, rank_info)
             value += discount.value;
             type = discount.type;
         });
