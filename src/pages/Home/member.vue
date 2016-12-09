@@ -1,10 +1,16 @@
 <template>
 	<div id="Home-Member">
         <div class='home-member-container'>
-            <not-login
-                v-if="!member_info"
-                v-on:btn-click="startLogin"
-            ></not-login>
+            <transition name="fade" mode="out-in">
+                <not-login
+                    v-if="!member_info"
+                    v-on:btn-click="startLogin"
+                ></not-login>
+                <member-info
+                    v-else
+                    v-on:func-click="funcClick"
+                ></member-info>
+            </transition>
         </div>
 	</div>
 </template>
@@ -15,7 +21,7 @@ module.exports = {
 
     computed: {
         member_info: function() {
-            return this.$store.getters.member_info;
+            return this.$store.state.user.member_info;
         }
     },
 
@@ -26,11 +32,15 @@ module.exports = {
     methods: {
         startLogin() {
             console.log("gg");
+        },
+        funcClick(opts) {
+            console.log(opts);
         }
     },
 
 	components: {
-        "not-login": require("./components/not-login")
+        "not-login": require("./components/not-login"),
+        "member-info": require("./components/member-info")
 	}
 }
 
