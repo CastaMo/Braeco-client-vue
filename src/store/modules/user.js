@@ -1,8 +1,5 @@
 const user = {
     state: {
-        member_info: null
-    },
-    getters: {
 
         /*
          * member_info.EXP      Number 经验值
@@ -14,16 +11,9 @@ const user = {
          * member_info.sex      Number 性别
          * member_info.user     Number userId
          */
-        member_info: function(state, getters, rootState) {
-            if (!rootState.isLoaded) {
-                return null;
-            };
-            if (Number(rootState.requireData.member_info.user) === 0) {
-                return null;
-            }
-            let temp = rootState.requireData.member_info;
-            return temp;
-        },
+        member_info: null
+    },
+    getters: {
         rank_info: function(state, getters, rootState) {
             let member_info = state.member_info;
             if (!member_info) {
