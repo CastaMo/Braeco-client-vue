@@ -93,6 +93,9 @@ let initMainVM = function() {
                 this.$store.dispatch("order:validateAndAssignForOraderForTrolley", {
                     lsOrderForTrolley: lsOrderForTrolley
                 });
+                this.$store.commit("user:try-login", {
+                    member_info: this.$store.state.requireData.member_info
+                });
             },
             checkIsUnfiniteState() {
                 let routerArray = this.$route.path.split('/')
