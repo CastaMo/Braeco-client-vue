@@ -39,7 +39,10 @@ module.exports = {
 
         },
         routeToMenu() {
-            let categoryId = this.$root.requireData.menu.categories[0].id;
+            if (!this.$store.state.isLoaded) {
+                return;
+            }
+            let categoryId = this.$store.state.requireData.menu.categories[0].id;
             this.$root.$router.push(`/menu/main/${categoryId}`);
         }
     },
