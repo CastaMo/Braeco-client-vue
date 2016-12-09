@@ -1,9 +1,11 @@
 <template>
 	<div id="Home-Order">
-		<order-blank-page
-            v-if="!orderItems"
-            v-on:menu-icon-click="routeToMenu"
-        ></order-blank-page>
+        <transition name="fade" mode="out-in">
+    		<order-blank-page
+                v-if="!orderItems"
+                v-on:menu-icon-click="routeToMenu"
+            ></order-blank-page>
+        </transition>
 	</div>
 </template>
 
