@@ -1,5 +1,8 @@
 const user = {
     state: {
+        member_info: null
+    },
+    getters: {
 
         /*
          * member_info.EXP      Number 经验值
@@ -11,21 +14,6 @@ const user = {
          * member_info.sex      Number 性别
          * member_info.user     Number userId
          */
-        test_member_info: {
-            EXP: 17837,
-            address: {
-                address: "广东省广州市番禺区 中二横路/中四路(路口)",
-                detail: "哈哈哈"
-            },
-            avatar: "http://static.brae.co/images/avatar/default.png",
-            balance: 9672.96,
-            mobile: "18819473259",
-            nickname: "冠钊",
-            sex: 0,
-            user: 2
-        }
-    },
-    getters: {
         member_info: function(state, getters, rootState) {
             if (!rootState.isLoaded) {
                 return null;
@@ -35,6 +23,43 @@ const user = {
             }
             let temp = rootState.requireData.member_info;
             return temp;
+        },
+        rank_info: function(state, getters, rootState) {
+            let member_info = state.member_info;
+            if (!member_info) {
+                return null;
+            }
+            let temp = {};
+            let ladder = rootState.requireData.membership_rule.ladder;
+            let ladderLen = ladder.length;
+            ladder.every(function(item, index) {
+                if (item.EXP <= member_info.EXP) {
+                    if (
+                        // 最大一项或者比下一项小, 那么就是它了。
+                        index === ladderLen - 1
+                    ||  ladder[index + 1].EXP > member_info.EXP
+                    ) {
+                        temp = item;
+                        if (index === ladderLen - 1) {
+                            temp.nextEXP = item.EXP;
+                        } else {
+                            temp.nextEXP = ladder[index + 1].EXP;
+                        }
+                        return false;
+                    }
+                }
+                return true;
+            });
+            return temp;
+        }
+    },
+    mutations: {
+        "user:try-login": function(state, playload) {
+            let temp = null;
+            if (Number(playload.member_info.user) === 0) {
+                return state.member_info = temp;
+            }
+            return state.member_info = playload.member_info;
         }
     }
 };
