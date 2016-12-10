@@ -50,6 +50,12 @@ const user = {
                 return state.member_info = temp;
             }
             return state.member_info = playload.member_info;
+        },
+        "user:modify-property": function(state, playload) {
+            for (var key in playload) {
+                var value = playload[key];
+                state.member_info[key] = value;
+            }
         }
     }
 };
