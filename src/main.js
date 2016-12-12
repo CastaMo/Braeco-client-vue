@@ -160,7 +160,8 @@ let initMainVM = function() {
         components: {
             "footer-bar": require("./components/footer-bar"),
             "trolley-footer-bar": require("./components/trolley-footer-bar"),
-            "tips": require("./components/tips")
+            "tips": require("./components/tips"),
+            "user-login": require("./components/user-login")
         }
     });
 }

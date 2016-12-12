@@ -11,7 +11,9 @@ const user = {
          * member_info.sex      Number 性别
          * member_info.user     Number userId
          */
-        member_info: null
+        member_info: null,
+
+        showFlag: false
     },
     getters: {
         rank_info: function(state, getters, rootState) {
@@ -56,6 +58,21 @@ const user = {
                 var value = playload[key];
                 state.member_info[key] = value;
             }
+        },
+        "user:set-show-flag": function(state, playload) {
+            state.showFlag = playload.showFlag;
+        }
+    },
+    actions: {
+        "user:startUserLogin": function(context, playload) {
+            context.commit("user:set-show-flag", {
+                showFlag: true
+            });
+        },
+        "user:endUserLogin": function(context, playload) {
+            context.commit("user:set-show-flag", {
+                showFlag: false
+            });
         }
     }
 };

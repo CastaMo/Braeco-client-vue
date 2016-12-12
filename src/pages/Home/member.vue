@@ -31,7 +31,7 @@ module.exports = {
 
     methods: {
         startLogin() {
-            console.log("gg");
+            this.$store.dispatch("user:startUserLogin");
         },
         funcClick(opts) {
             console.log(opts);
