@@ -176,8 +176,8 @@ module.exports = {
                 });
             }
             this.$store.dispatch("combo-delete:startComboDelete", {
-                foodId: id,
-                subItems: subItems,
+                foodId: opts.id,
+                subItems: foodItem.subItems,
                 comboItem: this.currentComboItem,
                 currentActiveIndex: this.currentActiveIndex
             });
@@ -286,9 +286,6 @@ module.exports = {
     watch: {
         "currentComboItem": function() {
             this.init();
-        },
-        "$route": function() {
-            this.$store.dispatch("property:endFoodProperty");
         }
     }
 }

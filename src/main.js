@@ -149,6 +149,8 @@ let initMainVM = function() {
                 this.checkIsUnfiniteState();
                 this.checkForTransition(to.fullPath, from.fullPath);
                 this.$store.dispatch("property:endFoodProperty");
+                this.$store.dispatch("user:endUserLogin");
+                this.$store.dispatch("combo-delete:endComboDelete");
             },
             "orderForTrolley": {
                 handler: function(newData, oldData) {
