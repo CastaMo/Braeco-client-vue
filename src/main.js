@@ -2,6 +2,12 @@
 const config = require("./common/config.js");
 const style = require('./style/index.less');
 
+window.onerror = function(msg, url, line, col, error) {
+    if (error && error.stack && error.stack.indexOf("JSON.parse") >= 0) {
+        mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
+    };
+}
+
 //试试箭头函数
 let getData = requireName =>
     requireManage.get(requireName).require({
@@ -162,9 +168,3 @@ let initMainVM = function() {
 
 let mainVM = initMainVM();
 mainVM.$mount('#braeco-client');
-
-window.onerror = function(msg, url, line, col, error) {
-    if (error && error.stack && error.stack.indexOf("JSON.parse") >= 0) {
-        mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
-    };
-}
