@@ -157,7 +157,7 @@ module.exports = {
             temp.moveX = touch.clientX;
             temp.startY = touch.clientY;
             temp.moveY = touch.clientY;
-            temp.timestamp = new Date().getTime();
+            temp.timestamp = event.timeStamp;
         },
         touchmoveEvent(event) {
             event.preventDefault();
@@ -167,7 +167,7 @@ module.exports = {
 
             temp.moveX = touch.clientX;
             temp.moveY = touch.clientY;
-            temp.timestamp = new Date().getTime();
+            temp.timestamp = event.timeStamp;
             this.transitionStr = '';
             this.offsetWidth = temp.startX - temp.moveX;
         },
@@ -183,7 +183,7 @@ module.exports = {
             let currentX = temp.moveX;
 
             let lastTimestamp = temp.timestamp;
-            let currentTimestamp = new Date().getTime();
+            let currentTimestamp = event.timeStamp;
 
 
             if (currentX < startX) {
