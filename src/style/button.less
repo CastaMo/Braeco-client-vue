@@ -32,7 +32,7 @@
         border-radius: 0px;
     }
 
-    &.disabled {
+    &.disabled, &:disabled {
         color: @white-btn-disabled-color;
         background-color: @white-btn;
     }
@@ -44,7 +44,7 @@
         &:hover, &:active {
             background-color: @yellow-btn-hover;
         }
-        &.disabled {
+        &.disabled, &:disabled {
             background-color: @yellow-btn-disabled;
         }
     }
