@@ -96,6 +96,14 @@ module.exports = {
     },
     created() {
         let vm = this;
+        this.$root.$on("root:route-to-order", function() {
+            if (!vm.$store.state.user.member_info) {
+                vm.$store.dispatch("user:startUserLogin");
+            }
+        });
+    },
+    beforeDestroy() {
+        this.$root.$off("root:route-to-order");
     },
     components: {
         'order-item': require('../../components/order-item')
