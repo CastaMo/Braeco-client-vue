@@ -109,19 +109,12 @@ module.exports = {
                         vm.$root.$emit("tips:success", "登录成功");
                         let temp = {
                             avatar              :       result.avatar,
-                            birthday            :       result.birthday,
-                            city                :       result.city,
-                            country             :       result.country,
                             mobile              :       result.mobile,
-                            nickName            :       result.nickname,
-                            province            :       result.province,
-                            registerTime        :       result.register_time,
+                            nickname            :       result.nickname,
                             sex                 :       result.sex,
-                            signature           :       result.signature,
-                            id                  :       result.user,
+                            user                :       result.user,
                             EXP                 :       result.membership.EXP,
                             balance             :       result.membership.balance,
-                            like                :       result.like,
                             address             :       result.address
                         };
                         vm.$store.commit("user:try-login", {
