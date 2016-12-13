@@ -6,7 +6,7 @@
                     <div class='menu-wrapper'>
                         <div class='menu-container'>
                             <transition name="fade" mode="out-in">
-                                <ul v-if="currentFoodItems && currentFoodItems.length > 0">
+                                <ul v-show="currentFoodItems && currentFoodItems.length > 0">
                                     <food-item
                                         v-for="foodItem in currentFoodItems"
                                         :foodItem="foodItem"
