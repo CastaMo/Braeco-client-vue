@@ -22,6 +22,12 @@ const routeWeight = {
             main: {value: 2},
             order: {value: 3}
         }
+    },
+    member: {
+        value: 300,
+        next: {
+            pay: {value: 1}
+        }
     }
 };
 

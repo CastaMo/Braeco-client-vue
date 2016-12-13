@@ -28,6 +28,10 @@ const MenuOrder = function(resolve) {
     return require(['./pages/Menu/order.vue'], resolve);
 }
 
+const MemberPay = function(resolve) {
+    return require(['./pages/Member/pay.vue'], resolve);
+}
+
 const test = function(resolve) {
 	return require(['./specialRoute/test.vue'], resolve);
 }
@@ -46,6 +50,8 @@ const routes = [
     { path: '/menu/main/:categoryId', component: MenuMain},
     { path: '/menu/combo/:comboId', component: MenuCombo},
     { path: '/menu/order', component: MenuOrder},
+
+    { path: '/member/pay/:payType', component: MemberPay},
 
     { path: '/test', component: test}
 ];

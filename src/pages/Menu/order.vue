@@ -98,8 +98,9 @@ module.exports = {
         let vm = this;
         this.$root.$on("root:route-to-order", function() {
             if (!vm.$store.state.user.member_info) {
-                vm.$store.dispatch("user:startUserLogin");
+                return vm.$store.dispatch("user:startUserLogin");
             }
+            vm.$router.push('/member/pay/order');
         });
     },
     beforeDestroy() {
