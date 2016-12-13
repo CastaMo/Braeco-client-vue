@@ -23,7 +23,6 @@
                                                 v-model="mobile"
                                                 class='braeco-input block input-mobile'
                                                 placeholder="请输入您的手机号码"
-                                                type="number"
                                             >
                                         </div>
                                         <div class='login-captcha'>
@@ -32,9 +31,12 @@
                                                 v-model="captcha"
                                                 class='braeco-input left-part input-captcha'
                                                 placeholder="请输入验证码"
-                                                type="number"
                                             >
-                                            <button class='braeco-btn yellow right-part'>获取验证码</button>
+                                            <button
+                                                class='braeco-btn yellow right-part'
+                                                v-bind:disabled = "!getCaptchaFlag"
+                                                v-on:click="getCaptchaClickEvent"
+                                            >{{ isCount ? (`${remainder}s后再试`) : '获取验证码'}}</button>
                                             <div class='clear'></div>
                                         </div>
                                     </div>
@@ -42,7 +44,11 @@
                             </div>
                         </div>
                         <div class='modal-footer'>
-                            <button class='braeco-btn yellow confirm-btn' v-on:click="confirmBtnClickEvent">登录</button>
+                            <button
+                                class='braeco-btn yellow confirm-btn'
+                                v-on:click="confirmBtnClickEvent"
+                                v-bind:disabled = "!loginFlag"
+                            >登录</button>
                         </div>
                     </div>
                 </div>
@@ -59,20 +65,86 @@ module.exports = {
     data() {
         return {
             mobile: "",
-            captcha: ""
+            captcha: "",
+            isCount: false,
+            remainder: 60,
+            timerId: null
         }
     },
     computed: {
         showFlag: function() {
             return this.$store.state.user.showFlag;
+        },
+        getCaptchaFlag: function() {
+            return !this.isCount && /^1\d{10}$/.test(this.mobile);
+        },
+        loginFlag: function() {
+            return this.captcha.length === 6;
         }
     },
     methods: {
         closeUserLogin() {
             this.$store.dispatch("user:endUserLogin");
         },
+        getCaptchaClickEvent() {
+            let vm = this;
+            this.setRemainderToCount(60);
+            this.$store.dispatch("user:getCaptcha", {
+                mobile: this.mobile,
+                callback: function(result) {
+                    if (result.message === "success") {
+                        vm.$root.$emit("tips:success", "获取验证码成功！");
+                    } else {
+                        vm.$root.$emit("tips:error", "获取验证码失败，请稍后重试！");
+                    }
+                }
+            });
+        },
         confirmBtnClickEvent() {
-            this.closeUserLogin();
+            let vm = this;
+            this.$store.dispatch("user:login", {
+                captcha: this.captcha,
+                callback: function(result) {
+                    if (result.message === "success") {
+                        vm.$root.$emit("tips:success", "登录成功");
+                        let temp = {
+                            avatar              :       result.avatar,
+                            birthday            :       result.birthday,
+                            city                :       result.city,
+                            country             :       result.country,
+                            mobile              :       result.mobile,
+                            nickName            :       result.nickname,
+                            province            :       result.province,
+                            registerTime        :       result.register_time,
+                            sex                 :       result.sex,
+                            signature           :       result.signature,
+                            id                  :       result.user,
+                            EXP                 :       result.membership.EXP,
+                            balance             :       result.membership.balance,
+                            like                :       result.like,
+                            address             :       result.address
+                        };
+                        vm.$store.commit("user:try-login", {
+                            member_info: temp
+                        });
+                    } else {
+                        vm.$root.$emit("tips:error", "登录失败，请稍后重试！");
+                    }
+                }
+            });
+            this.$store.dispatch("user:endUserLogin");
+        },
+        setRemainderToCount(remainder) {
+            this.remainder = remainder;
+            this.isCount = true;
+            let vm = this;
+            this.timerId = setInterval(function() {
+                vm.remainder--;
+                if (vm.remainder <= 0) {
+                    vm.isCount = false;
+                    clearInterval(vm.timerId);
+                }
+            }, 1000);
         }
     }
 }
@@ -116,10 +188,10 @@ module.exports = {
         .user-login-container {
             padding-top: 5px;
             .login-title {
+                font-size: 16px;
                 line-height: 25px;
                 color: #4A4A4A;
                 font-weight: 300;
-                font-size: 18px;
                 margin-bottom: 14px;
             }
             .login-phone {
@@ -137,12 +209,12 @@ module.exports = {
             .login-captcha {
                 position: relative;
                 input {
-                    width: calc(~"50% - 24px");
+                    width: calc(~"50% - 10px");
                 }
                 button {
-                    line-height: 51px;
+                    line-height: 40px;
                     width: 45%;
-                    font-size: 18px;
+                    font-size: 16px;
                 }
                 .force-cover {
                     position: absolute;

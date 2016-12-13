@@ -73,6 +73,39 @@ const user = {
             context.commit("user:set-show-flag", {
                 showFlag: false
             });
+        },
+        "user:getCaptcha": function(context, playload) {
+            NProgress.start();
+            requireManage.get("getCaptcha").require({
+                data: {
+                    JSON: JSON.stringify({
+                        type: "testmsg",
+                        mobile: playload.mobile
+                    })
+                },
+                success: function(result) {
+                    playload.callback(result);
+                },
+                always: function() {
+                    NProgress.done();
+                }
+            });
+        },
+        "user:login": function(context, playload) {
+            NProgress.start();
+            requireManage.get("login").require({
+                data: {
+                    JSON: JSON.stringify({
+                        captcha: playload.captcha
+                    })
+                },
+                success: function(result) {
+                    playload.callback(result);
+                },
+                always: function() {
+                    NProgress.done();
+                }
+            });
         }
     }
 };

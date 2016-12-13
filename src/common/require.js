@@ -156,12 +156,16 @@ requireManage = (function() {
     _allRequireName = [
         'getTableDinner',
         'getTableLimit',
-        'getTableMember'
+        'getTableMember',
+        'getCaptcha',
+        'login',
     ];
     _allRequireURL = {
         'getTableDinner': '/api/Table/Dinner',
         'getTableLimit': '/api/Table/Limit',
-        'getTableMember': '/api/Table/Member'
+        'getTableMember': '/api/Table/Member',
+        'getCaptcha': '/server/captcha',
+        'login': '/Eater/Login/Mobile'
     };
     _setHeader = {};
 
@@ -216,7 +220,9 @@ requireManage = (function() {
             var ajaxObject;
             ajaxObject = _getNormalAjaxObject(config);
             ajaxObject.type = options.method || ajaxObject.type;
-            ajaxObject.data = typeof _getRequireDataStr[name] == 'function' ? _getRequireDataStr[name](options.data) : void 8;
+            if (options.data) {
+                ajaxObject.data = typeof _getRequireDataStr[name] == 'function' ? _getRequireDataStr[name](options.data) : normRequireData(options.data);
+            }
             if (typeof _correctURL[name] == 'function') {
                 _correctURL[name](ajaxObject, options.data);
             }
