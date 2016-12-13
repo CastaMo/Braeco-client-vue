@@ -5,7 +5,7 @@ var path = require('path')
 var express = require('express')
 var webpack = require('webpack')
 var opn = require('opn')
-var proxyMiddleware = require('http-proxy-middleware')
+var proxyMiddleware = require('express-http-proxy');
 var webpackConfig = process.env.NODE_ENV === 'testing'
   ? require('./webpack.prod.conf')
   : require('./webpack.dev.conf')
@@ -44,11 +44,19 @@ compiler.plugin('compilation', function (compilation) {
 //   }
 //   app.use(proxyMiddleware(context, options))
 // })
-app.use(['/api/*'], proxyMiddleware({
-  // target: "http://devpay.brae.co",
-  target: "http://localhost:3000",
-  changeOrigin: true
-}));
+
+var proxy = proxyMiddleware("http://localhost:3000/", {
+  forwardPath: function(req, res) {
+    return req.baseUrl;
+  },
+  decorateRequest: function(proxyReq, originalReq) {
+    return proxyReq;
+  }
+  
+});
+
+
+app.use(['/api/*', '/server/captcha', '/Eater/Login/Mobile'], proxy);
 
 // handle fallback for HTML5 history API
 app.use(require('connect-history-api-fallback')())
