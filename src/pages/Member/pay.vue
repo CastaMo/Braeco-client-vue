@@ -11,6 +11,97 @@
                 </div>
             </div>
         </div>
+        <div class='member-pay-main'>
+            <div class='via-balance-field choose-pay-field'>
+                <div class='title-field'>
+                    <div class='title-wrapper margin-left-wrapper'>
+                        <div class='title-container'>
+                            <p>使用会员余额支付</p>
+                        </div>
+                    </div>
+                </div>
+                <ul class='choose-pay-list'>
+                    <li
+                        class='choose-pay-item'
+                        v-if="userBalance >= topHeaderPrice"
+                        v-bind:class="{
+                            'choose': choose === 'recharge'
+                        }"
+                        v-on:click="setChoose('recharge')"
+                    >
+                        <div class='choose-pay-item-wrapper margin-left-wrapper'>
+                            <div class='choose-pay-item-container'>
+                                <div class='left-part member-icon icon'>
+                                </div>
+                                <div class='left-part word'>
+                                    <p>您的会员余额:</p>
+                                    <p class='balance'>{{Number(userBalance.toFixed(2))}}</p>
+                                </div>
+                                <div class='right-part choose-icon'>
+                                </div>
+                                <div class='clear'></div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class='via-online-field choose-pay-field'>
+                <div class='title-field'>
+                    <div class='title-wrapper margin-left-wrapper'>
+                        <div class='title-container'>
+                            <p>使用在线支付</p>
+                        </div>
+                    </div>
+                </div>
+                <ul class='choose-pay-list'>
+                    <li
+                        class='choose-pay-item'
+                        v-on:click="setChoose('weixin')"
+                        v-bind:class="{
+                            'choose': choose === 'weixin'
+                        }"
+                    >
+                        <div class='choose-pay-item-wrapper margin-left-wrapper'>
+                            <div class='choose-pay-item-container'>
+                                <div class='left-part weixin-icon icon'>
+                                </div>
+                                <div class='left-part word'>
+                                    <p>微信支付</p>
+                                    <p class='tips'>推荐使用</p>
+                                </div>
+                                <div class='right-part choose-icon'>
+                                </div>
+                                <div class='clear'></div>
+                            </div>
+                        </div>
+                    </li>
+                     <li
+                        class='choose-pay-item'
+                        v-on:click="setChoose('alipay')"
+                        v-bind:class="{
+                            'choose': choose === 'alipay'
+                        }"
+
+                    >
+                        <div class='choose-pay-item-wrapper margin-left-wrapper'>
+                            <div class='choose-pay-item-container'>
+                                <div class='left-part alipay-icon icon'>
+                                </div>
+                                <div class='left-part word'>
+                                    <p>支付宝</p>
+                                    <p class='tips'>推荐使用</p>
+                                </div>
+                                <div class='right-part choose-icon'>
+                                </div>
+                                <div class='clear'></div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class='via-cash-field choose-pay-field'>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -18,6 +109,11 @@
 
 module.exports = {
     name: 'member-pay',
+    data() {
+        return {
+            choose: ''
+        }
+    },
     computed: {
         topHeaderWord: function() {
             if (this.$store.state.route.params.payType === "order") {
@@ -32,6 +128,17 @@ module.exports = {
             } else {
                 return 100;
             }
+        },
+        userBalance: function() {
+            if (this.$store.state.user.member_info) {
+                return this.$store.state.user.member_info.balance;
+            }
+            return 0;
+        }
+    },
+    methods: {
+        setChoose(choose) {
+            this.choose = choose;
         }
     }
 };
@@ -40,6 +147,11 @@ module.exports = {
 
 
 <style scoped lang="less">
+
+.background-norm(@elem: "none") {
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
 .top-header {
     position: fixed;
@@ -60,6 +172,84 @@ module.exports = {
                     content: '￥';
                     font-size: 12px;
                 }
+            }
+        }
+    }
+}
+
+.member-pay-main {
+    padding-top: 60px;
+    .choose-pay-field {
+        background-color: #fff;
+        border-top: solid 1px #C8C7CC;
+        border-bottom: solid 1px #C8C7CC;
+        margin-bottom: 16px;
+        .title-field {
+            line-height: 39px;
+            font-weight: bold;
+            &:last-child {
+                .margin-left-wrapper {
+                    border-bottom: none;
+                }
+            }
+        }
+        ul.choose-pay-list {
+            li.choose-pay-item {
+                .choose-pay-item-container {
+                    padding-right: 18px;
+                }
+                &:last-of-type {
+                    .margin-left-wrapper {
+                        border-bottom: none;
+                    }
+                }
+                &.choose {
+                    background-color: #FFF5D6;
+                    .choose-icon {
+                        background-image: url("../../assets/pay-choose-icon-checked.png");
+                    }
+                }
+            }
+            .icon {
+                width: 40px;
+                height: 40px;
+                background-size: 40px 40px;
+                margin-top: 8px;
+                .background-norm();
+                &.member-icon {
+                    background-image: url("../../assets/member-icon.png");
+                }
+                &.weixin-icon {
+                    background-image: url("../../assets/weixin-icon.png");
+                }
+                &.alipay-icon {
+                    background-image: url("../../assets/alipay-icon.png");
+                }
+            }
+            .word {
+                line-height: 20px;
+                margin: 8px 0 8px 10px;
+                .balance {
+                    color: #910012;
+                    font-weight: bold;
+                    &:before {
+                        content: '￥';
+                        font-size: 12px;
+                    }
+                }
+                .tips {
+                    font-size: 14px;
+                    color: #9B9B9B;
+                    font-weight: 300;
+                }
+            }
+            .choose-icon {
+                width: 24px;
+                height: 24px;
+                background-size: 24px 24px;
+                margin-top: 17px;
+                .background-norm();
+                background-image: url("../../assets/pay-choose-icon-unchecked.png");
             }
         }
     }
