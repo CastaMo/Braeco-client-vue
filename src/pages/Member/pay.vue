@@ -53,42 +53,24 @@
                         </div>
                     </div>
                 </div>
-                <ul class='choose-pay-list'>
+                <ul class='choose-pay-list' v-if="online_channel_length > 0">
                     <li
+                        v-for="(value, channel) of online_channel"
                         class='choose-pay-item'
-                        v-on:click="setChoose('weixin')"
+                        v-on:click="setChoose(channel)"
                         v-bind:class="{
-                            'choose': choose === 'weixin'
+                            'choose': choose === channel
                         }"
                     >
                         <div class='choose-pay-item-wrapper margin-left-wrapper'>
                             <div class='choose-pay-item-container'>
-                                <div class='left-part weixin-icon icon'>
+                                <div
+                                    class='left-part icon'
+                                    v-bind:class="iconMap[channel]"
+                                >
                                 </div>
                                 <div class='left-part word'>
-                                    <p>微信支付</p>
-                                    <p class='tips'>推荐使用</p>
-                                </div>
-                                <div class='right-part choose-icon'>
-                                </div>
-                                <div class='clear'></div>
-                            </div>
-                        </div>
-                    </li>
-                     <li
-                        class='choose-pay-item'
-                        v-on:click="setChoose('alipay')"
-                        v-bind:class="{
-                            'choose': choose === 'alipay'
-                        }"
-
-                    >
-                        <div class='choose-pay-item-wrapper margin-left-wrapper'>
-                            <div class='choose-pay-item-container'>
-                                <div class='left-part alipay-icon icon'>
-                                </div>
-                                <div class='left-part word'>
-                                    <p>支付宝</p>
+                                    <p>{{nameMap[channel]}}</p>
                                     <p class='tips'>推荐使用</p>
                                 </div>
                                 <div class='right-part choose-icon'>
@@ -98,8 +80,18 @@
                         </div>
                     </li>
                 </ul>
+                <div v-else class='warn-field'>
+                    <p>本餐厅暂不支持在线支付</p>
+                </div>
             </div>
             <div class='via-cash-field choose-pay-field'>
+                <div class='title-field'>
+                    <div class='title-wrapper margin-left-wrapper'>
+                        <div class='title-container'>
+                            <p>使用现金或其他方式下单</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -111,7 +103,15 @@ module.exports = {
     name: 'member-pay',
     data() {
         return {
-            choose: ''
+            choose: '',
+            iconMap: {
+                'alipay_wap': 'alipay-icon',
+                'p2p_wx_pub': 'weixin-icon'
+            },
+            nameMap: {
+                'alipay_wap': '支付宝',
+                'p2p_wx_pub': '微信支付'
+            }
         }
     },
     computed: {
@@ -134,6 +134,12 @@ module.exports = {
                 return this.$store.state.user.member_info.balance;
             }
             return 0;
+        },
+        online_channel: function() {
+            return this.$store.getters.online_channel;
+        },
+        online_channel_length: function() {
+            return Object.keys(this.online_channel).length;
         }
     },
     methods: {
@@ -251,6 +257,11 @@ module.exports = {
                 .background-norm();
                 background-image: url("../../assets/pay-choose-icon-unchecked.png");
             }
+        }
+        .warn-field {
+            line-height: 56px;
+            text-align: center;
+            color: #9B9B9B;
         }
     }
 }
