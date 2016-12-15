@@ -93,6 +93,12 @@
                     </div>
                 </div>
             </div>
+            <div class='confirm-btn-field'>
+                <button
+                    class='braeco-btn yellow'
+                    v-bind:disabled="!choose"
+                >确认支付</button>
+            </div>
         </div>
     </div>
 </template>
@@ -184,7 +190,7 @@ module.exports = {
 }
 
 .member-pay-main {
-    padding-top: 60px;
+    padding: 60px 0;
     .choose-pay-field {
         background-color: #fff;
         border-top: solid 1px #C8C7CC;
@@ -264,6 +270,17 @@ module.exports = {
             color: #9B9B9B;
         }
     }
+    .confirm-btn-field {
+        margin: 10px 26px;
+        button {
+            width: 100%;
+            line-height: 40px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
 }
+
+
 
 </style>
