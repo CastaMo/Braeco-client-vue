@@ -25,9 +25,9 @@
                         class='choose-pay-item'
                         v-if="userBalance >= topHeaderPrice"
                         v-bind:class="{
-                            'choose': choose === 'recharge'
+                            'choose': choose === 'prepayment'
                         }"
-                        v-on:click="setChoose('recharge')"
+                        v-on:click="setChoose('prepayment')"
                     >
                         <div class='choose-pay-item-wrapper margin-left-wrapper'>
                             <div class='choose-pay-item-container'>
@@ -97,15 +97,15 @@
                             <div class='left-part'>
                                 <p>使用现金或其他方式下单</p>
                             </div>
-                            <div class='right-part choose-icon'>
+                            <div class='right-part choose-icon' v-if="offline_channel.cash">
                             </div>
                             <div class='clear'></div>
                         </div>
                     </div>
                 </div>
-                <!-- <div class='warn-field'>
+                <div class='warn-field' v-if="!offline_channel.cash">
                     <p>本餐厅暂不支持现金支付</p>
-                </div> -->
+                </div>
             </div>
             <div class='confirm-btn-field'>
                 <button
@@ -131,7 +131,10 @@ module.exports = {
             nameMap: {
                 'alipay_wap': '支付宝',
                 'p2p_wx_pub': '微信支付'
-            }
+            },
+            channelWhiteList: [
+                'prepayment'
+            ]
         }
     },
     computed: {
@@ -155,16 +158,27 @@ module.exports = {
             }
             return 0;
         },
+        all_channel: function() {
+            return this.$store.getters.all_channel;
+        },
         online_channel: function() {
             return this.$store.getters.online_channel;
         },
         online_channel_length: function() {
             return Object.keys(this.online_channel).length;
+        },
+        offline_channel: function() {
+            return this.$store.getters.offline_channel;
         }
     },
     methods: {
         setChoose(choose) {
-            this.choose = choose;
+            if (
+                this.all_channel[choose]
+            ||  this.channelWhiteList.indexOf(choose) >= 0
+            ) {
+                this.choose = choose;
+            }
         }
     }
 };
