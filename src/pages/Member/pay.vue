@@ -85,13 +85,27 @@
                 </div>
             </div>
             <div class='via-cash-field choose-pay-field'>
-                <div class='title-field'>
+                <div
+                    class='title-field choose-pay-item'
+                    v-bind:class="{
+                        'choose': choose === 'cash'
+                    }"
+                    v-on:click="setChoose('cash')"
+                >
                     <div class='title-wrapper margin-left-wrapper'>
                         <div class='title-container'>
-                            <p>使用现金或其他方式下单</p>
+                            <div class='left-part'>
+                                <p>使用现金或其他方式下单</p>
+                            </div>
+                            <div class='right-part choose-icon'>
+                            </div>
+                            <div class='clear'></div>
                         </div>
                     </div>
                 </div>
+                <!-- <div class='warn-field'>
+                    <p>本餐厅暂不支持现金支付</p>
+                </div> -->
             </div>
             <div class='confirm-btn-field'>
                 <button
@@ -199,6 +213,9 @@ module.exports = {
         .title-field {
             line-height: 39px;
             font-weight: bold;
+            .title-container {
+                padding-right: 16px;
+            }
             &:last-child {
                 .margin-left-wrapper {
                     border-bottom: none;
@@ -208,17 +225,11 @@ module.exports = {
         ul.choose-pay-list {
             li.choose-pay-item {
                 .choose-pay-item-container {
-                    padding-right: 18px;
+                    padding-right: 16px;
                 }
                 &:last-of-type {
                     .margin-left-wrapper {
                         border-bottom: none;
-                    }
-                }
-                &.choose {
-                    background-color: #FFF5D6;
-                    .choose-icon {
-                        background-image: url("../../assets/pay-choose-icon-checked.png");
                     }
                 }
             }
@@ -256,12 +267,20 @@ module.exports = {
                 }
             }
             .choose-icon {
-                width: 24px;
-                height: 24px;
-                background-size: 24px 24px;
                 margin-top: 17px;
-                .background-norm();
-                background-image: url("../../assets/pay-choose-icon-unchecked.png");
+            }
+        }
+        .choose-icon {
+            width: 24px;
+            height: 24px;
+            background-size: 24px 24px;
+            .background-norm();
+            background-image: url("../../assets/pay-choose-icon-unchecked.png");
+        }
+        .choose-pay-item.choose {
+            background-color: #FFF5D6;
+            .choose-icon {
+                background-image: url("../../assets/pay-choose-icon-checked.png");
             }
         }
         .warn-field {
@@ -269,9 +288,15 @@ module.exports = {
             text-align: center;
             color: #9B9B9B;
         }
+        &.via-cash-field {
+            margin-bottom: 0;
+            .choose-icon {
+                margin-top: 7.5px;
+            }
+        }
     }
     .confirm-btn-field {
-        margin: 10px 26px;
+        margin: 26px 26px;
         button {
             width: 100%;
             line-height: 40px;
