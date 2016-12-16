@@ -13,7 +13,7 @@ const pay = {
 		online_channel: function(state, getters, rootState) {
 			let all_channel = getters.all_channel;
 			let temp = {};
-			
+
 			temp = Vue.util.extend({}, all_channel);
 			delete temp.cash;
 			return temp;
@@ -22,10 +22,10 @@ const pay = {
 			let all_channel = getters.all_channel;
 			let temp = {};
 
-			temp = Vue.util.extend({}, all_channel);
-			return {
-				cash: temp.cash
-			};
+			if (all_channel.cash) {
+				temp.cash = all_channel.cash;
+			}
+			return temp;
 		}
 	}
 };
