@@ -43,6 +43,14 @@ const user = {
                 return true;
             });
             return temp;
+        },
+        charge_ladder: function(state, getters, rootState) {
+            let temp = [];
+            if (!rootState.isLoaded) {
+                return temp;
+            }
+            temp = rootState.requireData.membership_rule.charge_ladder;
+            return temp;
         }
     },
     mutations: {
