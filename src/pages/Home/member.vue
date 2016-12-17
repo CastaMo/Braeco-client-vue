@@ -34,7 +34,14 @@ module.exports = {
             this.$store.dispatch("user:startUserLogin");
         },
         funcClick(opts) {
-            console.log(opts);
+            if (opts && opts.title) {
+                switch(opts.title) {
+                    case "recharge":
+                        return this.$router.push('/member/recharge');
+                    default:
+                        return console.log(opts.title);
+                }
+            }
         }
     },
 
