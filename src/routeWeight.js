@@ -26,6 +26,7 @@ const routeWeight = {
     member: {
         value: 300,
         next: {
+            recharge: {value: 0},
             pay: {value: 1}
         }
     }
