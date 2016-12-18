@@ -27,7 +27,7 @@ const routeWeight = {
         value: 300,
         next: {
             recharge: {value: 0},
-            pay: {value: 1}
+            pay: {value: 50}
         }
     }
 };

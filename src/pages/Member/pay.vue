@@ -43,6 +43,24 @@
                             </div>
                         </div>
                     </li>
+                    <li
+                        class='choose-pay-item active-container'
+                        v-else="userBalance >= topHeaderPrice"
+                        v-on:click="routeToRecharge"
+                    >
+                        <div class='choose-pay-item-wrapper margin-left-wrapper'>
+                            <div class='choose-pay-item-container'>
+                                <div class='left-part member-icon icon'>
+                                </div>
+                                <div class='left-part word'>
+                                    <p>您的会员余额: <span class='balance'>{{Number(userBalance.toFixed(2))}}</span></p>
+                                    <p style="font-size:14px; color:#9B9B9B; font-weight:300;">余额不足以支付，马上充值</p>
+                                </div>
+                                <div class='clear'></div>
+                            </div>
+                        </div>
+                        <div class="arrow vertical-center"></div>
+                    </li>
                 </ul>
             </div>
             <div class='via-online-field choose-pay-field'>
@@ -201,6 +219,9 @@ module.exports = {
             ) {
                 this.choose = choose;
             }
+        },
+        routeToRecharge() {
+            this.$router.push('/member/recharge');
         }
     }
 };
@@ -220,6 +241,7 @@ module.exports = {
     left: 0;
     top: 0;
     width: 100%;
+    z-index: 100;
     .price-bar {
         border-bottom: solid 1px #C8C7CC;
         width: 100%;
