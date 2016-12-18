@@ -76,7 +76,7 @@ module.exports = {
             let vm = this;
             setTimeout(function() {
                 vm.$router.push(`/member/pay/recharge_${vm.choose}`);
-            }, 200);
+            }, 100);
         }
     }
 }
