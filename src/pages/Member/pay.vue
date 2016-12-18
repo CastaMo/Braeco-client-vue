@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class='member-pay-main'>
-            <div class='via-balance-field choose-pay-field'>
+            <div class='via-balance-field choose-pay-field' v-if="pay_type === 'order'">
                 <div class='title-field'>
                     <div class='title-wrapper margin-left-wrapper'>
                         <div class='title-container'>
@@ -91,6 +91,7 @@
                         'choose': choose === 'cash'
                     }"
                     v-on:click="setChoose('cash')"
+                    v-if="pay_type === 'order'"
                 >
                     <div class='title-wrapper margin-left-wrapper'>
                         <div class='title-container'>
@@ -103,8 +104,11 @@
                         </div>
                     </div>
                 </div>
-                <div class='warn-field' v-if="!offline_channel.cash">
+                <div class='warn-field' v-if="pay_type === 'order' && !offline_channel.cash">
                     <p>本餐厅暂不支持现金支付</p>
+                </div>
+                <div class='warn-field' v-if="pay_type !== 'order'">
+                    <p>使用现金充值请到前台</p>
                 </div>
             </div>
             <div class='confirm-btn-field'>
@@ -138,19 +142,37 @@ module.exports = {
         }
     },
     computed: {
+        charge_ladder: function() {
+            return this.$store.getters.charge_ladder;
+        },
+        pay_type: function() {
+            return this.$store.state.route.params.payType;
+        },
+        recharge_index: function() {
+            if (this.pay_type === 'order') {
+                return -1;
+            }
+            let recharge_index = this.pay_type.split("_")[1];
+            return Number(recharge_index);
+        },
         topHeaderWord: function() {
-            if (this.$store.state.route.params.payType === "order") {
+            if (this.pay_type === "order") {
                 return "订单总价";
             } else {
                 return "充值金额";
             }
         },
         topHeaderPrice: function() {
-            if (this.$store.state.route.params.payType === "order") {
+            if (this.pay_type === "order") {
                 return this.$store.getters.totalFinalPrice;
             } else {
-                return 100;
+                let recharge_index = this.recharge_index;
+                let recharge = this.charge_ladder[recharge_index];
+                if (recharge) {
+                    return recharge.pay;
+                }
             }
+            return 0;
         },
         userBalance: function() {
             if (this.$store.state.user.member_info) {
