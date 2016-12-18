@@ -46,10 +46,44 @@ const user = {
         },
         charge_ladder: function(state, getters, rootState) {
             let temp = [];
-            if (!rootState.isLoaded) {
+            if (!rootState.isLoaded
+            ||  !state.member_info
+            ) {
                 return temp;
             }
-            temp = rootState.requireData.membership_rule.charge_ladder;
+
+            temp = Vue.util.extend([], rootState.requireData.membership_rule.charge_ladder);
+
+            let current_EXP = state.member_info.EXP;
+            let current_level = getters.rank_info.level;
+            let ladder = rootState.requireData.membership_rule.ladder;
+
+            temp.forEach(function(chargeItem) {
+                if (chargeItem.get > chargeItem.pay) {
+                    chargeItem.give = chargeItem.get - chargeItem.pay;
+                }
+                let recharge_to_level = current_level;
+                let total_EXP = current_EXP + chargeItem.EXP;
+
+                // 遍历以查询最大可到达多少级
+                for (let i = current_level + 1, len = ladder.length;
+                    i < len;
+                    i++
+                ) {
+                    let ref = ladder[i];
+                    if (total_EXP >= ref.EXP) {
+                        recharge_to_level = i;
+                    } else {
+                        break;
+                    }
+                }
+                if (recharge_to_level > current_level) {
+                    chargeItem.to_rank_info = {
+                        level: recharge_to_level,
+                        level_name: ladder[recharge_to_level].name
+                    };
+                }
+            });
             return temp;
         }
     },
