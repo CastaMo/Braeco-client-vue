@@ -11,7 +11,6 @@ const order = {
         temp.dc_type = food.dc_type;
         temp.dc = food.dc;
         if (temp.type === 'normal' && groups && groups.length > 0) {
-            temp.price += Braeco.utils.property.getDiffPriceByChoose(groups, extras);
             temp.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(groups, extras).join("、");
         } else if (temp.type !== 'normal' && groups && groups.length > 0) {
             temp.comboChooseInfoArray = [];
