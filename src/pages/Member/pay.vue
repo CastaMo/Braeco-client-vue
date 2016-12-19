@@ -133,6 +133,7 @@
                 <button
                     class='braeco-btn yellow'
                     v-bind:disabled="!choose"
+                    v-on:click="confirmBtnClickEvent"
                 >确认支付</button>
             </div>
         </div>
@@ -222,6 +223,9 @@ module.exports = {
         },
         routeToRecharge() {
             this.$router.push('/member/recharge');
+        },
+        confirmBtnClickEvent() {
+            console.log(this.$store.getters.orderItems);
         }
     }
 };
