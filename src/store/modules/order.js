@@ -1,7 +1,8 @@
 const order = {
 
     state: {
-        orderForTrolley: []
+        orderForTrolley: [],
+        orderForAlready: []
     },
     getters: {
         orderItems: function(state, getters, rootState) {
@@ -189,6 +190,12 @@ const order = {
                     state.orderForTrolley.splice(index, 1);
                 }
             }
+        },
+        "order:clear-order-for-trolley": function(state, playload) {
+            state.orderForTrolley = [];
+        },
+        "order:load-order-for-already": function(state, playload) {
+            state.orderForAlready = playload.orderForAlready;
         }
     },
     actions: {
@@ -250,6 +257,24 @@ const order = {
                     }
                 });
             });
+        },
+        "order:get-order-for-already-item": function(context, playload) {
+            let orderForAlreadyItem = {};
+            orderForAlreadyItem.createTimestamp = +new Date();
+            orderForAlreadyItem.orderItems = [];
+            context.getters.orderItems.forEach(function(orderItem) {
+                let temp = orderItem;
+                temp.read_only = true;
+                orderForAlreadyItem.orderItems.push(temp);
+            });
+            if (context.getters.giveItem) {
+                orderForAlreadyItem.orderItems.push(context.getters.giveItem);
+            }
+            orderForAlreadyItem.discountMap = context.getters.discountMap;
+            orderForAlreadyItem.totalFinalPrice = context.getters.totalFinalPrice;
+            orderForAlreadyItem.orderTotalNumber = context.getters.orderTotalNumber;
+            orderForAlreadyItem.orderInfo = {};
+            context.state.orderForAlready.push(orderForAlreadyItem);
         }
     }
 

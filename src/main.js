@@ -85,6 +85,9 @@ let initMainVM = function() {
         computed: {
             orderForTrolley: function() {
                 return this.$store.state.order.orderForTrolley;
+            },
+            orderForAlready: function() {
+                return this.$store.state.order.orderForAlready;
             }
         },
         created() {
@@ -95,9 +98,13 @@ let initMainVM = function() {
             init() {
                 let vm = this;
                 this.isLoaded = true;
-                let lsOrderForTrolley = this.readFromLocStor();
+                let lsOrderForTrolley = this.readFromLocStor('orderForTrolley');
                 this.$store.dispatch("order:validateAndAssignForOraderForTrolley", {
                     lsOrderForTrolley: lsOrderForTrolley
+                });
+                let orderForAlready = this.readFromLocStor('orderForAlready');
+                this.$store.commit("order:load-order-for-already", {
+                    orderForAlready: orderForAlready
                 });
                 this.$store.commit("user:try-login", {
                     member_info: this.$store.state.requireData.member_info
@@ -137,8 +144,8 @@ let initMainVM = function() {
                     this.transitionName = "page-slide-right";
                 }
             },
-            readFromLocStor() {
-                return JSON.parse(utils.locStor.get('orderForTrolley') || "[]");
+            readFromLocStor(key) {
+                return JSON.parse(utils.locStor.get(key) || "[]");
             },
             saveToLocStor(key, val) {
                 utils.locStor.set(key, val);
@@ -155,6 +162,12 @@ let initMainVM = function() {
             "orderForTrolley": {
                 handler: function(newData, oldData) {
                     this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
+                },
+                deep: true
+            },
+            "orderForAlready": {
+                handler: function(newData, oldData) {
+                    this.saveToLocStor("orderForAlready", JSON.stringify(newData));
                 },
                 deep: true
             }

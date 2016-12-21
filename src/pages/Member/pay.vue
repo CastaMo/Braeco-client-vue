@@ -225,7 +225,10 @@ module.exports = {
             this.$router.push('/member/recharge');
         },
         confirmBtnClickEvent() {
-            console.log(this.$store.getters.orderItems);
+            // console.log(this.$store.getters.orderItems);
+            this.$store.dispatch("order:get-order-for-already-item");
+            this.$store.commit("order:clear-order-for-trolley");
+            console.log(this.$store.state.order.orderForAlready);
         }
     }
 };
