@@ -34,17 +34,17 @@
                     <div class='right-part controll'>
                         <div
                             class='minus'
-                            v-if="!orderItem.isGive"
+                            v-if="!orderItem.read_only"
                             v-on:click="minusClickEvent"
                         ></div>
                         <div class='num'
                             v-bind:class="{
-                                'only-show': orderItem.isGive
+                                'only-show': orderItem.read_only
                             }"
                         >{{orderItem.num}}</div>
                         <div
                             class='add'
-                            v-if="!orderItem.isGive"
+                            v-if="!orderItem.read_only"
                             v-on:click="addClickEvent"
                         ></div>
                     </div>

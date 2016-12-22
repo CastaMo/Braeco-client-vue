@@ -148,7 +148,7 @@ const order = {
                     dcStr: "满送",
                     orderInitPrice: 0,
                     num: 1,
-                    isGive: true
+                    read_only: true
                 }
             }
             return null;
@@ -273,7 +273,13 @@ const order = {
             orderForAlreadyItem.discountMap = context.getters.discountMap;
             orderForAlreadyItem.totalFinalPrice = context.getters.totalFinalPrice;
             orderForAlreadyItem.orderTotalNumber = context.getters.orderTotalNumber;
-            orderForAlreadyItem.orderInfo = {};
+            orderForAlreadyItem.orderInfo = {
+                flow_id: "0001",
+                order_id: "10010000018020160606183041006014",
+                pay_info: "微信支付",
+                remark_info: "玫瑰过敏",
+                table_info: "堂食 6 号桌"
+            };
             context.state.orderForAlready.push(orderForAlreadyItem);
         }
     }
