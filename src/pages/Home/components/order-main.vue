@@ -64,9 +64,6 @@ module.exports = {
             return this.$store.state.order.orderForAlready;
         }
     },
-    created() {
-        console.log(JSON.parse(JSON.stringify(this.orderForAlready)));
-    },
     methods: {
         routeToMemberOrder(id) {
             console.log(id);
