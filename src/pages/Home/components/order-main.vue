@@ -42,7 +42,7 @@
                             <div class='total-wrapper'>
                                 <div class='total-container'>
                                     <div class='right-part'>
-                                        共 {{orderAlready.orderTotalNumber}} 项，实付<span class='total-price'>{{orderAlready.totalFinalPrice.toFixed(2)}}</span>
+                                        共 {{orderAlready.orderTotalNumber}} 项，实付<span class='total-price'>{{Number(orderAlready.totalFinalPrice.toFixed(2))}}</span>
                                     </div>
                                 </div>
                             </div>
