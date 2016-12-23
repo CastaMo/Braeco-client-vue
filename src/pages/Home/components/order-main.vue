@@ -6,7 +6,7 @@
                     <li
                         class='order-already-item'
                         v-for="orderAlready in orderForAlready"
-                        v-on:click="routeToMemberOrder(orderAlready.orderInfo.order_id)"
+                        v-on:click="itemClickEvent(orderAlready.orderInfo.order_id)"
                     >
                         <div class='title-field active-container'>
                             <div class='title-wrapper margin-left-wrapper'>
@@ -65,8 +65,8 @@ module.exports = {
         }
     },
     methods: {
-        routeToMemberOrder(id) {
-            console.log(id);
+        itemClickEvent(id) {
+            this.$emit("order-already-item-click", id);
         }
     }
 }

@@ -7,6 +7,7 @@
             ></order-blank-page>
             <order-main
                 v-else
+                v-on:order-already-item-click="routeToMemberOrder"
             ></order-main>
         </transition>
 
@@ -49,6 +50,9 @@ module.exports = {
             }
             let categoryId = this.$store.state.requireData.menu.categories[0].id;
             this.$root.$router.push(`/menu/main/${categoryId}`);
+        },
+        routeToMemberOrder(id) {
+            this.$router.push(`/member/order/${id}`);
         }
     },
 
