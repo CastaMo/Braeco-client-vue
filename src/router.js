@@ -34,6 +34,9 @@ const MemberPay = function(resolve) {
 const MemberRecharge = function(resolve) {
     return require(['./pages/Member/recharge.vue'], resolve);
 }
+const MemberOrder = function(resolve) {
+    return require(['./pages/Member/order.vue'], resolve);
+}
 
 const test = function(resolve) {
 	return require(['./specialRoute/test.vue'], resolve);
@@ -56,6 +59,7 @@ const routes = [
 
     { path: '/member/pay/:payType', component: MemberPay},
     { path: '/member/recharge', component: MemberRecharge},
+    { path: '/member/order/:orderId', component: MemberOrder},
 
     { path: '/test', component: test}
 ];
