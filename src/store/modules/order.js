@@ -5,6 +5,27 @@ const order = {
         orderForAlready: []
     },
     getters: {
+        orderAlreadyItem: function(state, getters, rootState) {
+            let temp = {
+                inValid: true
+            };
+            if (!rootState.isLoaded) {
+                return temp;
+            }
+            let orderId = Number(rootState.route.params.orderId);
+            state.orderForAlready.every(function(item) {
+                if (Number(item.orderInfo.order_id) === orderId) {
+                    temp = item;
+                    temp.orderItems.forEach(function(orderItem) {
+                        orderItem.read_only = true;
+                    });
+                    return false;
+                }
+                return true;
+            });
+            return temp;
+
+        },
         orderItems: function(state, getters, rootState) {
             let temp = [];
             state.orderForTrolley.forEach(function(orderItem) {
@@ -275,7 +296,7 @@ const order = {
             orderForAlreadyItem.orderTotalNumber = context.getters.orderTotalNumber;
             orderForAlreadyItem.orderInfo = {
                 flow_id: "0001",
-                order_id: "10010000018020160606183041006014",
+                order_id: parseInt(Math.random() * Math.pow(10, 10)),
                 pay_info: "微信支付",
                 remark_info: "玫瑰过敏",
                 table_info: "堂食 6 号桌"
