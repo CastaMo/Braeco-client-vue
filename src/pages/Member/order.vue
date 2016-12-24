@@ -1,69 +1,81 @@
 <template>
     <div id='Member-Order'>
-        <div class='member-order-container'>
-            <div class='order-main'>
-                <ul class='item-list'>
-                    <order-item
-                        v-for="orderItem in orderAlreadyItem.orderItems"
-                        :orderItem="orderItem"
-                    >
-                    </order-item>
-                    <li
-                        class='discount-item'
-                        v-for="(value, type) of orderAlreadyItem.discountMap"
-                        v-if="value"
-                    >
-                        <div class='discount-item-wrapper margin-left-wrapper'>
-                            <div class='discount-item-container'>
-                                <div class='discount-type left-part'>{{discountNameMap[type]}}</div>
-                                <div class='discount-value right-part'>{{Number(value.toFixed(2))}}</div>
-                                <div class='clear'></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class='order-price-item'>
-                        <div class='order-price-item-wrapper margin-left-wrapper'>
-                            <div class='order-price-item-container'>
-                                <div class='order-title left-part'>总价:</div>
-                                <div class='order-price right-part'>{{Number(orderAlreadyItem.totalFinalPrice.toFixed(2))}}</div>
-                                <div class='clear'></div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class='order-info'>
-                <div class='info-title-field'>
-                    <div class='info-title-wrapper margin-left-wrapper'>
-                        <div class='info-title-container'>
-                            <div class='info-title'>订单信息</div>
-                        </div>
+        <transition name="fade" mode="out-in">
+            <div
+                class='member-order-container'
+                v-if="!orderAlreadyItem.inValid"
+            >
+                <div class='order-main'>
+                    <div>
+                        <ul class='item-list'>
+                            <order-item
+                                v-for="orderItem in orderAlreadyItem.orderItems"
+                                :orderItem="orderItem"
+                            >
+                            </order-item>
+                            <li
+                                class='discount-item'
+                                v-for="(value, type) of orderAlreadyItem.discountMap"
+                                v-if="value"
+                            >
+                                <div class='discount-item-wrapper margin-left-wrapper'>
+                                    <div class='discount-item-container'>
+                                        <div class='discount-type left-part'>{{discountNameMap[type]}}</div>
+                                        <div class='discount-value right-part'>{{Number(value.toFixed(2))}}</div>
+                                        <div class='clear'></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class='order-price-item'>
+                                <div class='order-price-item-wrapper margin-left-wrapper'>
+                                    <div class='order-price-item-container'>
+                                        <div class='order-title left-part'>总价:</div>
+                                        <div class='order-price right-part'>{{Number(orderAlreadyItem.totalFinalPrice.toFixed(2))}}</div>
+                                        <div class='clear'></div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <ul class='order-info-item-list'>
-                    <li
-                        class='order-info-item'
-                        v-for="(infoType, key) of orderInfoMap"
-                    >
-                        <div class='order-info-item-wrapper margin-left-wrapper'>
-                            <div class='order-info-item-container'>
-                                <div class='info-type left-part'>{{infoType}}</div>
-                                <div
-                                    class='info-value left-part'
-                                    v-if="key === 'create_time'"
-                                >{{new Date(orderAlreadyItem.createTimestamp).Format("yyyy-MM-dd hh:mm")}}
-                                </div>
-                                <div
-                                    class='info-value left-part'
-                                    v-else
-                                >{{orderAlreadyItem.orderInfo[key]}}
-                                </div>
-                                <div class='clear'></div>
+                <div class='order-info'>
+                    <div class='info-title-field'>
+                        <div class='info-title-wrapper margin-left-wrapper'>
+                            <div class='info-title-container'>
+                                <div class='info-title'>订单信息</div>
                             </div>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                    <ul class='order-info-item-list'>
+                        <li
+                            class='order-info-item'
+                            v-for="(infoType, key) of orderInfoMap"
+                        >
+                            <div class='order-info-item-wrapper margin-left-wrapper'>
+                                <div class='order-info-item-container'>
+                                    <div class='info-type left-part'>{{infoType}}</div>
+                                    <div
+                                        class='info-value left-part'
+                                        v-if="key === 'create_time'"
+                                    >{{new Date(orderAlreadyItem.createTimestamp).Format("yyyy-MM-dd hh:mm")}}
+                                    </div>
+                                    <div
+                                        class='info-value left-part'
+                                        v-else
+                                    >{{orderAlreadyItem.orderInfo[key]}}
+                                    </div>
+                                    <div class='clear'></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
+        </transition>
+        <div
+            class='loadding'
+            v-if="orderAlreadyItem.inValid"
+        >正在加载数据中
         </div>
     </div>
 </template>
@@ -110,6 +122,15 @@ module.exports = {
 
 .member-order-container {
     padding: 16px 0 120px 0;
+}
+
+.loadding {
+    line-height: 44px;
+    padding-left: 16px;
+    background-color: #fff;
+    margin-top: 16px;
+    border-top: solid 1px #C8C7CC;
+    border-bottom: solid 1px #C8C7CC;
 }
 
 .order-main, .order-info {
