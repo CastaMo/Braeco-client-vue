@@ -226,9 +226,28 @@ module.exports = {
         },
         confirmBtnClickEvent() {
             // console.log(this.$store.getters.orderItems);
+            if (this.pay_type === "order") {
+                this.orderPayCallback();
+            }
+        },
+        orderPayCallback() {
+            let vm = this;
             this.$store.dispatch("order:get-order-for-already-item");
             this.$store.commit("order:clear-order-for-trolley");
             console.log(this.$store.state.order.orderForAlready);
+            vm.$router.back(-1);
+            setTimeout(function() {
+                vm.$router.back(-1);
+                setTimeout(function() {
+                    vm.$router.back(-1);
+                    setTimeout(function() {
+                        vm.$router.back(-1);
+                        setTimeout(function() {
+                            vm.$router.push('/home/order');
+                        }, 10);
+                    }, 10);
+                }, 10);
+            }, 10);
         }
     }
 };
