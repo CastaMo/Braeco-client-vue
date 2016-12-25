@@ -10,7 +10,10 @@
                     <button
                         class='confirm-btn'
                         v-on:click="routeToOrder"
-                    >选好了</button>
+                        v-bind:class="{
+                            'disabled': !trolley_btn_able
+                        }"
+                    >{{trolley_btn_name}}</button>
                 </div>
                 <div class='clear'></div>
             </div>
@@ -18,7 +21,8 @@
                 <div
                     class='trolley-icon'
                     v-bind:class="{
-                        'trolley-icon-animation': animationFlagForAdd
+                        'trolley-icon-animation': animationFlagForAdd,
+                        'disabled': !trolley_btn_able
                     }"
                     v-on:click="routeToOrder"
                 >
@@ -95,11 +99,20 @@ module.exports = {
         },
         orderFinalPrice: function() {
             return this.$store.getters.totalFinalPrice;
+        },
+        trolley_btn_name: function() {
+            return this.$store.getters.trolley_btn_name;
+        },
+        trolley_btn_able: function() {
+            return this.$store.getters.trolley_btn_able;
         }
     },
     methods: {
 
         routeToOrder() {
+            if (!this.trolley_btn_able) {
+                return;
+            }
             this.$root.$emit("root:route-to-order");
         },
 
@@ -384,11 +397,14 @@ module.exports = {
             background-color: #FFC107;
             border: none;
             font-size: 16px;
-            &:active {
+            &:active:not(.disabled) {
                 background-color: #FFB300;
             }
             &:focus {
                 outline: none;
+            }
+            &.disabled {
+                background-color: #E7DED8;
             }
         }
     }

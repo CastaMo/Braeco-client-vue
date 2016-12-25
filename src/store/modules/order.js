@@ -5,6 +5,40 @@ const order = {
         orderForAlready: []
     },
     getters: {
+        start_price: function(state, getters, rootState) {
+            if (!rootState.isLoaded) {
+                return 0;
+            }
+            return rootState.requireData.startprice;
+        },
+        trolley_btn_name: function(state, getters, rootState) {
+            let path                = rootState.route.path;
+            let start_price         = getters.start_price;
+            let total_final_price   = getters.totalFinalPrice;
+            let order_total_number  = getters.orderTotalNumber;
+            if (
+                path.indexOf("/menu/info") >= 0
+            ||  path.indexOf("/menu/main") >= 0
+            ) {
+                // 有起送价
+                if (start_price != -1) {
+                    if (start_price > total_final_price) {
+                        return `${start_price}元起送`;
+                    }
+                }
+                return "选好了";
+            }
+            return "支付";
+        },
+        trolley_btn_able: function(state, getters, rootState) {
+            let start_price         = getters.start_price;
+            let total_final_price   = getters.totalFinalPrice;
+            let order_total_number  = getters.orderTotalNumber;
+            if (start_price != -1) {
+                return (start_price <= total_final_price && order_total_number > 0);
+            }
+            return order_total_number > 0;
+        },
         orderAlreadyItem: function(state, getters, rootState) {
             let temp = {
                 inValid: true

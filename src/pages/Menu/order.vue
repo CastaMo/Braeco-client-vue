@@ -92,6 +92,9 @@ module.exports = {
         },
         giveItem: function() {
             return this.$store.getters.giveItem;
+        },
+        trolley_btn_able: function() {
+            return this.$store.getters.trolley_btn_able;
         }
     },
     created() {
@@ -115,6 +118,13 @@ module.exports = {
         },
         minusFood(opts) {
             this.$store.commit("order:minusOrderForTrolley", opts);
+        }
+    },
+    watch: {
+        "trolley_btn_able": function() {
+            if (!this.trolley_btn_able) {
+                this.$router.back();
+            }
         }
     }
 }
