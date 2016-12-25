@@ -244,10 +244,10 @@ module.exports = {
                         vm.$router.back(-1);
                         setTimeout(function() {
                             vm.$router.push('/home/order');
-                        }, 10);
-                    }, 10);
-                }, 10);
-            }, 10);
+                        }, 20);
+                    }, 20);
+                }, 20);
+            }, 20);
         }
     }
 };
