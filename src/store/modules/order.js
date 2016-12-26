@@ -15,7 +15,7 @@ const order = {
                 // 直接就在该餐品上
                 if (typeof temp[orderItem.id] === 'number') {
                     temp[orderItem.id] -= orderItem.num;
-                    
+
                 } else if (orderItem.type !== "normal") {
                     // 检查套餐内是否存在
                     let outer_num = orderItem.num;
@@ -329,7 +329,7 @@ const order = {
                         if (subItem.groups) {
                             temp.groups = subItem.groups;
                         }
-                        context.commit("order:addOrderForTrolley", temp);
+                        context.dispatch("order:add-order-for-trolley", temp);
                     } catch(e) {
                         console.log(e);
                     }
@@ -359,6 +359,16 @@ const order = {
                 table_info: "堂食 6 号桌"
             };
             context.state.orderForAlready.push(orderForAlreadyItem);
+        },
+        "order:add-order-for-trolley": function(context, playload) {
+            let not_enough_arr = Braeco.utils.order.getNotEnoughFoodId(
+                playload,
+                context.getters.dish_limit_remainder
+            );
+            if (not_enough_arr.length > 0) {
+                console.log(not_enough_arr);
+            }
+            context.commit("order:addOrderForTrolley", playload);
         }
     }
 
