@@ -35,7 +35,7 @@
                         <p class='name2'>{{foodItem.name2}}</p>
                     </div>
                     <div class='label-field'>
-                        <div class='dc' v-if="foodItem.dc_type && foodItem.dc_type !== 'none'">{{foodItem.dcStr}}</div>
+                        <div class='dc' v-if="foodItem.dc_type && foodItem.dc_type !== 'none'">{{dc_str}}</div>
                         <div class='tag' v-if="foodItem.tag">{{foodItem.tag}}</div>
                         <div class='clear'></div>
                     </div>
@@ -79,7 +79,16 @@ module.exports = {
     name: 'food-item',
     props: {
         foodItem: Object,
-        num: Number
+        num: Number,
+        limitDc: Number
+    },
+    computed: {
+        dc_str: function() {
+            if (typeof this.limitDc === 'number') {
+                return `剩${this.limitDc}件`;
+            }
+            return this.foodItem.dcStr;
+        }
     },
     methods: {
         foodClickEvent(id) {
