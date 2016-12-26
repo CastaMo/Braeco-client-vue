@@ -4,7 +4,7 @@
             <div class='order-item-container'>
                 <div class='name-field'>
                     <div class='name'>{{orderItem.name}}</div>
-                    <div class='dc label' v-if="orderItem.dcStr">{{orderItem.dcStr}}</div>
+                    <div class='dc label' v-if="orderItem.dcStr">{{dc_str}}</div>
                     <div class='tag label' v-if="orderItem.tag">{{orderItem.tag}}</div>
                     <div class='clear'></div>
                 </div>
@@ -60,7 +60,16 @@
 module.exports = {
     name: 'order-item',
     props: {
-        orderItem: Object
+        orderItem: Object,
+        limitDc: Number
+    },
+    computed: {
+        dc_str: function() {
+            if (typeof this.limitDc === "number") {
+                return `剩${this.limitDc}件`;
+            }
+            return this.orderItem.dcStr;
+        }
     },
     methods: {
         addClickEvent() {
