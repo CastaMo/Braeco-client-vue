@@ -145,6 +145,26 @@ const order = {
             result.type = type;
         }
         return result;
+    },
+    getNotEnoughFoodId(order_options, dish_limit_remainder) {
+        let temp = [];
+        if (typeof dish_limit_remainder[order_options.id] === 'number') {
+            if (order_options.num > dish_limit_remainder[order_options.id]) {
+                temp.push(order_options.id);
+            }
+        }
+        if (order_options.groups && typeof order_options.groups[0] === 'object') {
+            let outer_num = order_options.num;
+            order_options.groups.forEach(function(groupItem) {
+                if (typeof dish_limit_remainder[groupItem.id] === 'number') {
+                    let total_sum = outer_num * groupItem.num;
+                    if (total_sum > dish_limit_remainder[groupItem.id]) {
+                        temp.push(groupItem.id);
+                    }
+                }
+            });
+        }
+        return temp;
     }
 }
 
