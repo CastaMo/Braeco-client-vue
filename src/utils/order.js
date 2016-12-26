@@ -16,6 +16,7 @@ const order = {
             temp.comboChooseInfoArray = [];
             extras.forEach(function(extra) {
                 let comboChooseInfoItem = {};
+                comboChooseInfoItem.id = extra.food.id;
                 comboChooseInfoItem.name = extra.food.name;
                 comboChooseInfoItem.num = extra.num;
                 if (extra.groups && extra.groups.length > 0) {
