@@ -5,6 +5,29 @@ const order = {
         orderForAlready: []
     },
     getters: {
+        dish_limit_remainder: function(state, getters, rootState) {
+            let temp = {};
+            if (!rootState.isLoaded) {
+                return temp;
+            }
+            temp = Vue.util.extend({}, rootState.requireData.dish_limit);
+            getters.orderItems.forEach(function(orderItem) {
+                // 直接就在该餐品上
+                if (typeof temp[orderItem.id] === 'number') {
+                    temp[orderItem.id] -= orderItem.num;
+                    
+                } else if (orderItem.type !== "normal") {
+                    // 检查套餐内是否存在
+                    let outer_num = orderItem.num;
+                    orderItem.comboChooseInfoArray.forEach(function(comboChooseInfoItem) {
+                        if (typeof temp[comboChooseInfoItem.id] === 'Number') {
+                            temp[comboChooseInfoItem.id] -= outer_num * comboChooseInfoItem.num;
+                        }
+                    });
+                }
+            });
+            return temp;
+        },
         start_price: function(state, getters, rootState) {
             if (!rootState.isLoaded) {
                 return 0;
