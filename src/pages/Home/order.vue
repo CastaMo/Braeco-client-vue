@@ -24,26 +24,8 @@ module.exports = {
         }
     },
 
-	created() {
-        if (this.$root.isLoaded) {
-            this.init();
-        }
-        let vm = this;
-        this.$root.$on("root:getData", function() {
-            setTimeout(function() {
-                vm.init();
-            }, 200);
-        });
-	},
-
-    beforeDestroy() {
-        this.$root.$off("root:getData");
-    },
 
     methods: {
-        init() {
-
-        },
         routeToMenu() {
             if (!this.$store.state.isLoaded) {
                 return;
