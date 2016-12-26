@@ -10,6 +10,7 @@
                                     <food-item
                                         v-for="foodItem in currentFoodItems"
                                         :foodItem="foodItem"
+                                        :limitDc="dish_limit_remainder[foodItem.id]"
                                         v-on:food-with-property-add-click="prepareForFoodProperty"
                                         v-on:food-with-normal-add-click="addFood"
                                         v-on:record-ball-set-out-dom="recordBallSetOutDom"
@@ -49,6 +50,9 @@ module.exports = {
         };
     },
     computed: {
+        dish_limit_remainder: function() {
+            return this.$store.getters.dish_limit_remainder;
+        },
         categoryItems: function() {
             return this.$store.getters.categoryItems;
         },

@@ -15,6 +15,7 @@
         <div class='food-info-container' v-if="!currentFoodInfoItem.inValid">
             <food-item
                 :foodItem="currentFoodInfoItem"
+                :limitDc="dish_limit_remainder[currentFoodInfoItem.id]"
                 v-on:food-with-property-add-click="prepareForFoodProperty"
                 v-on:food-with-normal-add-click="addFood"
                 v-on:record-ball-set-out-dom="recordBallSetOutDom"
@@ -56,6 +57,9 @@ module.exports = {
         };
     },
     computed: {
+        dish_limit_remainder: function() {
+            return this.$store.getters.dish_limit_remainder;
+        },
         currentFoodInfoItem: function() {
             return this.$store.getters.currentFoodInfoItem;
         }

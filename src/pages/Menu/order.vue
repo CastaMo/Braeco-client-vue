@@ -7,6 +7,7 @@
                         <order-item
                             v-for="orderItem in orderItems"
                             :orderItem="orderItem"
+                            :limitDc="dish_limit_remainder[orderItem.id]"
                             v-on:add-click="addFood"
                             v-on:minus-click="minusFood"
                         >
@@ -84,6 +85,9 @@ module.exports = {
         }
     },
     computed: {
+        dish_limit_remainder: function() {
+            return this.$store.getters.dish_limit_remainder;
+        },
         orderItems: function() {
             return this.$store.getters.orderItems;
         },
