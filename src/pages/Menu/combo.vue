@@ -100,6 +100,9 @@ module.exports = {
         }
     },
     computed: {
+        dish_limit_remainder: function() {
+            return this.$store.getters.dish_limit_remainder;
+        },
         allFoodChooseOptions: function() {
             return this.$store.state.combo.allFoodChooseOptions;
         },
@@ -211,11 +214,30 @@ module.exports = {
             this.comboChooseOptionsArray.forEach(function(comboChooseOption) {
                 groups = groups.concat(comboChooseOption);
             });
-            this.$store.commit("order:addOrderForTrolley", {
+
+            let opts = {
                 id: vm.$store.state.route.params.comboId,
                 groups: groups,
                 orderInitPrice: vm.totalPriceForCombo
-            });
+            };
+
+            // 加上默认的数量1
+            opts = Vue.util.extend(opts, {num: 1});
+
+            let limit_flag = Braeco.utils.order.checkIsEnoughForOpts(
+                opts,
+                vm.dish_limit_remainder,
+                vm.$store.getters.dishMap,
+                function(food_name_str) {
+                    vm.$root.$emit("tips:error", `${food_name_str} 数量不足`);
+                }
+            );
+
+            if (!limit_flag) {
+                return;
+            }
+
+            this.$store.commit("order:addOrderForTrolley", opts);
             this.$root.$emit("tips:success", "添加套餐成功");
             this.$root.$router.back();
         },
