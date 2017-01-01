@@ -81,6 +81,25 @@ module.exports = {
     },
     methods: {
         prepareForFoodProperty(opts) {
+
+            let vm = this;
+
+            // 加上默认的数量1
+            opts = Vue.util.extend(opts, {num: 1});
+
+            let limit_flag = Braeco.utils.order.checkIsEnoughForOpts(
+                opts,
+                vm.dish_limit_remainder,
+                vm.$store.getters.dishMap,
+                function(food_name_str) {
+                    vm.$root.$emit("tips:error", `${food_name_str} 数量不足`);
+                }
+            );
+
+            if (!limit_flag) {
+                return;
+            }
+
             let id = opts.id;
             let dish = this.$store.getters.dishMap[id];
             this.$store.dispatch("property:startFoodProperty", {
@@ -92,11 +111,37 @@ module.exports = {
             this.ballSetOutDom = dom;
         },
         addFood(opts) {
+            
             let vm = this;
+
+            // 加上默认的数量1
+            opts = Vue.util.extend(opts, {num: 1});
+
+            let limit_flag = Braeco.utils.order.checkIsEnoughForOpts(
+                opts,
+                vm.dish_limit_remainder,
+                vm.$store.getters.dishMap,
+                function(food_name_str) {
+                    vm.$root.$emit("tips:error", `${food_name_str} 数量不足`);
+                }
+            );
+
+            if (!limit_flag) {
+                return;
+            }
+
             if (this.ballSetOutDom) {
                 this.ballSetOutDom.scrollIntoViewIfNeeded();
                 setTimeout(function() {
                     let rect = vm.ballSetOutDom.getBoundingClientRect();
+
+                    opts = Vue.util.extend(opts, {
+                        failCallback: function(food_name_str) {
+                            vm.$root.$emit("tips:error", `${food_name_str} 数量不足`);
+                        },
+                        dishMap: vm.$store.getters.dishMap
+                    });
+
                     vm.$root.$emit("root:play-ball", {
                         initTop: rect.top,
                         initLeft: rect.left,
@@ -110,6 +155,23 @@ module.exports = {
         },
         routeToCombo(opts) {
             let vm = this;
+
+            // 加上默认的数量1
+            opts = Vue.util.extend(opts, {num: 1});
+
+            let limit_flag = Braeco.utils.order.checkIsEnoughForOpts(
+                opts,
+                vm.dish_limit_remainder,
+                vm.$store.getters.dishMap,
+                function(food_name_str) {
+                    vm.$root.$emit("tips:error", `${food_name_str} 数量不足`);
+                }
+            );
+
+            if (!limit_flag) {
+                return;
+            }
+
             vm.$router.back();
             setTimeout(function() {
                 vm.$router.push(`/menu/combo/${opts.id}`);
