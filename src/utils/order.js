@@ -165,6 +165,25 @@ const order = {
             });
         }
         return temp;
+    },
+    checkIsEnoughForOpts(opts, dish_limit_remainder, dishMap, failCallback) {
+        // 检查有无不足的餐品id
+        let not_enough_food_id = this.getNotEnoughFoodId(
+            opts,
+            dish_limit_remainder
+        );
+        if (not_enough_food_id.length > 0) {
+            let food_name_arr = [];
+            not_enough_food_id.forEach(function(food_id) {
+                food_name_arr.push(dishMap[food_id].name);
+            });
+            if (typeof failCallback === 'function') {
+                let food_name_str = food_name_arr.join("、");
+                failCallback(food_name_str);
+            }
+            return false;
+        }
+        return true;
     }
 }
 
