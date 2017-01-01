@@ -99,9 +99,18 @@ let initMainVM = function() {
                 let vm = this;
                 this.isLoaded = true;
                 let lsOrderForTrolley = this.readFromLocStor('orderForTrolley');
-                this.$store.dispatch("order:validateAndAssignForOraderForTrolley", {
+
+                let validate_opts = {
                     lsOrderForTrolley: lsOrderForTrolley
+                };
+                validate_opts = Vue.util.extend(validate_opts, {
+                    failCallback: function(food_name_str) {
+                        vm.$emit("tips:error", `${food_name_str} 数量不足`);
+                    },
+                    dishMap: vm.$store.getters.dishMap
                 });
+                this.$store.dispatch("order:validate-and-assign-for-orderForTrolley", validate_opts);
+                
                 let orderForAlready = this.readFromLocStor('orderForAlready');
                 this.$store.commit("order:load-order-for-already", {
                     orderForAlready: orderForAlready
