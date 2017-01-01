@@ -277,7 +277,7 @@ const order = {
         }
     },
     actions: {
-        "order:validateAndAssignForOraderForTrolley": function(context, playload) {
+        "order:validate-and-assign-for-orderForTrolley": function(context, playload) {
             playload.lsOrderForTrolley.forEach(function(orderItem) {
                 orderItem.subItems.forEach(function(subItem) {
                     try {
@@ -329,6 +329,10 @@ const order = {
                         if (subItem.groups) {
                             temp.groups = subItem.groups;
                         }
+                        temp = Vue.util.extend(temp, {
+                            dishMap: playload.dishMap,
+                            failCallback: playload.failCallback
+                        });
                         context.dispatch("order:add-order-for-trolley", temp);
                     } catch(e) {
                         console.log(e);
@@ -361,12 +365,20 @@ const order = {
             context.state.orderForAlready.push(orderForAlreadyItem);
         },
         "order:add-order-for-trolley": function(context, playload) {
-            let not_enough_arr = Braeco.utils.order.getNotEnoughFoodId(
+            let not_enough_food_id = Braeco.utils.order.getNotEnoughFoodId(
                 playload,
                 context.getters.dish_limit_remainder
             );
-            if (not_enough_arr.length > 0) {
-                console.log(not_enough_arr);
+            if (not_enough_food_id.length > 0) {
+                let food_name_arr = [];
+                not_enough_food_id.forEach(function(food_id) {
+                    food_name_arr.push(playload.dishMap[food_id].name);
+                });
+                if (typeof playload.failCallback === 'function') {
+                    let food_name_str = food_name_arr.join("、");
+                    playload.failCallback(food_name_str);
+                }
+                return;
             }
             context.commit("order:addOrderForTrolley", playload);
         }
