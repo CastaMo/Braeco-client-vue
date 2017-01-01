@@ -118,6 +118,24 @@ module.exports = {
     },
     methods: {
         addFood(opts) {
+
+            // 加上默认的数量1
+            opts = Vue.util.extend(opts, {num: 1});
+
+            let vm = this;
+
+            let limit_flag = Braeco.utils.order.checkIsEnoughForOpts(
+                opts,
+                vm.dish_limit_remainder,
+                vm.$store.getters.dishMap,
+                function(food_name_str) {
+                    vm.$root.$emit("tips:error", `${food_name_str} 数量不足`);
+                }
+            );
+            if (!limit_flag) {
+                return;
+            }
+            
             this.$store.commit("order:addOrderForTrolley", opts);
         },
         minusFood(opts) {
