@@ -36,9 +36,6 @@ let getData = requireName =>
             } catch (e) {
                 mainVM.$emit("tips:error", "请求数据失败, 请退出重新扫码");
             }
-        },
-        always: function() {
-            NProgress.done();
         }
     });
 
@@ -50,25 +47,6 @@ getData("getTableMember");
 const routeWeight = require("./routeWeight.js");
 const utils = require("./utils/index.js");
 
-require.ensure(["vue"], function(require) {
-    window.Vue = require("vue");
-});
-
-const lazyLoad = require("./common/vue-lazyload.js");
-
-Vue.use(lazyLoad, {
-  try: 3 // default 1
-});
-
-const store = require("./store/index.js");
-
-const mapGetters = Vuex.mapGetters;
-const mapState = Vuex.mapState;
-
-const router = require("./router.js");
-
-const sync = require("vuex-router-sync").sync;
-sync(store, router);
 
 let count = 3,
     requireData = {};
@@ -191,5 +169,26 @@ let initMainVM = function() {
 }
 
 
-let mainVM = initMainVM();
+var mainVM,
+    store,
+    router;
+
+
+window.Vue = require("vue");
+const lazyLoad = require("./common/vue-lazyload.js");
+
+Vue.use(lazyLoad, {
+  try: 3 // default 1
+});
+
+store = require("./store/index.js");
+
+router = require("./router.js");
+
+const sync = require("vuex-router-sync").sync;
+sync(store, router);
+
+mainVM = initMainVM();
+
 mainVM.$mount('#braeco-client');
+

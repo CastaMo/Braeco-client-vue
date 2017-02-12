@@ -10,6 +10,10 @@ var webpackConfig = process.env.NODE_ENV === 'testing'
   ? require('./webpack.prod.conf')
   : require('./webpack.dev.conf')
 
+
+var route = require("../routes/routes")();
+var bodyParser = require('body-parser');
+
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
 // Define HTTP proxies to your custom API backend
@@ -45,18 +49,24 @@ compiler.plugin('compilation', function (compilation) {
 //   app.use(proxyMiddleware(context, options))
 // })
 
-var proxy = proxyMiddleware("http://localhost:3000/", {
-  forwardPath: function(req, res) {
-    return req.baseUrl;
-  },
-  decorateRequest: function(proxyReq, originalReq) {
-    return proxyReq;
-  }
+// var proxy = proxyMiddleware("http://localhost:3000/", {
+//   forwardPath: function(req, res) {
+//     return req.baseUrl;
+//   },
+//   decorateRequest: function(proxyReq, originalReq) {
+//     return proxyReq;
+//   }
   
-});
+// });
 
 
-app.use(['/api/*', '/server/captcha', '/Eater/Login/Mobile'], proxy);
+// app.use(['/api/*', '/server/captcha', '/Eater/Login/Mobile'], proxy);
+
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(route);
 
 // handle fallback for HTML5 history API
 app.use(require('connect-history-api-fallback')())

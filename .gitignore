@@ -4,3 +4,7 @@ dist/
 npm-debug.log.*
 .vscode
 common_tools/
+
+npm-debug.log
+
+common/getCallbackHandleForRequest.js

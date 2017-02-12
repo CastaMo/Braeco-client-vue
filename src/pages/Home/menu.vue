@@ -58,11 +58,6 @@
 
 module.exports = {
     name: 'home-menu',
-    data() {
-        return {
-            activityItems: []
-        }
-    },
     computed: {
         categoryItems: function() {
             return this.$store.getters.categoryItems;
