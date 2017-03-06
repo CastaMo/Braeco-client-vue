@@ -32,7 +32,7 @@
                                                             >
                                                                 {{item.name}}
                                                             </li>
-                                                            <div class='clear'>
+                                                            <div class='clear'></div>
                                                         </ul>
                                                     </div>
                                                 </div>
