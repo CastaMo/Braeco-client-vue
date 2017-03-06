@@ -26,6 +26,14 @@ body {
     font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\9ED1\4F53", Arial, sans-serif;
 }
 
+.ellipsis-with-line-num (@num: 1) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: @num;
+    -webkit-box-orient: vertical;
+}
+
 .background-norm(@elem: "none") {
     background-repeat: no-repeat;
     background-position: center;

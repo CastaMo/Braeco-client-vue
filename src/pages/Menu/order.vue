@@ -20,10 +20,15 @@
                 </div>
                 <div class='additional-container'>
                     <ul class='additional-list'>
-                        <li class='additional-item active-container'>
+                        <li
+                            class='additional-item active-container'
+                            v-on:click="$refs.description.show()"
+                        >
                             <div class='additional-item-wrapper margin-left-wrapper'>
                                 <div class='additional-item-container'>
-                                    <div class='title'>订单备注</div>
+                                    <div class='title left-part'>订单备注</div>
+                                    <div class='desc right-part'>{{description}}</div>
+                                    <div class='clear'></div>
                                 </div>
                             </div>
                             <div class='arrow vertical-center'></div>
@@ -66,6 +71,9 @@
                 </div>
             </div>
         </div>
+        <description
+            ref="description"
+        ></description>
     </div>
 </template>
 
@@ -99,10 +107,14 @@ module.exports = {
         },
         trolley_btn_able: function() {
             return this.$store.getters.trolley_btn_able;
+        },
+        description: function() {
+            return this.$store.state.order.description;
         }
     },
     created() {
         let vm = this;
+        console.log(this);
         this.$root.$on("root:route-to-order", function() {
             if (!vm.$store.state.user.member_info) {
                 return vm.$store.dispatch("user:startUserLogin");
@@ -114,7 +126,8 @@ module.exports = {
         this.$root.$off("root:route-to-order");
     },
     components: {
-        'order-item': require('../../components/order-item')
+        'order-item': require('../../components/order-item'),
+        'description': require('./components/description')
     },
     methods: {
         addFood(opts) {
@@ -156,6 +169,14 @@ module.exports = {
 
 <style lang="less" scoped>
 
+.ellipsis-with-line-num (@num: 1) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: @num;
+    -webkit-box-orient: vertical;
+}
+
 .menu-order-container {
     padding: 16px 0 100px 0;
 }
@@ -183,6 +204,13 @@ module.exports = {
             line-height: 44px;
             .title {
                 font-weight: bold;
+            }
+            .desc {
+                margin-right: 40px;
+                width: 150px;
+                text-align: right;
+                .ellipsis-with-line-num(1);
+
             }
             &:last-of-type {
                 .margin-left-wrapper {

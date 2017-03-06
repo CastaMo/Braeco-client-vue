@@ -2,7 +2,8 @@ const order = {
 
     state: {
         orderForTrolley: [],
-        orderForAlready: []
+        orderForAlready: [],
+        description: ""
     },
     getters: {
         dish_limit_remainder: function(state, getters, rootState) {
@@ -269,8 +270,12 @@ const order = {
                 }
             }
         },
+        "order:confirm-description": function(state, playload) {
+            state.description = playload.description;
+        },
         "order:clear-order-for-trolley": function(state, playload) {
             state.orderForTrolley = [];
+            state.description = "";
         },
         "order:load-order-for-already": function(state, playload) {
             state.orderForAlready = playload.orderForAlready;
@@ -355,6 +360,7 @@ const order = {
             orderForAlreadyItem.discountMap = context.getters.discountMap;
             orderForAlreadyItem.totalFinalPrice = context.getters.totalFinalPrice;
             orderForAlreadyItem.orderTotalNumber = context.getters.orderTotalNumber;
+            orderForAlreadyItem.description = context.state.description;
             orderForAlreadyItem.orderInfo = {
                 flow_id: "0001",
                 order_id: parseInt(Math.random() * Math.pow(10, 10)),
