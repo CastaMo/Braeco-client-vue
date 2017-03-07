@@ -218,7 +218,7 @@ module.exports = {
             let opts = {
                 id: vm.$store.state.route.params.comboId,
                 groups: groups,
-                orderInitPrice: vm.totalPriceForCombo
+                order_init_price: vm.totalPriceForCombo
             };
 
             // 加上默认的数量1

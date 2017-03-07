@@ -3,7 +3,7 @@ const order = {
         let temp = {};
         temp.id = food.id;
         temp.name = food.name;
-        temp.dcStr = food.dcStr;
+        temp.dc_str = food.dc_str;
         temp.tag = food.tag;
         temp.type = food.type;
         temp.groups = groups;
@@ -11,18 +11,18 @@ const order = {
         temp.dc_type = food.dc_type;
         temp.dc = food.dc;
         if (temp.type === 'normal' && groups && groups.length > 0) {
-            temp.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(groups, extras).join("、");
+            temp.choose_info = Braeco.utils.property.getInfoArrayByChoose(groups, extras).join("、");
         } else if (temp.type !== 'normal' && groups && groups.length > 0) {
-            temp.comboChooseInfoArray = [];
+            temp.combo_choose_info = [];
             extras.forEach(function(extra) {
-                let comboChooseInfoItem = {};
-                comboChooseInfoItem.id = extra.food.id;
-                comboChooseInfoItem.name = extra.food.name;
-                comboChooseInfoItem.num = extra.num;
+                let combo_choose_info_item = {};
+                combo_choose_info_item.id = extra.food.id;
+                combo_choose_info_item.name = extra.food.name;
+                combo_choose_info_item.num = extra.num;
                 if (extra.groups && extra.groups.length > 0) {
-                    comboChooseInfoItem.chooseInfo = Braeco.utils.property.getInfoArrayByChoose(extra.groups, extra.foodProperty.properties).join("、");
+                    combo_choose_info_item.choose_info = Braeco.utils.property.getInfoArrayByChoose(extra.groups, extra.foodProperty.properties).join("、");
                 }
-                temp.comboChooseInfoArray.push(comboChooseInfoItem);
+                temp.combo_choose_info.push(combo_choose_info_item);
             });
         }
         return temp;
@@ -46,7 +46,7 @@ const order = {
         }
         return temp;
     },
-    tryGetSubItemByGroups(subItems, groups, isExtend, orderInitPrice) {
+    tryGetSubItemByGroups(subItems, groups, isExtend, order_init_price) {
         let temp = null;
         subItems.forEach(function(subItem) {
             // 若为普通单品或者groups项相同，则匹配成功
@@ -64,8 +64,8 @@ const order = {
                 num: 0,
                 groups: groups
             };
-            if (typeof orderInitPrice === 'number') {
-                temp.orderInitPrice = orderInitPrice;
+            if (typeof order_init_price === 'number') {
+                temp.order_init_price = order_init_price;
             }
             subItems.push(temp);
         }
@@ -75,7 +75,7 @@ const order = {
         function getUserDiscount(price, num, rank_info) {
             if (rank_info && rank_info.discount > 0) {
                 return {
-                    type: "userDiscount",
+                    type: "user_discount",
                     value: num * price * (100 - rank_info.discount) / 100
                 };
             }
@@ -89,12 +89,12 @@ const order = {
                 orderItem.subItems.length === 1
             &&  orderItem.subItems[0].num === 1
             ) {
-                return getUserDiscount(orderItem.subItems[0].orderInitPrice, 1, rank_info);
+                return getUserDiscount(orderItem.subItems[0].order_init_price, 1, rank_info);
             }
             // 将所有价格都塞到一个容器中准备排序进行计算第二杯半价优惠
             let temp = [];
             orderItem.subItems.forEach(function(subItem) {
-                temp = temp.concat(Array(subItem.num).fill(subItem.orderInitPrice));
+                temp = temp.concat(Array(subItem.num).fill(subItem.order_init_price));
             });
 
             // 取最高的前半段
@@ -124,7 +124,7 @@ const order = {
         if (dish.dc_type === 'discount') {
             let value = 0;
             orderItem.subItems.forEach(function(subItem) {
-                value += (100 - dish.dc) * subItem.orderInitPrice * subItem.num / 100;
+                value += (100 - dish.dc) * subItem.order_init_price * subItem.num / 100;
             });
             return {
                 type: "discount",
@@ -134,7 +134,7 @@ const order = {
         let value = 0;
         let type;
         orderItem.subItems.forEach(function(subItem) {
-            let discount = getUserDiscount(subItem.orderInitPrice, subItem.num, rank_info)
+            let discount = getUserDiscount(subItem.order_init_price, subItem.num, rank_info)
             value += discount.value;
             type = discount.type;
         });

@@ -2,7 +2,7 @@
 	<div id="Home-Order">
         <transition name="fade" mode="out-in">
     		<order-blank-page
-                v-if="!orderForAlready || orderForAlready.length <= 0"
+                v-if="!order_for_already || order_for_already.length <= 0"
                 v-on:menu-icon-click="routeToMenu"
             ></order-blank-page>
             <order-main
@@ -19,8 +19,8 @@ module.exports = {
 	name: 'home-order',
 
     computed: {
-        orderForAlready: function() {
-            return this.$store.state.order.orderForAlready;
+        order_for_already: function() {
+            return this.$store.state.order.order_for_already;
         }
     },
 

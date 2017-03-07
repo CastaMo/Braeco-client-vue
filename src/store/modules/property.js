@@ -34,7 +34,7 @@ const property = {
             }
             return temp;
         },
-        chooseInfo: function(state, getters, rootState) {
+        choose_info: function(state, getters, rootState) {
             let infoArray = Braeco.utils.property.getInfoArrayByChoose(
                 state.chooseArray,
                 getters.currentFoodProperty.properties

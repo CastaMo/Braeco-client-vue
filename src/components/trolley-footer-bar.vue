@@ -26,7 +26,7 @@
                     }"
                     v-on:click="routeToOrder"
                 >
-                    <div class='order-number'>{{orderTotalNumber}}</div>
+                    <div class='order-number'>{{order_total_number}}</div>
                 </div>
             </div>
             <div id='ball-container'>
@@ -94,11 +94,11 @@ module.exports = {
         };
     },
     computed: {
-        orderTotalNumber: function() {
-            return this.$store.getters.orderTotalNumber;
+        order_total_number: function() {
+            return this.$store.getters.order_total_number;
         },
         orderFinalPrice: function() {
-            return this.$store.getters.totalFinalPrice;
+            return this.$store.getters.total_final_price;
         },
         trolley_btn_name: function() {
             return this.$store.getters.trolley_btn_name;

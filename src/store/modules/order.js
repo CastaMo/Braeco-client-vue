@@ -2,7 +2,7 @@ const order = {
 
     state: {
         orderForTrolley: [],
-        orderForAlready: [],
+        order_for_already: [],
         description: ""
     },
     getters: {
@@ -12,7 +12,7 @@ const order = {
                 return temp;
             }
             temp = Vue.util.extend({}, rootState.requireData.dish_limit);
-            getters.orderItems.forEach(function(orderItem) {
+            getters.order_items.forEach(function(orderItem) {
                 // 直接就在该餐品上
                 if (typeof temp[orderItem.id] === 'number') {
                     temp[orderItem.id] -= orderItem.num;
@@ -20,9 +20,9 @@ const order = {
                 } else if (orderItem.type !== "normal") {
                     // 检查套餐内是否存在
                     let outer_num = orderItem.num;
-                    orderItem.comboChooseInfoArray.forEach(function(comboChooseInfoItem) {
-                        if (typeof temp[comboChooseInfoItem.id] === 'Number') {
-                            temp[comboChooseInfoItem.id] -= outer_num * comboChooseInfoItem.num;
+                    orderItem.combo_choose_info.forEach(function(combo_choose_info_item) {
+                        if (typeof temp[combo_choose_info_item.id] === 'Number') {
+                            temp[combo_choose_info_item.id] -= outer_num * combo_choose_info_item.num;
                         }
                     });
                 }
@@ -38,8 +38,8 @@ const order = {
         trolley_btn_name: function(state, getters, rootState) {
             let path                = rootState.route.path;
             let start_price         = getters.start_price;
-            let total_final_price   = getters.totalFinalPrice;
-            let order_total_number  = getters.orderTotalNumber;
+            let total_final_price   = getters.total_final_price;
+            let order_total_number  = getters.order_total_number;
             if (
                 path.indexOf("/menu/info") >= 0
             ||  path.indexOf("/menu/main") >= 0
@@ -56,14 +56,14 @@ const order = {
         },
         trolley_btn_able: function(state, getters, rootState) {
             let start_price         = getters.start_price;
-            let total_final_price   = getters.totalFinalPrice;
-            let order_total_number  = getters.orderTotalNumber;
+            let total_final_price   = getters.total_final_price;
+            let order_total_number  = getters.order_total_number;
             if (start_price != -1) {
                 return (start_price <= total_final_price && order_total_number > 0);
             }
             return order_total_number > 0;
         },
-        orderAlreadyItem: function(state, getters, rootState) {
+        order_already_item: function(state, getters, rootState) {
             let temp = {
                 inValid: true
             };
@@ -71,10 +71,10 @@ const order = {
                 return temp;
             }
             let orderId = Number(rootState.route.params.orderId);
-            state.orderForAlready.every(function(item) {
-                if (Number(item.orderInfo.order_id) === orderId) {
+            state.order_for_already.every(function(item) {
+                if (Number(item.order_info.order_id) === orderId) {
                     temp = item;
-                    temp.orderItems.forEach(function(orderItem) {
+                    temp.order_items.forEach(function(orderItem) {
                         orderItem.read_only = true;
                     });
                     return false;
@@ -84,7 +84,7 @@ const order = {
             return temp;
 
         },
-        orderItems: function(state, getters, rootState) {
+        order_items: function(state, getters, rootState) {
             let temp = [];
             state.orderForTrolley.forEach(function(orderItem) {
                 orderItem.subItems.forEach(function(subItem) {
@@ -127,13 +127,13 @@ const order = {
                         subItem.num,
                         extras
                     );
-                    order.orderInitPrice = subItem.orderInitPrice;
+                    order.order_init_price = subItem.order_init_price;
                     temp.push(order);
                 });
             });
             return temp;
         },
-        orderTotalNumber: function(state, getters, rootState) {
+        order_total_number: function(state, getters, rootState) {
             let temp = 0;
             state.orderForTrolley.forEach(function(orderItem) {
                 orderItem.subItems.forEach(function(subItem) {
@@ -146,17 +146,17 @@ const order = {
             let temp = 0;
             state.orderForTrolley.forEach(function(orderItem) {
                 orderItem.subItems.forEach(function(subItem) {
-                    temp += Number(subItem.orderInitPrice) * Number(subItem.num);
+                    temp += Number(subItem.order_init_price) * Number(subItem.num);
                 });
             });
             return temp;
         },
-        discountMap: function(state, getters, rootState) {
+        discount_map: function(state, getters, rootState) {
             let temp = {
                 half: 0,
                 discount: 0,
                 sale: 0,
-                userDiscount: 0,
+                user_discount: 0,
                 reduce: 0
             };
             if (!rootState.isLoaded) {
@@ -179,7 +179,7 @@ const order = {
                             - temp.half
                             - temp.discount
                             - temp.sale
-                            - temp.userDiscount
+                            - temp.user_discount
                             ;
             let maxReduce = 0;
 
@@ -195,13 +195,13 @@ const order = {
             temp.reduce = maxReduce;
             return temp;
         },
-        totalFinalPrice: function(state, getters, rootState) {
+        total_final_price: function(state, getters, rootState) {
             let price = getters.totalInitPrice
-                            - getters.discountMap.half
-                            - getters.discountMap.discount
-                            - getters.discountMap.sale
-                            - getters.discountMap.userDiscount
-                            - getters.discountMap.reduce
+                            - getters.discount_map.half
+                            - getters.discount_map.discount
+                            - getters.discount_map.sale
+                            - getters.discount_map.user_discount
+                            - getters.discount_map.reduce
                             ;
             return price;
         },
@@ -209,7 +209,7 @@ const order = {
             if (!rootState.isLoaded) {
                 return null;
             }
-            let price = getters.totalFinalPrice;
+            let price = getters.total_final_price;
             let giveName = "";
             let maxGive = 0;
             rootState.requireData.dc_tool.give.forEach(function(giveItem) {
@@ -224,8 +224,8 @@ const order = {
             if (giveName) {
                 return {
                     name: giveName,
-                    dcStr: "满送",
-                    orderInitPrice: 0,
+                    dc_str: "满送",
+                    order_init_price: 0,
                     num: 1,
                     read_only: true
                 }
@@ -244,7 +244,7 @@ const order = {
                 orderItem.subItems,
                 playload.groups,
                 true,
-                playload.orderInitPrice
+                playload.order_init_price
             );
             let num = playload.num || 1;
             subItem.num += num;
@@ -278,7 +278,7 @@ const order = {
             state.description = "";
         },
         "order:load-order-for-already": function(state, playload) {
-            state.orderForAlready = playload.orderForAlready;
+            state.order_for_already = playload.order_for_already;
         }
     },
     actions: {
@@ -329,7 +329,7 @@ const order = {
                         let temp = {
                             id: orderItem.id,
                             num: subItem.num,
-                            orderInitPrice: subItem.orderInitPrice
+                            order_init_price: subItem.order_init_price
                         };
                         if (subItem.groups) {
                             temp.groups = subItem.groups;
@@ -347,28 +347,28 @@ const order = {
         },
         "order:get-order-for-already-item": function(context, playload) {
             let orderForAlreadyItem = {};
-            orderForAlreadyItem.createTimestamp = +new Date();
-            orderForAlreadyItem.orderItems = [];
-            context.getters.orderItems.forEach(function(orderItem) {
+            orderForAlreadyItem.create_time = +new Date();
+            orderForAlreadyItem.order_items = [];
+            context.getters.order_items.forEach(function(orderItem) {
                 let temp = orderItem;
                 temp.read_only = true;
-                orderForAlreadyItem.orderItems.push(temp);
+                orderForAlreadyItem.order_items.push(temp);
             });
             if (context.getters.giveItem) {
-                orderForAlreadyItem.orderItems.push(context.getters.giveItem);
+                orderForAlreadyItem.order_items.push(context.getters.giveItem);
             }
-            orderForAlreadyItem.discountMap = context.getters.discountMap;
-            orderForAlreadyItem.totalFinalPrice = context.getters.totalFinalPrice;
-            orderForAlreadyItem.orderTotalNumber = context.getters.orderTotalNumber;
+            orderForAlreadyItem.discount_map = context.getters.discount_map;
+            orderForAlreadyItem.total_final_price = context.getters.total_final_price;
+            orderForAlreadyItem.order_total_number = context.getters.order_total_number;
             orderForAlreadyItem.description = context.state.description;
-            orderForAlreadyItem.orderInfo = {
+            orderForAlreadyItem.order_info = {
                 flow_id: "0001",
                 order_id: parseInt(Math.random() * Math.pow(10, 10)),
                 pay_info: "微信支付",
-                remark_info: "玫瑰过敏",
+                description: "玫瑰过敏",
                 table_info: "堂食 6 号桌"
             };
-            context.state.orderForAlready.push(orderForAlreadyItem);
+            context.state.order_for_already.push(orderForAlreadyItem);
         },
         "order:add-order-for-trolley": function(context, playload) {
             let not_enough_food_id = Braeco.utils.order.getNotEnoughFoodId(

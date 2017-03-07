@@ -5,7 +5,7 @@
                 <div class='order menu-order-item-container'>
                     <ul>
                         <order-item
-                            v-for="orderItem in orderItems"
+                            v-for="orderItem in order_items"
                             :orderItem="orderItem"
                             :limitDc="dish_limit_remainder[orderItem.id]"
                             v-on:add-click="addFood"
@@ -43,7 +43,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class='discount-container'>
+                <div class='discount-container' v-show="discount_map_len > 0">
                     <div class='discount-title'>
                         <div class='margin-left-wrapper discount-title-wrapper'>
                             <div class='discount-title-container'>
@@ -56,7 +56,7 @@
                     >
                         <li
                             class='discount-item'
-                            v-for="(value, type) of discountMap"
+                            v-for="(value, type) of discount_map"
                             v-if="value"
                         >
                             <div class='discount-item-wrapper margin-left-wrapper'>
@@ -87,7 +87,7 @@ module.exports = {
                 "discount": "折扣优惠",
                 "sale": "立减优惠",
                 "reduce": "满减优惠",
-                "userDiscount": "会员优惠",
+                "user_discount": "会员优惠",
                 "coupon": "代金券"
             }
         }
@@ -96,11 +96,21 @@ module.exports = {
         dish_limit_remainder: function() {
             return this.$store.getters.dish_limit_remainder;
         },
-        orderItems: function() {
-            return this.$store.getters.orderItems;
+        order_items: function() {
+            return this.$store.getters.order_items;
         },
-        discountMap: function() {
-            return this.$store.getters.discountMap;
+        discount_map: function() {
+            return this.$store.getters.discount_map;
+        },
+        discount_map_len: function() {
+            let len = 0;
+            for (var key in this.discount_map) {
+                let value = this.discount_map[key];
+                if (value) {
+                    len++;
+                }
+            }
+            return len;
         },
         giveItem: function() {
             return this.$store.getters.giveItem;

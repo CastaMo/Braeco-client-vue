@@ -87,7 +87,7 @@ module.exports = {
             if (typeof this.limitDc === 'number') {
                 return `剩${this.limitDc}件`;
             }
-            return this.foodItem.dcStr;
+            return this.foodItem.dc_str;
         }
     },
     methods: {
@@ -109,7 +109,7 @@ module.exports = {
             } else if (this.foodItem.type === 'normal') {
                 this.$emit("food-with-normal-add-click", {
                     id: vm.foodItem.id,
-                    orderInitPrice: vm.foodItem.default_price
+                    order_init_price: vm.foodItem.default_price
                 });
             } else {
                 this.$emit("food-with-combo-add-click", {

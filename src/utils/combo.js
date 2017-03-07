@@ -44,7 +44,7 @@ const combo = {
         }
         item.chooseAllFirstPrice = Braeco.utils.food.getChooseAllFirstPrice(item, groupsMap);
         item.currentPrice = Braeco.utils.food.getPriceByDcTypeAndDc(item.chooseAllFirstPrice, item.dc_type, item.dc);
-        item.dcStr = Braeco.utils.food.getDcForFood(item, dishLimit);
+        item.dc_str = Braeco.utils.food.getDcForFood(item, dishLimit);
     },
     getPriceForCombo(combo, chooseAllInfoForFood) {
         let price;

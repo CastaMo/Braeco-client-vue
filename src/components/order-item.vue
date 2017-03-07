@@ -4,25 +4,25 @@
             <div class='order-item-container'>
                 <div class='name-field'>
                     <div class='name'>{{orderItem.name}}</div>
-                    <div class='dc label' v-if="orderItem.dcStr">{{dc_str}}</div>
+                    <div class='dc label' v-if="orderItem.dc_str">{{dc_str}}</div>
                     <div class='tag label' v-if="orderItem.tag">{{orderItem.tag}}</div>
                     <div class='clear'></div>
                 </div>
-                <div class='property-choose-info-field' v-if="orderItem.chooseInfo">
-                    <p>{{orderItem.chooseInfo}}</p>
+                <div class='property-choose-info-field' v-if="orderItem.choose_info">
+                    <p>{{orderItem.choose_info}}</p>
                 </div>
-                <div class='combo-choose-info-field' v-if="orderItem.comboChooseInfoArray">
+                <div class='combo-choose-info-field' v-if="orderItem.combo_choose_info">
                     <div class='combo-choose-info-wrapper'>
                         <div class='combo-choose-info-container'>
                             <ul class='combo-choose-info-list'>
                                 <li
                                     class='combo-choose-info-item'
-                                    v-for="comboChooseInfoItem in orderItem.comboChooseInfoArray"
+                                    v-for="combo_choose_info_item in orderItem.combo_choose_info"
                                 >
                                     <div class='name left-part'>
-                                        {{comboChooseInfoItem.name}}<span v-if="comboChooseInfoItem.chooseInfo"> ({{comboChooseInfoItem.chooseInfo}})</span>
+                                        {{combo_choose_info_item.name}}<span v-if="combo_choose_info_item.choose_info"> ({{combo_choose_info_item.choose_info}})</span>
                                     </div>
-                                    <div class='num right-part'>{{comboChooseInfoItem.num}}</div>
+                                    <div class='num right-part'>{{combo_choose_info_item.num}}</div>
                                     <div class='clear'></div>
                                 </li>
                             </ul>
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class='price-field'>
-                    <div class='left-part price'>{{orderItem.orderInitPrice}}</div>
+                    <div class='left-part price'>{{orderItem.order_init_price}}</div>
                     <div class='right-part controll'>
                         <div
                             class='minus'
@@ -68,7 +68,7 @@ module.exports = {
             if (typeof this.limitDc === "number") {
                 return `剩${this.limitDc}件`;
             }
-            return this.orderItem.dcStr;
+            return this.orderItem.dc_str;
         }
     },
     methods: {

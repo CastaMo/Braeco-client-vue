@@ -3,19 +3,19 @@
         <transition name="fade" mode="out-in">
             <div
                 class='member-order-container'
-                v-if="!orderAlreadyItem.inValid"
+                v-if="!order_already_item.inValid"
             >
                 <div class='order-main'>
                     <div>
                         <ul class='item-list'>
                             <order-item
-                                v-for="orderItem in orderAlreadyItem.orderItems"
+                                v-for="orderItem in order_already_item.order_items"
                                 :orderItem="orderItem"
                             >
                             </order-item>
                             <li
                                 class='discount-item'
-                                v-for="(value, type) of orderAlreadyItem.discountMap"
+                                v-for="(value, type) of order_already_item.discount_map"
                                 v-if="value"
                             >
                                 <div class='discount-item-wrapper margin-left-wrapper'>
@@ -30,7 +30,7 @@
                                 <div class='order-price-item-wrapper margin-left-wrapper'>
                                     <div class='order-price-item-container'>
                                         <div class='order-title left-part'>总价:</div>
-                                        <div class='order-price right-part'>{{Number(orderAlreadyItem.totalFinalPrice.toFixed(2))}}</div>
+                                        <div class='order-price right-part'>{{Number(order_already_item.total_final_price.toFixed(2))}}</div>
                                         <div class='clear'></div>
                                     </div>
                                 </div>
@@ -49,7 +49,7 @@
                     <ul class='order-info-item-list'>
                         <li
                             class='order-info-item'
-                            v-for="(infoType, key) of orderInfoMap"
+                            v-for="(infoType, key) of order_info_map"
                         >
                             <div class='order-info-item-wrapper margin-left-wrapper'>
                                 <div class='order-info-item-container'>
@@ -57,12 +57,12 @@
                                     <div
                                         class='info-value left-part'
                                         v-if="key === 'create_time'"
-                                    >{{new Date(orderAlreadyItem.createTimestamp).Format("yyyy-MM-dd hh:mm")}}
+                                    >{{new Date(order_already_item.create_time).Format("yyyy-MM-dd hh:mm")}}
                                     </div>
                                     <div
                                         class='info-value left-part'
                                         v-else
-                                    >{{orderAlreadyItem.orderInfo[key]}}
+                                    >{{order_already_item.order_info[key]}}
                                     </div>
                                     <div class='clear'></div>
                                 </div>
@@ -74,7 +74,7 @@
         </transition>
         <div
             class='loadding'
-            v-if="orderAlreadyItem.inValid"
+            v-if="order_already_item.inValid"
         >正在加载数据中
         </div>
     </div>
@@ -92,22 +92,23 @@ module.exports = {
                 "discount": "折扣优惠",
                 "sale": "立减优惠",
                 "reduce": "满减优惠",
-                "userDiscount": "会员优惠",
+                "user_discount": "会员优惠",
                 "coupon": "代金券"
             },
-            orderInfoMap: {
+            order_info_map: {
                 "order_id": "订单号",
                 "flow_id": "流水号",
                 "table_info": "桌号",
                 "create_time": "下单时间",
                 "pay_info": "支付方式",
-                "remark_info": "订单备注"
+                "description": "订单备注"
             }
         }
     },
     computed: {
-        orderAlreadyItem: function() {
-            return this.$store.getters.orderAlreadyItem;
+        order_already_item: function() {
+            console.log(this.$store.getters.order_already_item);
+            return this.$store.getters.order_already_item;
         }
     },
     components: {

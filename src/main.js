@@ -64,8 +64,8 @@ let initMainVM = function() {
             orderForTrolley: function() {
                 return this.$store.state.order.orderForTrolley;
             },
-            orderForAlready: function() {
-                return this.$store.state.order.orderForAlready;
+            order_for_already: function() {
+                return this.$store.state.order.order_for_already;
             }
         },
         created() {
@@ -89,9 +89,9 @@ let initMainVM = function() {
                 });
                 this.$store.dispatch("order:validate-and-assign-for-orderForTrolley", validate_opts);
                 
-                let orderForAlready = this.readFromLocStor('orderForAlready');
+                let order_for_already = this.readFromLocStor('order-for-already') || [];
                 this.$store.commit("order:load-order-for-already", {
-                    orderForAlready: orderForAlready
+                    order_for_already: order_for_already
                 });
                 this.$store.commit("user:try-login", {
                     member_info: this.$store.state.requireData.member_info
@@ -152,9 +152,9 @@ let initMainVM = function() {
                 },
                 deep: true
             },
-            "orderForAlready": {
+            "order_for_already": {
                 handler: function(newData, oldData) {
-                    this.saveToLocStor("orderForAlready", JSON.stringify(newData));
+                    this.saveToLocStor("order-for-already", JSON.stringify(newData));
                 },
                 deep: true
             }

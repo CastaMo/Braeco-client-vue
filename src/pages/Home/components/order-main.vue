@@ -5,14 +5,14 @@
                 <ul class='order-already-list'>
                     <li
                         class='order-already-item'
-                        v-for="orderAlready in orderForAlready"
-                        v-on:click="itemClickEvent(orderAlready.orderInfo.order_id)"
+                        v-for="order_already in order_for_already"
+                        v-on:click="itemClickEvent(order_already.order_info.order_id)"
                     >
                         <div class='title-field active-container'>
                             <div class='title-wrapper margin-left-wrapper'>
                                 <div class='title-container'>
-                                    <div class='left-part create-time'>{{new Date(orderAlready.createTimestamp).Format("yyyy-MM-dd hh:mm")}}</div>
-                                    <div class='right-part pay-info'>{{orderAlready.orderInfo.pay_info}}</div>
+                                    <div class='left-part create-time'>{{new Date(order_already.create_time).Format("yyyy-MM-dd hh:mm")}}</div>
+                                    <div class='right-part pay-info'>{{order_already.order_info.pay_info}}</div>
                                     <div class='clear'></div>
                                 </div>
                             </div>
@@ -24,7 +24,7 @@
                                     <ul class='order-item-list'>
                                         <li
                                             class='order-item'
-                                            v-for="orderItem in orderAlready.orderItems"
+                                            v-for="orderItem in order_already.order_items"
                                         >
                                             <div class='order-item-wrapper'>
                                                 <div class='order-item-container'>
@@ -42,7 +42,7 @@
                             <div class='total-wrapper'>
                                 <div class='total-container'>
                                     <div class='right-part'>
-                                        共 {{orderAlready.orderTotalNumber}} 项，实付<span class='total-price'>{{Number(orderAlready.totalFinalPrice.toFixed(2))}}</span>
+                                        共 {{order_already.order_total_number}} 项，实付<span class='total-price'>{{Number(order_already.total_final_price.toFixed(2))}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -60,8 +60,8 @@
 module.exports = {
     name: 'order-main',
     computed: {
-        orderForAlready: function() {
-            return this.$store.state.order.orderForAlready;
+        order_for_already: function() {
+            return this.$store.state.order.order_for_already;
         }
     },
     methods: {

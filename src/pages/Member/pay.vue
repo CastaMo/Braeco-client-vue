@@ -183,7 +183,7 @@ module.exports = {
         },
         topHeaderPrice: function() {
             if (this.pay_type === "order") {
-                return this.$store.getters.totalFinalPrice;
+                return this.$store.getters.total_final_price;
             } else {
                 let recharge_index = this.recharge_index;
                 let recharge = this.charge_ladder[recharge_index];
@@ -225,7 +225,7 @@ module.exports = {
             this.$router.push('/member/recharge');
         },
         confirmBtnClickEvent() {
-            // console.log(this.$store.getters.orderItems);
+            // console.log(this.$store.getters.order_items);
             if (this.pay_type === "order") {
                 this.orderPayCallback();
             }

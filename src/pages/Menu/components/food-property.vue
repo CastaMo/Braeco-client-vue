@@ -45,7 +45,7 @@
                         <div class='modal-footer'>
                             <div class='property-choose-display-field'>
                                 <div class='choose-info-field'>
-                                    已选：{{chooseInfo}}
+                                    已选：{{choose_info}}
                                 </div>
                                 <div class='price-field'>
                                     <div class='current-price'>{{Number(currentPrice.toFixed(2))}}</div>
@@ -71,8 +71,8 @@ module.exports = {
         currentFoodProperty: function() {
             return this.$store.getters.currentFoodProperty;
         },
-        chooseInfo: function() {
-            return this.$store.getters.chooseInfo
+        choose_info: function() {
+            return this.$store.getters.choose_info
         },
         initPrice: function() {
             return this.$store.getters.initPrice;
@@ -104,7 +104,7 @@ module.exports = {
             this.$emit("confirm-add", {
                 id: vm.currentFoodProperty.id,
                 groups: vm.chooseArray,
-                orderInitPrice: vm.initPrice
+                order_init_price: vm.initPrice
             });
             this.closeFoodProperty();
         }
