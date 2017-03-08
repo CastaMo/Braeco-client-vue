@@ -43,12 +43,13 @@ NProgress.start();
 getData("getTableDinner");
 getData("getTableLimit");
 getData("getTableMember");
+getData("getOrderQuery");
 
 const routeWeight = require("./routeWeight.js");
 const utils = require("./utils/index.js");
 
 
-let count = 3,
+let count = 4,
     requireData = {};
 let initMainVM = function() {
     return new Vue({
@@ -63,9 +64,6 @@ let initMainVM = function() {
         computed: {
             orderForTrolley: function() {
                 return this.$store.state.order.orderForTrolley;
-            },
-            order_for_already: function() {
-                return this.$store.state.order.order_for_already;
             }
         },
         created() {
@@ -89,10 +87,6 @@ let initMainVM = function() {
                 });
                 this.$store.dispatch("order:validate-and-assign-for-orderForTrolley", validate_opts);
                 
-                let order_for_already = this.readFromLocStor('order-for-already') || [];
-                this.$store.commit("order:load-order-for-already", {
-                    order_for_already: order_for_already
-                });
                 this.$store.commit("user:try-login", {
                     member_info: this.$store.state.requireData.member_info
                 });
@@ -149,12 +143,6 @@ let initMainVM = function() {
             "orderForTrolley": {
                 handler: function(newData, oldData) {
                     this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
-                },
-                deep: true
-            },
-            "order_for_already": {
-                handler: function(newData, oldData) {
-                    this.saveToLocStor("order-for-already", JSON.stringify(newData));
                 },
                 deep: true
             }

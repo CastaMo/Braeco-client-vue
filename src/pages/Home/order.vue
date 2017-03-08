@@ -20,7 +20,8 @@ module.exports = {
 
     computed: {
         order_for_already: function() {
-            return this.$store.state.order.order_for_already;
+            console.log(this.$store.state.requireData.order_for_already);
+            return this.$store.state.requireData.order_for_already;
         }
     },
 

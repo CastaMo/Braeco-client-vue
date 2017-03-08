@@ -77,7 +77,7 @@ module.exports = {
         discountInfo: function() {
             let discount = this.rank_info.discount;
             if (discount === 100) {
-                return "升值会员获取更多优惠";
+                return "升级会员获取优惠";
             }
             return `尊享 ${(discount / 10).toFixed(1)} 折优惠`;
         }

@@ -2,7 +2,6 @@ const order = {
 
     state: {
         orderForTrolley: [],
-        order_for_already: [],
         description: ""
     },
     getters: {
@@ -71,7 +70,7 @@ const order = {
                 return temp;
             }
             let orderId = Number(rootState.route.params.orderId);
-            state.order_for_already.every(function(item) {
+            rootState.requireData.order_for_already.every(function(item) {
                 if (Number(item.order_info.order_id) === orderId) {
                     temp = item;
                     temp.order_items.forEach(function(orderItem) {
@@ -276,12 +275,21 @@ const order = {
         "order:clear-order-for-trolley": function(state, playload) {
             state.orderForTrolley = [];
             state.description = "";
-        },
-        "order:load-order-for-already": function(state, playload) {
-            state.order_for_already = playload.order_for_already;
         }
     },
     actions: {
+        "order:update-order": function(context, playload) {
+            NProgress.start();
+            requireManage.get("getOrderQuery").require({
+                method: "GET",
+                success: function(result) {
+                    playload.callback(result);
+                },
+                always: function() {
+                    NProgress.done();
+                }
+            });
+        },
         "order:validate-and-assign-for-orderForTrolley": function(context, playload) {
             playload.lsOrderForTrolley.forEach(function(orderItem) {
                 orderItem.subItems.forEach(function(subItem) {
@@ -344,31 +352,6 @@ const order = {
                     }
                 });
             });
-        },
-        "order:get-order-for-already-item": function(context, playload) {
-            let orderForAlreadyItem = {};
-            orderForAlreadyItem.create_time = +new Date();
-            orderForAlreadyItem.order_items = [];
-            context.getters.order_items.forEach(function(orderItem) {
-                let temp = orderItem;
-                temp.read_only = true;
-                orderForAlreadyItem.order_items.push(temp);
-            });
-            if (context.getters.giveItem) {
-                orderForAlreadyItem.order_items.push(context.getters.giveItem);
-            }
-            orderForAlreadyItem.discount_map = context.getters.discount_map;
-            orderForAlreadyItem.total_final_price = context.getters.total_final_price;
-            orderForAlreadyItem.order_total_number = context.getters.order_total_number;
-            orderForAlreadyItem.description = context.state.description;
-            orderForAlreadyItem.order_info = {
-                flow_id: "0001",
-                order_id: parseInt(Math.random() * Math.pow(10, 10)),
-                pay_info: "微信支付",
-                description: "玫瑰过敏",
-                table_info: "堂食 6 号桌"
-            };
-            context.state.order_for_already.push(orderForAlreadyItem);
         },
         "order:add-order-for-trolley": function(context, playload) {
             let not_enough_food_id = Braeco.utils.order.getNotEnoughFoodId(

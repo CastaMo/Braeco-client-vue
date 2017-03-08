@@ -120,6 +120,23 @@ module.exports = {
                         vm.$store.commit("user:try-login", {
                             member_info: temp
                         });
+                        vm.$store.dispatch("order:update-order", {
+                            callback: function(result) {
+                                if (result.message === "success") {
+                                    setTimeout(function() {
+                                        vm.$root.$emit("tips:success", "更新菜单成功！");
+                                    }, 1000);
+                                    vm.$root.$store.dispatch("updateOrder", {
+                                        order_for_already: result.data.order_for_already
+                                    });
+                                } else {
+                                    setTimeout(function() {
+                                        vm.$root.$emit("tips:error", "更新菜单失败，请刷新重试！");
+                                    }, 1000);
+                                }
+                            }
+                        });
+
                     } else {
                         vm.$root.$emit("tips:error", "登录失败，请稍后重试！");
                     }

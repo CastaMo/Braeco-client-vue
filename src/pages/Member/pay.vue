@@ -232,9 +232,23 @@ module.exports = {
         },
         orderPayCallback() {
             let vm = this;
-            this.$store.dispatch("order:get-order-for-already-item");
+            NProgress.start();
+
+            this.$store.dispatch("order:update-order", {
+                callback: function(result) {
+                    if (result.message === "success") {
+                        vm.$root.$emit("tips:success", "更新菜单成功！");
+                        vm.$root.$store.dispatch("updateOrder", {
+                            order_for_already: result.data.order_for_already
+                        });
+                    } else {
+                        vm.$root.$emit("tips:error", "更新菜单失败，请刷新重试！");
+                    }
+                }
+            });
+
             this.$store.commit("order:clear-order-for-trolley");
-            console.log(this.$store.state.order.orderForAlready);
+            console.log(this.$store.state.requireData.orderForAlready);
             vm.$router.back(-1);
             setTimeout(function() {
                 vm.$router.back(-1);

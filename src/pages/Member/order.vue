@@ -20,8 +20,8 @@
                             >
                                 <div class='discount-item-wrapper margin-left-wrapper'>
                                     <div class='discount-item-container'>
-                                        <div class='discount-type left-part'>{{discountNameMap[type]}}</div>
-                                        <div class='discount-value right-part'>{{Number(value.toFixed(2))}}</div>
+                                        <div class='discount-type left-part'>{{getDiscountName(type, value)}}</div>
+                                        <div class='discount-value right-part'>{{getDiscountValue(type, value)}}</div>
                                         <div class='clear'></div>
                                     </div>
                                 </div>
@@ -30,7 +30,7 @@
                                 <div class='order-price-item-wrapper margin-left-wrapper'>
                                     <div class='order-price-item-container'>
                                         <div class='order-title left-part'>总价:</div>
-                                        <div class='order-price right-part'>{{Number(order_already_item.total_final_price.toFixed(2))}}</div>
+                                        <div class='order-price right-part'>{{Number(Number(order_already_item.total_final_price).toFixed(2))}}</div>
                                         <div class='clear'></div>
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                     <div
                                         class='info-value left-part'
                                         v-else
-                                    >{{order_already_item.order_info[key]}}
+                                    >{{order_already_item.order_info[key] || "无"}}
                                     </div>
                                     <div class='clear'></div>
                                 </div>
@@ -109,6 +109,21 @@ module.exports = {
         order_already_item: function() {
             console.log(this.$store.getters.order_already_item);
             return this.$store.getters.order_already_item;
+        }
+    },
+    methods: {
+        getDiscountName(type, value) {
+            if (type === 'user_discount') {
+                return value.msg;
+            }
+
+            return this.discountNameMap[type];
+        },
+        getDiscountValue(type, value) {
+            if (type === 'user_discount') {
+                return value.user_discount_money;
+            }
+            return Number(value.toFixed(2));
         }
     },
     components: {

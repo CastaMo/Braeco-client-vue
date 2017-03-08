@@ -42,6 +42,8 @@ module.exports = function() {
 	router.get('/api/Table/Limit', getCallbackHandleForRequest("GET"));
 	router.get('/api/Table/Dinner', getCallbackHandleForRequest("GET"));
 
+	router.get('/api/order/query', getCallbackHandleForRequest("GET"));
+
 	router.post('/Coupon/Add', getCallbackHandleForRequest("POST"));
 
 	router.post('/Table/Service', getCallbackHandleForRequest("POST"));

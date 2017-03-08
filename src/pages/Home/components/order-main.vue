@@ -11,7 +11,7 @@
                         <div class='title-field active-container'>
                             <div class='title-wrapper margin-left-wrapper'>
                                 <div class='title-container'>
-                                    <div class='left-part create-time'>{{new Date(order_already.create_time).Format("yyyy-MM-dd hh:mm")}}</div>
+                                    <div class='left-part create-time'>{{new Date(order_already.create_time * 1000).Format("yyyy-MM-dd hh:mm")}}</div>
                                     <div class='right-part pay-info'>{{order_already.order_info.pay_info}}</div>
                                     <div class='clear'></div>
                                 </div>
@@ -42,7 +42,7 @@
                             <div class='total-wrapper'>
                                 <div class='total-container'>
                                     <div class='right-part'>
-                                        共 {{order_already.order_total_number}} 项，实付<span class='total-price'>{{Number(order_already.total_final_price.toFixed(2))}}</span>
+                                        共 {{order_already.order_total_number}} 项，实付<span class='total-price'>{{Number(Number(order_already.total_final_price).toFixed(2))}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@ module.exports = {
     name: 'order-main',
     computed: {
         order_for_already: function() {
-            return this.$store.state.order.order_for_already;
+            return this.$store.state.requireData.order_for_already;
         }
     },
     methods: {
