@@ -159,13 +159,15 @@ requireManage = (function() {
         'getTableMember',
         'getCaptcha',
         'login',
+        'getOrderQuery'
     ];
     _allRequireURL = {
         'getTableDinner': '/api/Table/Dinner',
         'getTableLimit': '/api/Table/Limit',
         'getTableMember': '/api/Table/Member',
         'getCaptcha': '/server/captcha',
-        'login': '/Eater/Login/Mobile'
+        'login': '/Eater/Login/Mobile',
+        'getOrderQuery': '/api/order/query'
     };
     _setHeader = {};
 
@@ -207,10 +209,8 @@ requireManage = (function() {
         // } else {
         //     alert(result.cnmsg);
         // }_normalHandle = function(name, result_, success){
-        if (message === "success") {
+        if (message) {
             return typeof success == 'function' ? success(result) : void 8;
-        } else if (message) {
-            return typeof _requireFailCallback[message] == 'function' ? _requireFailCallback[message]() : void 8;
         } else {
             return alert("系统错误");
         }
