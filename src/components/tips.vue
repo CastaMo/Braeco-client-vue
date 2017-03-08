@@ -23,7 +23,8 @@ module.exports = {
             transitionName: 'fade',
             tipsItem: {},
             timestampForhide: 1500,
-            timerId: null
+            timerId: null,
+            debounce_callback: null
         };
     },
     created() {
@@ -40,15 +41,17 @@ module.exports = {
                 content: content
             });
         });
+
+        this.debounce_callback = this.debounce(function() {
+            vm.tipsItem = {};
+            vm.timerId = null;
+        }, this.timestampForhide);
     },
     methods: {
         getData(opts) {
             this.showContent(opts);
             let vm = this;
-            this.debounce(function() {
-                vm.tipsItem = {};
-                vm.timerId = null;
-            }, vm.timestampForhide)();
+            this.debounce_callback();
         },
         showContent(opts) {
             this.tipsItem = {};
