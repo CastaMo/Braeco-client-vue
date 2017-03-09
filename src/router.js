@@ -122,6 +122,17 @@ const MemberOrder = function(resolve) {
     // return require(['./pages/Member/order.vue'], resolve);
 }
 
+const MemberCoupon = function(resolve) {
+    NProgress.start();
+    return require.ensure(['./pages/Member'], function(component) {
+        var Member = require("./pages/Member");
+        var component = Member.coupon;
+        resolve(component);
+        NProgress.done();
+    }, "Member");
+    // return require(['./pages/Member/order.vue'], resolve);
+}
+
 const test = function(resolve) {
 	return require(['./specialRoute/test.vue'], resolve);
 }
@@ -143,6 +154,7 @@ const routes = [
     { path: '/member/pay/:payType', component: MemberPay},
     { path: '/member/recharge', component: MemberRecharge},
     { path: '/member/order/:orderId', component: MemberOrder},
+    { path: '/member/coupon/:type', component: MemberCoupon},
 
     { path: '/test', component: test},
     { path: '/', redirect: '/home/menu/x'}

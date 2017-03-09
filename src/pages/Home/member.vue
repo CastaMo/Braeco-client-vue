@@ -38,6 +38,8 @@ module.exports = {
                 switch(opts.title) {
                     case "recharge":
                         return this.$router.push('/member/recharge');
+                    case "coupon":
+                        return this.$router.push('/member/coupon/view');
                     default:
                         return console.log(opts.title);
                 }

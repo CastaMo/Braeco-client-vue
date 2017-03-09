@@ -28,7 +28,8 @@ const routeWeight = {
         next: {
             recharge: {value: 0},
             order: {value: 25},
-            pay: {value: 50}
+            pay: {value: 50},
+            coupon: {value: 100}
         }
     }
 };
