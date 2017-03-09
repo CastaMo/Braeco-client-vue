@@ -96,12 +96,12 @@ module.exports = {
 
 <style scoped lang="less">
 
-@MemberRank0Url: "../../../assets/member-rank-0.png";
-@MemberRank1Url: "../../../assets/member-rank-1.png";
-@MemberRank2Url: "../../../assets/member-rank-2.png";
-@MemberRank3Url: "../../../assets/member-rank-3.png";
-@MemberRank4Url: "../../../assets/member-rank-4.png";
-@MemberRank5Url: "../../../assets/member-rank-5.png";
+@MemberRank0Url: "../../../assets/member-rank/member-rank-0.png";
+@MemberRank1Url: "../../../assets/member-rank/member-rank-1.png";
+@MemberRank2Url: "../../../assets/member-rank/member-rank-2.png";
+@MemberRank3Url: "../../../assets/member-rank/member-rank-3.png";
+@MemberRank4Url: "../../../assets/member-rank/member-rank-4.png";
+@MemberRank5Url: "../../../assets/member-rank/member-rank-5.png";
 
 .background-norm(@elem: "none") {
     background-repeat: no-repeat;
