@@ -248,7 +248,6 @@ module.exports = {
             });
 
             this.$store.commit("order:clear-order-for-trolley");
-            console.log(this.$store.state.requireData.orderForAlready);
             vm.$router.back(-1);
             setTimeout(function() {
                 vm.$router.back(-1);

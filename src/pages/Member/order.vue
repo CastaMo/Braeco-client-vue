@@ -107,7 +107,6 @@ module.exports = {
     },
     computed: {
         order_already_item: function() {
-            console.log(this.$store.getters.order_already_item);
             return this.$store.getters.order_already_item;
         }
     },
