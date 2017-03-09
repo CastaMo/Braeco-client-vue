@@ -124,7 +124,6 @@ module.exports = {
     },
     created() {
         let vm = this;
-        console.log(this);
         this.$root.$on("root:route-to-order", function() {
             if (!vm.$store.state.user.member_info) {
                 return vm.$store.dispatch("user:startUserLogin");
