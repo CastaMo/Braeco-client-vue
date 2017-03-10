@@ -2,9 +2,13 @@
     <div id='Member-Coupon'>
         <transition name="fade" mode="out-in">
     		<coupon-blank
-                v-if="!order_for_already || order_for_already.length <= 0"
+                v-if="!couponorder || couponorder.length <= 0"
                 v-on:btn-click="routeToCouponView"
             ></coupon-blank>
+            <coupon-main
+            	v-else
+            	:couponorder="couponorder"
+            ></coupon-main>
         </transition>
     </div>
 </template>
@@ -34,7 +38,8 @@ module.exports = {
     	}
     },
     components: {
-    	'coupon-blank': require("./coupon-blank")
+    	'coupon-blank': require("./coupon-blank"),
+    	'coupon-main': require("./coupon-main")
     }
 }
 
