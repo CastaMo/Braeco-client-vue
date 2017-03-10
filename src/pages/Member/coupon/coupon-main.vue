@@ -14,7 +14,7 @@
 			</ul>
 		</div>
 	</div>
-	<div class="btn-field">
+	<div class="btn-field" v-show="type === 'use'">
 		<button
 			class="confirm-btn braeco-btn yellow wider"
 			v-on:click="confirmClick"
@@ -29,7 +29,6 @@
 module.exports = {
 	name: 'coupon-main',
 	props: {
-		couponorder: Array,
 		couponArr: Array
 	},
 	data() {
