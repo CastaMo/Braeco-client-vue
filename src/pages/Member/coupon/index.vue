@@ -2,12 +2,12 @@
     <div id='Member-Coupon'>
         <transition name="fade" mode="out-in">
     		<coupon-blank
-                v-if="!couponorder || couponorder.length <= 0"
+                v-if="!coupon_arr || coupon_arr.length <= 0"
                 v-on:btn-click="routeToCouponView"
             ></coupon-blank>
             <coupon-main
             	v-else
-            	:couponorder="couponorder"
+                :coupon-arr="coupon_arr"
             ></coupon-main>
         </transition>
     </div>
@@ -24,8 +24,8 @@ module.exports = {
         };
     },
     computed: {
-    	couponorder: function() {
-    		return this.$store.state.requireData.couponorder;
+    	coupon_arr: function() {
+    		return this.$store.getters.coupon_arr;
     	}
     },
     methods: {

@@ -33,10 +33,18 @@
                             </div>
                             <div class='arrow vertical-center'></div>
                         </li>
-                        <li class='additional-item active-container'>
+                        <li
+                            class='additional-item active-container'
+                            v-on:click="$router.push('/member/coupon/use')"
+                        >
                             <div class='additional-item-wrapper margin-left-wrapper'>
                                 <div class='additional-item-container'>
-                                    <div class='title'>代金券</div>
+                                    <div class='title left-part'>代金券</div>
+                                    <div
+                                        class='desc right-part'
+                                        v-show="coupon_arr_valid_len > 0"
+                                    >有 {{coupon_arr_valid_len}} 张代金券可用</div>
+                                    <div class='clear'></div>
                                 </div>
                             </div>
                             <div class='arrow vertical-center'></div>
@@ -120,6 +128,11 @@ module.exports = {
         },
         description: function() {
             return this.$store.state.order.description;
+        },
+        coupon_arr_valid_len: function() {
+            return this.$store.getters.coupon_arr.filter(function(item) {
+                return !item.$disabled;
+            }).length;
         }
     },
     created() {
@@ -218,6 +231,7 @@ module.exports = {
                 margin-right: 40px;
                 width: 150px;
                 text-align: right;
+                color: #8D8D8D;
                 .ellipsis-with-line-num(1);
 
             }

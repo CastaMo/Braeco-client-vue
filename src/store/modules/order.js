@@ -230,6 +230,18 @@ const order = {
                 }
             }
             return null;
+        },
+        coupon_arr: function(state, getters, rootState) {
+            let temp = [];
+            if (!rootState.isLoaded) {
+                return temp;
+            }
+            let total_final_price = getters.total_final_price;
+            temp = rootState.requireData.couponorder.map(function(item) {
+                item.$disabled = (total_final_price < item.cost);
+                return item;
+            });
+            return temp;
         }
     },
     mutations: {

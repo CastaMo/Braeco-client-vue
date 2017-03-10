@@ -1,6 +1,13 @@
 <template>
 
-	<li class='coupon display'>
+	<li
+		class='coupon'
+		:class="[state, {
+			'choose': isChoose,
+			'disabled': couponItem.$disabled
+		}]"
+		v-on:click="itemClickEvent"
+	>
 		<div class='basic-info'>
 			<div class='left-part overview-part'>
 				<div class='reduce-cost-field'>
@@ -46,7 +53,17 @@
 module.exports = {
 	name: 'coupon-item',
 	props: {
-		couponItem: Object
+		couponItem: Object,
+		state: String,
+		isChoose: Boolean
+	},
+	methods: {
+		itemClickEvent() {
+			if (this.couponItem.$disabled) {
+				return;
+			}
+			this.$emit("item-click", this.couponItem);
+		}
 	}
 };
 
@@ -62,9 +79,23 @@ module.exports = {
 .coupon {
 	&.disabled {
 		color: #C8C7CC;
+		.basic-info .overview-part {
+			.reduce-cost-field {
+				color: #C8C7CC;
+			}
+			.cost-field span.price {
+				color: #C8C7CC;
+			}
+		}
 	}
-	&.display {
+	&.view {
 		background-image: url("../../../assets/coupon-about/coupon-display.png");
+	}
+	&.use {
+		background-image: url("../../../assets/coupon-about/coupon-use-unchoose.png");
+		&.choose {
+			background-image: url("../../../assets/coupon-about/coupon-use-choose.png");
+		}
 	}
 	position: relative;
 	.background-norm();
