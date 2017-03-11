@@ -26,7 +26,7 @@ let getData = requireName =>
                     console.log(JSON.parse(JSON.stringify(requireData)));
                     NProgress.done();
                     mainVM.$emit("tips:success", "初始化成功！");
-                    mainVM.$store.dispatch("getData", {
+                    mainVM.$store.dispatch("get-data", {
                         requireData: requireData
                     });
                     setTimeout(function() {

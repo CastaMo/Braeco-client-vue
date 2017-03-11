@@ -251,7 +251,7 @@ module.exports = {
                 callback: function(result) {
                     if (result.message === "success") {
                         vm.$root.$emit("tips:success", "更新菜单成功！");
-                        vm.$root.$store.commit("updateRequireData", {
+                        vm.$root.$store.commit("update-require-data", {
                             order_for_already: result.data.order_for_already
                         });
                     } else {
@@ -266,7 +266,7 @@ module.exports = {
                         setTimeout(function() {
                             vm.$root.$emit("tips:success", "更新个人信息成功！");
                         }, 200);
-                        vm.$store.commit("updateRequireData", {
+                        vm.$store.commit("update-require-data", {
                             couponorder: result.data.couponorder
                         });
                         vm.$store.commit("user:try-login", {

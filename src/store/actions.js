@@ -1,7 +1,7 @@
 const actions = {
-    getData(context, payload) {
+    "get-data": function(context, payload) {
         setTimeout(function() {
-            context.commit('getData', payload);
+            context.commit('get-data', payload);
         }, 200);
     }
 };
