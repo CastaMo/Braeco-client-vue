@@ -77,22 +77,22 @@ module.exports = {
 }
 
 .coupon {
-	&.disabled {
-		color: #C8C7CC;
-		.basic-info .overview-part {
-			.reduce-cost-field {
-				color: #C8C7CC;
-			}
-			.cost-field span.price {
-				color: #C8C7CC;
-			}
-		}
-	}
 	&.view {
 		background-image: url("../../../assets/coupon-about/coupon-display.png");
 	}
 	&.use {
 		background-image: url("../../../assets/coupon-about/coupon-use-unchoose.png");
+		&.disabled {
+			color: #C8C7CC;
+			.basic-info .overview-part {
+				.reduce-cost-field {
+					color: #C8C7CC;
+				}
+				.cost-field span.price {
+					color: #C8C7CC;
+				}
+			}
+		}
 		&.choose {
 			background-image: url("../../../assets/coupon-about/coupon-use-choose.png");
 		}

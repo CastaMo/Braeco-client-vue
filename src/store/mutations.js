@@ -3,8 +3,10 @@ const mutations = {
         state.requireData = payload.requireData;
         state.isLoaded = true;
     },
-    updateOrder(state, payload) {
-    	state.requireData.order_for_already = payload.order_for_already;
+    updateRequireData(state, payload) {
+    	for (var key in payload) {
+    		state.requireData[key] = payload[key];
+    	}
     }
 };
 

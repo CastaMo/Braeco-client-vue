@@ -148,6 +148,18 @@ const user = {
                     NProgress.done();
                 }
             });
+        },
+        "user:get-table-member": function(context, playload) {
+            NProgress.start();
+            requireManage.get("getTableMember").require({
+                method: "GET",
+                success: function(result) {
+                    playload.callback(result);
+                },
+                always: function() {
+                    NProgress.done();
+                }
+            });
         }
     }
 };

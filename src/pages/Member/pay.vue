@@ -230,6 +230,19 @@ module.exports = {
                 this.orderPayCallback();
             }
         },
+        routeBackAndGo(backTarget, goTarget, timestamp) {
+            let vm = this;
+            if (vm.$route.path.indexOf(backTarget) < 0) {
+                vm.$router.back();
+                setTimeout(function() {
+                    vm.routeBackAndGo(backTarget, goTarget, timestamp);
+                }, timestamp);
+            } else {
+                setTimeout(function() {
+                    vm.$router.push(goTarget);
+                }, timestamp);
+            }
+        },
         orderPayCallback() {
             let vm = this;
             NProgress.start();
@@ -238,7 +251,7 @@ module.exports = {
                 callback: function(result) {
                     if (result.message === "success") {
                         vm.$root.$emit("tips:success", "更新菜单成功！");
-                        vm.$root.$store.dispatch("updateOrder", {
+                        vm.$root.$store.commit("updateRequireData", {
                             order_for_already: result.data.order_for_already
                         });
                     } else {
@@ -247,20 +260,29 @@ module.exports = {
                 }
             });
 
-            this.$store.commit("order:clear-order-for-trolley");
-            vm.$router.back(-1);
-            setTimeout(function() {
-                vm.$router.back(-1);
-                setTimeout(function() {
-                    vm.$router.back(-1);
-                    setTimeout(function() {
-                        vm.$router.back(-1);
+            this.$store.dispatch("user:get-table-member", {
+                callback: function(result) {
+                    if (result.message === "success") {
                         setTimeout(function() {
-                            vm.$router.push('/home/order');
-                        }, 20);
-                    }, 20);
-                }, 20);
-            }, 20);
+                            vm.$root.$emit("tips:success", "更新个人信息成功！");
+                        }, 200);
+                        vm.$store.commit("updateRequireData", {
+                            couponorder: result.data.couponorder
+                        });
+                        vm.$store.commit("user:try-login", {
+                            member_info: result.data.member_info
+                        });
+                    } else {
+                        setTimeout(function() {
+                            vm.$root.$emit("tips:error", "更新个人信息失败，请刷新重试！");
+                        }, 200);
+                    }
+
+                }
+            });
+
+            this.$store.commit("order:clear-order-for-trolley");
+            this.routeBackAndGo("/home/menu", "/home/order", 20);
         }
     }
 };

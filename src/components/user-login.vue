@@ -106,27 +106,13 @@ module.exports = {
                 captcha: this.captcha,
                 callback: function(result) {
                     if (result.message === "success") {
-                        vm.$root.$emit("tips:success", "登录成功");
-                        let temp = {
-                            avatar              :       result.avatar,
-                            mobile              :       result.mobile,
-                            nickname            :       result.nickname,
-                            sex                 :       result.sex,
-                            user                :       result.user,
-                            EXP                 :       result.membership.EXP,
-                            balance             :       result.membership.balance,
-                            address             :       result.address
-                        };
-                        vm.$store.commit("user:try-login", {
-                            member_info: temp
-                        });
                         vm.$store.dispatch("order:update-order", {
                             callback: function(result) {
                                 if (result.message === "success") {
                                     setTimeout(function() {
                                         vm.$root.$emit("tips:success", "更新菜单成功！");
                                     }, 1000);
-                                    vm.$root.$store.dispatch("updateOrder", {
+                                    vm.$root.$store.commit("updateRequireData", {
                                         order_for_already: result.data.order_for_already
                                     });
                                 } else {
@@ -134,6 +120,26 @@ module.exports = {
                                         vm.$root.$emit("tips:error", "更新菜单失败，请刷新重试！");
                                     }, 1000);
                                 }
+                            }
+                        });
+                        vm.$store.dispatch("user:get-table-member", {
+                            callback: function(result) {
+                                if (result.message === "success") {
+                                    setTimeout(function() {
+                                        vm.$root.$emit("tips:success", "更新个人信息成功！");
+                                    }, 200);
+                                    vm.$store.commit("updateRequireData", {
+                                        couponorder: result.data.couponorder
+                                    });
+                                    vm.$store.commit("user:try-login", {
+                                        member_info: result.data.member_info
+                                    });
+                                } else {
+                                    setTimeout(function() {
+                                        vm.$root.$emit("tips:error", "更新个人信息失败，请刷新重试！");
+                                    }, 200);
+                                }
+
                             }
                         });
 
