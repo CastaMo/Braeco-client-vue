@@ -2,7 +2,8 @@ const order = {
 
     state: {
         orderForTrolley: [],
-        description: ""
+        description: "",
+        alter_coupon_id: ""
     },
     getters: {
         dish_limit_remainder: function(state, getters, rootState) {
@@ -242,6 +243,38 @@ const order = {
                 return item;
             });
             return temp;
+        },
+
+        // 通过鉴定判断的方式来确保最终选择coupon的准确性、有效性
+        final_coupon: function(state, getters, rootState) {
+            let alter_coupon_id = state.alter_coupon_id;
+            let coupon_arr = getters.coupon_arr;
+            let total_final_price = getters.total_final_price;
+            let coupon = {};
+            if (!alter_coupon_id) {
+                return coupon;
+            }
+            coupon = coupon_arr.find(function(item) {
+                return item.id == alter_coupon_id;
+            });
+            if (!coupon || coupon.cost > total_final_price) {
+                return {};
+            }
+            return coupon;
+        },
+
+        total_final_price_with_coupon: function(state, getters, rootState) {
+            let total_final_price = getters.total_final_price;
+            let final_coupon = getters.final_coupon;
+            let result = total_final_price;
+            if (!final_coupon.id) {
+                return result;
+            }
+            result = total_final_price - Number(final_coupon.cost_reduce)
+            if (result <= 0) {
+                return 0;
+            }
+            return result;
         }
     },
     mutations: {
@@ -283,6 +316,9 @@ const order = {
         },
         "order:confirm-description": function(state, playload) {
             state.description = playload.description;
+        },
+        "order:confirm-coupon-id": function(state, playload) {
+            state.alter_coupon_id = playload.coupon_id;
         },
         "order:clear-order-for-trolley": function(state, playload) {
             state.orderForTrolley = [];

@@ -183,7 +183,7 @@ module.exports = {
         },
         topHeaderPrice: function() {
             if (this.pay_type === "order") {
-                return this.$store.getters.total_final_price;
+                return this.$store.getters.total_final_price_with_coupon;
             } else {
                 let recharge_index = this.recharge_index;
                 let recharge = this.charge_ladder[recharge_index];

@@ -75,6 +75,18 @@
                                 </div>
                             </div>
                         </li>
+                        <li
+                            class='discount-item'
+                            v-if="final_coupon.id"
+                        >
+                            <div class='discount-item-wrapper margin-left-wrapper'>
+                                <div class='discount-item-container'>
+                                    <div class='discount-type left-part'>代金券</div>
+                                    <div class='discount-value right-part'>{{Number(discount_by_coupon.toFixed(2))}}</div>
+                                    <div class='clear'></div>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -133,6 +145,14 @@ module.exports = {
             return this.$store.getters.coupon_arr.filter(function(item) {
                 return !item.$disabled;
             }).length;
+        },
+        final_coupon: function() {
+            return this.$store.getters.final_coupon;
+        },
+        discount_by_coupon: function() {
+            let total_final_price = this.$store.getters.total_final_price;
+            let total_final_price_with_coupon = this.$store.getters.total_final_price_with_coupon;
+            return total_final_price - total_final_price_with_coupon;
         }
     },
     created() {

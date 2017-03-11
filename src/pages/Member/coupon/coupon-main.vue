@@ -8,7 +8,7 @@
 					v-for="coupon_item in couponArr"
 					:coupon-item="coupon_item"
 					:state="type"
-					:is-choose="choose_coupon_id == coupon_item.id"
+					:is-choose="temp_coupon_id == coupon_item.id"
 					v-on:item-click="chooseItem"
 				></coupon-item>
 			</ul>
@@ -33,13 +33,16 @@ module.exports = {
 	},
 	data() {
 		return {
-			choose_coupon_id: null
+			temp_coupon_id: null
 		};
 	},
 	created() {
-
+		this.temp_coupon_id = this.final_coupon.id;
 	},
 	computed: {
+		final_coupon: function() {
+			return this.$store.getters.final_coupon;
+		},
 		type: function() {
 			return this.$store.state.route.params.type;
 		},
@@ -49,10 +52,13 @@ module.exports = {
 	},
 	methods: {
 		chooseItem(item) {
-			this.choose_coupon_id = item.id;
+			this.temp_coupon_id = item.id;
 		},
 		confirmClick() {
-			console.log(this.choose_coupon_id);
+			let vm = this;
+			this.$store.commit("order:confirm-coupon-id", {
+				coupon_id: vm.temp_coupon_id
+			});
 			this.$router.back();
 		}
 	},

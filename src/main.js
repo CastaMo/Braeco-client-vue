@@ -57,13 +57,18 @@ let initMainVM = function() {
         store: store,
         data() {
             return {
-                transitionName: "page-fade",
-                isLoaded: false
+                transitionName: "page-fade"
             }
         },
         computed: {
             orderForTrolley: function() {
                 return this.$store.state.order.orderForTrolley;
+            },
+            final_coupon: function() {
+                return this.$store.getters.final_coupon;
+            },
+            total_final_price: function() {
+                return this.$store.getters.total_final_price;
             }
         },
         created() {
@@ -73,8 +78,15 @@ let initMainVM = function() {
         methods: {
             init() {
                 let vm = this;
-                this.isLoaded = true;
                 let lsOrderForTrolley = this.readFromLocStor('orderForTrolley');
+
+                let coupon_id = this.readFromLocStor('coupon-id') || "";
+
+                if (coupon_id) {
+                    this.$store.commit("order:confirm-coupon-id", {
+                        coupon_id: coupon_id
+                    });
+                }
 
                 let validate_opts = {
                     lsOrderForTrolley: lsOrderForTrolley
@@ -140,11 +152,16 @@ let initMainVM = function() {
                 this.$store.dispatch("user:endUserLogin");
                 this.$store.dispatch("combo-delete:endComboDelete");
             },
-            "orderForTrolley": {
+            orderForTrolley: {
                 handler: function(newData, oldData) {
                     this.saveToLocStor("orderForTrolley", JSON.stringify(newData));
                 },
                 deep: true
+            },
+            final_coupon: function(newData, oldData) {
+                if (this.total_final_price) {
+                    this.saveToLocStor("coupon-id", newData.id || "");
+                }
             }
         },
         components: {

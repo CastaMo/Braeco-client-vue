@@ -4,7 +4,7 @@
             <div class='trolley-full-bar'>
                 <div class='left-part order-price-field'>
                     <span>总价:</span>
-                    <span class='order-price'>{{Number(orderFinalPrice.toFixed(2))}}</span>
+                    <span class='order-price'>{{Number(total_final_price_with_coupon.toFixed(2))}}</span>
                 </div>
                 <div class='right-part btn-field'>
                     <button
@@ -97,8 +97,8 @@ module.exports = {
         order_total_number: function() {
             return this.$store.getters.order_total_number;
         },
-        orderFinalPrice: function() {
-            return this.$store.getters.total_final_price;
+        total_final_price_with_coupon: function() {
+            return this.$store.getters.total_final_price_with_coupon;
         },
         trolley_btn_name: function() {
             return this.$store.getters.trolley_btn_name;
